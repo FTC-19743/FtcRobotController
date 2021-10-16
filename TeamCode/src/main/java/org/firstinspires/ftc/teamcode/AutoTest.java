@@ -52,7 +52,7 @@ public class AutoTest extends LinearOpMode {
         // Your code goes here
         // Move forward code
         while(true) {
-            if (this.getRuntime() < 1.0) {
+            if (this.getRuntime() > 1.0) {
                 break;
             }
             else {
@@ -66,7 +66,7 @@ public class AutoTest extends LinearOpMode {
         while(true) {
             this.resetStartTime();
 
-            if (this.getRuntime() < 1.0) {
+            if (this.getRuntime() > 1.0) {
                 break;
             }
             else {
@@ -80,7 +80,7 @@ public class AutoTest extends LinearOpMode {
         while(true) {
             this.resetStartTime();
 
-            if (this.getRuntime() < 1.0) {
+            if (this.getRuntime() > 1.0) {
                 break;
             }
             else {
