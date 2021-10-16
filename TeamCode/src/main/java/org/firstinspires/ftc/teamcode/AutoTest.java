@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.RobotLog;
+
 
 
 /**
@@ -23,11 +25,19 @@ import com.qualcomm.robotcore.util.Range;
 @Autonomous(name="AutoTest")
 public class AutoTest extends LinearOpMode {
 
+    public static void log(String logString) {
+        RobotLog.d("19743: " + logString);
+    }
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private DcMotor slappyArm = null;
+    static final double     COUNTS_PER_MOTOR_REV    = 384.5 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 6.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
 
     @Override
     public void runOpMode() {
@@ -51,8 +61,10 @@ public class AutoTest extends LinearOpMode {
 
         // Your code goes here
         // Move forward code
+        /*
         while(true) {
-            if (this.getRuntime() > 1.0) {
+            if (runtime.seconds() > 0.5) {
+
                 break;
             }
             else {
@@ -60,38 +72,79 @@ public class AutoTest extends LinearOpMode {
                 rightDrive.setPower(100);
             }
         }
+        log("Finished Moving Straight");
 
 
-        // Spin left code
+        runtime.reset();
+
+        // Turn left code
         while(true) {
-            this.resetStartTime();
 
-            if (this.getRuntime() > 1.0) {
+
+            if (runtime.seconds() > 0.5) {
+
                 break;
             }
             else {
-                leftDrive.setPower(50);
+                leftDrive.setPower(0);
+                rightDrive.setPower(100);
+            }
+        }
+        log("Finished Turning Left");
+
+
+        runtime.reset();
+
+        // Turn right code
+        while(true) {
+
+
+            if (runtime.seconds() > 0.5) {
+                runtime.reset();
+                break;
+            }
+            else {
+                leftDrive.setPower(0);
                 rightDrive.setPower(100);
             }
         }
 
+         */
+        moveInches(100.0,24.0);
 
-        // Spin right code
-        while(true) {
-            this.resetStartTime();
 
-            if (this.getRuntime() > 1.0) {
-                break;
+
+
+    }
+    public void moveInches(double speed,
+                           double inches) {
+        int newLeftTarget;
+        int newRightTarget;
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = leftDrive.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
+            newRightTarget = rightDrive.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
+            leftDrive.setTargetPosition(newLeftTarget);
+            rightDrive.setTargetPosition(newRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            leftDrive.setPower(Math.abs(speed));
+            rightDrive.setPower(Math.abs(speed));
+            while (opModeIsActive() &&
+                    (leftDrive.isBusy() && rightDrive.isBusy())) {
+
+
+
             }
-            else {
-                leftDrive.setPower(50);
-                rightDrive.setPower(100);
-            }
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
         }
-
-
-
-
     }
 }
 
