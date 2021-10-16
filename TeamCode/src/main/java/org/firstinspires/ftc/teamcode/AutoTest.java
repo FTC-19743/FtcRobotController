@@ -51,6 +51,40 @@ public class AutoTest extends LinearOpMode {
 
         // Your code goes here
 
+        // Move forward code
+        this.resetStartTime();
+
+        if (this.getRuntime() < 1.0) {
+            System.exit(0);
+        }
+        else {
+            leftDrive.setPower(100);
+            rightDrive.setPower(100);
+        }
+
+        // Spin left code
+        this.resetStartTime();
+
+        if (this.getRuntime() < 1.0) {
+            System.exit(0);
+        }
+        else {
+            leftDrive.setPower(50);
+            rightDrive.setPower(100);
+        }
+
+        // Spin right code
+        this.resetStartTime();
+
+        if (this.getRuntime() < 1.0) {
+            System.exit(0);
+        }
+        else {
+            leftDrive.setPower(50);
+            rightDrive.setPower(100);
+        }
+
+
     }
 }
 
