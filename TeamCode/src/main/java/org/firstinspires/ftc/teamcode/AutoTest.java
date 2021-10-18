@@ -34,10 +34,14 @@ public class AutoTest extends LinearOpMode {
     private DcMotor rightDrive = null;
     private DcMotor slappyArm = null;
     static final double     COUNTS_PER_MOTOR_REV    = 384.5 ;    // eg: TETRIX Motor Encoder
+    static final double     SPIN_CIRCUMFERENCE_INCHES   = 33.771;
     static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 6.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     COUNTS_PER_DEGREE       = (SPIN_CIRCUMFERENCE_INCHES / 360) *
+            COUNTS_PER_INCH;
+
 
     @Override
     public void runOpMode() {
@@ -111,6 +115,8 @@ public class AutoTest extends LinearOpMode {
 
          */
         moveInches(100.0,24.0);
+        spinLeft(100.0,90.0);
+        spinRight(100.0,90.0);
 
 
 
@@ -138,6 +144,7 @@ public class AutoTest extends LinearOpMode {
             rightDrive.setPower(Math.abs(speed));
             while (opModeIsActive() &&
                     (leftDrive.isBusy() && rightDrive.isBusy())) {
+                log("Moving Forward");
 
 
 
@@ -146,5 +153,68 @@ public class AutoTest extends LinearOpMode {
             rightDrive.setPower(0);
         }
     }
+    // Spin Left Method
+    public void spinLeft(double speed,
+                           double degrees) {
+        int newLeftTarget;
+        int newRightTarget;
+        if (opModeIsActive()) {
+            newLeftTarget = leftDrive.getCurrentPosition() + (int) ((degrees * COUNTS_PER_DEGREE) * -1);
+            newRightTarget = rightDrive.getCurrentPosition() + (int) (degrees * COUNTS_PER_DEGREE);
+            leftDrive.setTargetPosition(newLeftTarget);
+            rightDrive.setTargetPosition(newRightTarget);
+            // Turn On RUN_TO_POSITION
+            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            leftDrive.setPower(speed*-1);
+            rightDrive.setPower(speed);
+            while (opModeIsActive() &&
+                    (leftDrive.isBusy() && rightDrive.isBusy())) {
+                log("Spinning Left");
+
+
+
+            }
+
+
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+        }
+    }
+    // Spin Right Method
+    public void spinRight(double speed,
+                         double degrees) {
+        int newLeftTarget;
+        int newRightTarget;
+        if (opModeIsActive()) {
+            newLeftTarget = leftDrive.getCurrentPosition() + (int) (degrees * COUNTS_PER_DEGREE);
+            newRightTarget = rightDrive.getCurrentPosition() + (int) ((degrees * COUNTS_PER_DEGREE) * -1);
+            leftDrive.setTargetPosition(newLeftTarget);
+            rightDrive.setTargetPosition(newRightTarget);
+            // Turn On RUN_TO_POSITION
+            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            leftDrive.setPower(speed);
+            rightDrive.setPower(speed*-1);
+            while (opModeIsActive() &&
+                    (leftDrive.isBusy() && rightDrive.isBusy())) {
+                log("Spinning Right");
+
+
+
+            }
+
+
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+        }
+    }
+
 }
 
