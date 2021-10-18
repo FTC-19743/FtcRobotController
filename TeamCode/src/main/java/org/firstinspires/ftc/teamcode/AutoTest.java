@@ -153,6 +153,40 @@ public class AutoTest extends LinearOpMode {
             rightDrive.setPower(0);
         }
     }
+
+    // Move Back Method
+    public void moveBackInches(double speed,
+                           double inches) {
+        int newLeftTarget;
+        int newRightTarget;
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = leftDrive.getCurrentPosition() + (int) ((inches * COUNTS_PER_INCH) * -1);
+            newRightTarget = rightDrive.getCurrentPosition() + (int) ((inches * COUNTS_PER_INCH) * -1);
+            leftDrive.setTargetPosition(newLeftTarget);
+            rightDrive.setTargetPosition(newRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            leftDrive.setPower(speed * -1);
+            rightDrive.setPower(speed * -1);
+            while (opModeIsActive() &&
+                    (leftDrive.isBusy() && rightDrive.isBusy())) {
+                log("Moving Backward");
+
+
+
+            }
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+        }
+    }
+
     // Spin Left Method
     public void spinLeft(double speed,
                            double degrees) {
