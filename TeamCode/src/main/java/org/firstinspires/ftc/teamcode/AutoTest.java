@@ -35,11 +35,12 @@ public class AutoTest extends LinearOpMode {
     private DcMotor slappyArm = null;
     static final double     COUNTS_PER_MOTOR_REV    = 384.5 ;    // eg: TETRIX Motor Encoder
     static final double     SPIN_CIRCUMFERENCE_INCHES   = 33.771;
+    static final double     TURN_CIRCUMFERENCE_INCHES   = 67.542;
     static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 6.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     COUNTS_PER_DEGREE       = (SPIN_CIRCUMFERENCE_INCHES / 360) *
+    static final double     COUNTS_PER_SPIN_DEGREE       = (SPIN_CIRCUMFERENCE_INCHES / 360) *
             COUNTS_PER_INCH;
 
 
@@ -117,6 +118,7 @@ public class AutoTest extends LinearOpMode {
         moveInches(100.0,24.0);
         spinLeft(100.0,90.0);
         spinRight(100.0,90.0);
+        moveBackInches(100.0,24.0);
 
 
 
@@ -151,6 +153,7 @@ public class AutoTest extends LinearOpMode {
             }
             leftDrive.setPower(0);
             rightDrive.setPower(0);
+
         }
     }
 
@@ -193,8 +196,8 @@ public class AutoTest extends LinearOpMode {
         int newLeftTarget;
         int newRightTarget;
         if (opModeIsActive()) {
-            newLeftTarget = leftDrive.getCurrentPosition() + (int) ((degrees * COUNTS_PER_DEGREE) * -1);
-            newRightTarget = rightDrive.getCurrentPosition() + (int) (degrees * COUNTS_PER_DEGREE);
+            newLeftTarget = leftDrive.getCurrentPosition() + (int) ((degrees * COUNTS_PER_SPIN_DEGREE) * -1);
+            newRightTarget = rightDrive.getCurrentPosition() + (int) (degrees * COUNTS_PER_SPIN_DEGREE);
             leftDrive.setTargetPosition(newLeftTarget);
             rightDrive.setTargetPosition(newRightTarget);
             // Turn On RUN_TO_POSITION
@@ -224,8 +227,8 @@ public class AutoTest extends LinearOpMode {
         int newLeftTarget;
         int newRightTarget;
         if (opModeIsActive()) {
-            newLeftTarget = leftDrive.getCurrentPosition() + (int) (degrees * COUNTS_PER_DEGREE);
-            newRightTarget = rightDrive.getCurrentPosition() + (int) ((degrees * COUNTS_PER_DEGREE) * -1);
+            newLeftTarget = leftDrive.getCurrentPosition() + (int) (degrees * COUNTS_PER_SPIN_DEGREE);
+            newRightTarget = rightDrive.getCurrentPosition() + (int) ((degrees * COUNTS_PER_SPIN_DEGREE) * -1);
             leftDrive.setTargetPosition(newLeftTarget);
             rightDrive.setTargetPosition(newRightTarget);
             // Turn On RUN_TO_POSITION
