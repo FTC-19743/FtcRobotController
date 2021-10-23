@@ -6,7 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -27,7 +31,7 @@ public class SlappyBot extends LinearOpMode {
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private DcMotor slappyArm = null;
-
+    private BNO055IMU imu; //This variable is the imu
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -38,15 +42,19 @@ public class SlappyBot extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        slappyArm = hardwareMap.get(DcMotor.class, "arm");
+        //slappyArm = hardwareMap.get(DcMotor.class, "arm");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        slappyArm.setDirection(DcMotor.Direction.FORWARD);
-
+        //slappyArm.setDirection(DcMotor.Direction.FORWARD);
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         // Wait for the game to start (driver presses PLAY)
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        imu.initialize(parameters);
         waitForStart();
         runtime.reset();
 
@@ -75,7 +83,7 @@ public class SlappyBot extends LinearOpMode {
             // Send calculated power to wheels
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
-
+            /*
             if(gamepad1.left_trigger > 0){
                 slappyArm.setPower(-gamepad1.left_trigger);
             }else if(gamepad1.right_trigger > 0) {
@@ -83,10 +91,17 @@ public class SlappyBot extends LinearOpMode {
             }else{
                 slappyArm.setPower(0);
             }
+
+             */
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("IMU", "angle: (%.2f)", getIMUHeading());
             telemetry.update();
         }
+    }
+    double getIMUHeading() {
+        Orientation anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return (anglesCurrent.firstAngle);
     }
 }

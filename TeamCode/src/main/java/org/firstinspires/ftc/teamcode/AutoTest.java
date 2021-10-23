@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,7 +11,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.RobotLog;
 
-
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -29,6 +35,9 @@ public class AutoTest extends LinearOpMode {
         RobotLog.d("19743: " + logString);
     }
     // Declare OpMode members.
+
+    private BNO055IMU imu; //This variable is the imu
+
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
@@ -41,6 +50,8 @@ public class AutoTest extends LinearOpMode {
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double     COUNTS_PER_SPIN_DEGREE       = (SPIN_CIRCUMFERENCE_INCHES / 360) *
+            COUNTS_PER_INCH;
+    static final double     COUNTS_PER_TURN_DEGREE       = (TURN_CIRCUMFERENCE_INCHES / 360) *
             COUNTS_PER_INCH;
 
 
@@ -59,6 +70,14 @@ public class AutoTest extends LinearOpMode {
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        // set up our IMU
+        //These are the parameters that the imu uses in the code to name and keep track of the data
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        imu.initialize(parameters);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -115,15 +134,39 @@ public class AutoTest extends LinearOpMode {
         }
 
          */
-        moveInches(100.0,24.0);
-        spinLeft(100.0,90.0);
-        spinRight(100.0,90.0);
-        moveBackInches(100.0,24.0);
+        moveBackInches(1,24);
+        /*
+        justWait(5000);
+        spinLeft(.05,90.0);
+
+        justWait(5000);
+        spinRight(.05,90.0);
+        /*
+        justWait(5000);
+        moveBackInches(.25,24.0);
+        justWait(5000);
+        turnRight(.25,90.0);
+        justWait(5000);
+        turnLeft(.25,90.0);*/
 
 
 
 
     }
+    public void justWait(int miliseconds){
+
+        double currTime = getRuntime();
+        double waitUntil = currTime + (double)(miliseconds/1000);
+        while (getRuntime() < waitUntil){
+        }
+
+    }
+
+    double getIMUHeading() {
+        Orientation anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return (anglesCurrent.firstAngle);
+    }
+
     public void moveInches(double speed,
                            double inches) {
         int newLeftTarget;
@@ -144,15 +187,16 @@ public class AutoTest extends LinearOpMode {
             runtime.reset();
             leftDrive.setPower(Math.abs(speed));
             rightDrive.setPower(Math.abs(speed));
+            log("Moving Forward");
             while (opModeIsActive() &&
                     (leftDrive.isBusy() && rightDrive.isBusy())) {
-                log("Moving Forward");
+
 
 
 
             }
-            leftDrive.setPower(0);
-            rightDrive.setPower(0);
+            leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         }
     }
@@ -178,9 +222,10 @@ public class AutoTest extends LinearOpMode {
             runtime.reset();
             leftDrive.setPower(speed * -1);
             rightDrive.setPower(speed * -1);
+            log("Moving Backward");
             while (opModeIsActive() &&
                     (leftDrive.isBusy() && rightDrive.isBusy())) {
-                log("Moving Backward");
+
 
 
 
@@ -208,9 +253,10 @@ public class AutoTest extends LinearOpMode {
             runtime.reset();
             leftDrive.setPower(speed*-1);
             rightDrive.setPower(speed);
+            log("Spinning Left");
             while (opModeIsActive() &&
                     (leftDrive.isBusy() && rightDrive.isBusy())) {
-                log("Spinning Left");
+
 
 
 
@@ -227,6 +273,38 @@ public class AutoTest extends LinearOpMode {
         int newLeftTarget;
         int newRightTarget;
         if (opModeIsActive()) {
+            newLeftTarget = leftDrive.getCurrentPosition() + (int) (degrees * COUNTS_PER_TURN_DEGREE);
+            newRightTarget = rightDrive.getCurrentPosition() + (int) ((degrees * COUNTS_PER_TURN_DEGREE) * -1);
+            leftDrive.setTargetPosition(newLeftTarget);
+            rightDrive.setTargetPosition(newRightTarget);
+            // Turn On RUN_TO_POSITION
+            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            leftDrive.setPower(speed);
+            rightDrive.setPower(speed*-1);
+            log("Spinning Right");
+            while (opModeIsActive() &&
+                    (leftDrive.isBusy() && rightDrive.isBusy())) {
+
+
+
+
+            }
+
+
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+        }
+    }
+
+    public void turnRight(double speed,
+                          double degrees) {
+        int newLeftTarget;
+        int newRightTarget;
+        if (opModeIsActive()) {
             newLeftTarget = leftDrive.getCurrentPosition() + (int) (degrees * COUNTS_PER_SPIN_DEGREE);
             newRightTarget = rightDrive.getCurrentPosition() + (int) ((degrees * COUNTS_PER_SPIN_DEGREE) * -1);
             leftDrive.setTargetPosition(newLeftTarget);
@@ -239,9 +317,10 @@ public class AutoTest extends LinearOpMode {
             runtime.reset();
             leftDrive.setPower(speed);
             rightDrive.setPower(speed*-1);
+            log("Turning Right");
             while (opModeIsActive() &&
                     (leftDrive.isBusy() && rightDrive.isBusy())) {
-                log("Spinning Right");
+
 
 
 
@@ -252,6 +331,42 @@ public class AutoTest extends LinearOpMode {
             rightDrive.setPower(0);
         }
     }
+
+    public void turnLeft(double speed,
+                          double degrees) {
+        int newLeftTarget;
+        int newRightTarget;
+        if (opModeIsActive()) {
+            newLeftTarget = leftDrive.getCurrentPosition() + (int) (degrees * COUNTS_PER_TURN_DEGREE);
+            newRightTarget = rightDrive.getCurrentPosition() + (int) ((degrees * COUNTS_PER_TURN_DEGREE) * -1);
+            leftDrive.setTargetPosition(newLeftTarget);
+            rightDrive.setTargetPosition(newRightTarget);
+            // Turn On RUN_TO_POSITION
+            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            leftDrive.setPower(speed);
+            rightDrive.setPower(speed*-1);
+            log("Turning Left");
+            while (opModeIsActive() &&
+                    (leftDrive.isBusy() && rightDrive.isBusy())) {
+
+
+
+
+
+            }
+
+
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+        }
+    }
+
+
+
 
 }
 
