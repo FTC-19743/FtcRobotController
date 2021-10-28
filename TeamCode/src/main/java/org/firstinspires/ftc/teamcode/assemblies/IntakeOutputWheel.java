@@ -49,7 +49,7 @@ public class IntakeOutputWheel {
     }
 
     public void intakeRunUntilResistance(double speed){
-        log("Empty for now");
+        log("Empty For Now");
     }
     public void outputGo(double speed){
         outputMotor.setPower(speed);
