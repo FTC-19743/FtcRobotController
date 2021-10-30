@@ -20,6 +20,8 @@ public class Robot {
         teamUtil.log("Constructing Robot");
         hardwareMap = teamUtil.theOpMode.hardwareMap;
         drive = new TwoWheelDrive();
+        intakeOutput = new IntakeOutputWheel();
+        spinner = new CarouselSpinner();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +29,8 @@ public class Robot {
 
         teamUtil.log("Initializing Robot");
         drive.initialize();
+        intakeOutput.initialize();
+        spinner.init();
     }
 
 }

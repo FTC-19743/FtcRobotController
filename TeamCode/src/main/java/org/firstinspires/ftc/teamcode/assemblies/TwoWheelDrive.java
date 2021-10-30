@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -20,17 +21,22 @@ public class TwoWheelDrive {
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
 
-    static final double     COUNTS_PER_MOTOR_REV    = 384.5 ;    // GoBilda 5202 435 RPM
-    static final double     SPIN_CIRCUMFERENCE_INCHES   = 33.771;
-    static final double     TURN_CIRCUMFERENCE_INCHES   = 67.542;
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // 2:1 gear train reduction
-    static final double     WHEEL_DIAMETER_INCHES   = 6.0 ;     // Large AndyMark Wheels
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+    static final double COUNTS_PER_MOTOR_REV = 384.5;    // GoBilda 5202 435 RPM
+    static final double SPIN_CIRCUMFERENCE_INCHES = 33.771;
+    static final double TURN_CIRCUMFERENCE_INCHES = 67.542;
+    static final double DRIVE_GEAR_REDUCTION = 2.0;     // 2:1 gear train reduction
+    static final double WHEEL_DIAMETER_INCHES = 6.0;     // Large AndyMark Wheels
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     COUNTS_PER_SPIN_DEGREE  = (SPIN_CIRCUMFERENCE_INCHES / 360) *
+    static final double COUNTS_PER_SPIN_DEGREE = (SPIN_CIRCUMFERENCE_INCHES / 360) *
             COUNTS_PER_INCH;
-    static final double     COUNTS_PER_TURN_DEGREE  = (TURN_CIRCUMFERENCE_INCHES / 360) *
+    static final double COUNTS_PER_TURN_DEGREE = (TURN_CIRCUMFERENCE_INCHES / 360) *
             COUNTS_PER_INCH;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void log(String logString) {
+        RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public TwoWheelDrive() {
@@ -69,6 +75,7 @@ public class TwoWheelDrive {
         return (anglesCurrent.firstAngle);
     }
 
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void manualControl(float power, float spin) {
         double leftPower;
@@ -106,7 +113,8 @@ public class TwoWheelDrive {
         leftDrive.setPower(Math.abs(speed));
         rightDrive.setPower(Math.abs(speed));
         teamUtil.log("Moving Forward");
-        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) { }
+        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) {
+        }
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -133,7 +141,8 @@ public class TwoWheelDrive {
         leftDrive.setPower(speed * -1);
         rightDrive.setPower(speed * -1);
         teamUtil.log("Moving Backward");
-        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) {}
+        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) {
+        }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
     }
@@ -154,10 +163,11 @@ public class TwoWheelDrive {
         rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // start motion.
-        leftDrive.setPower(speed*-1);
+        leftDrive.setPower(speed * -1);
         rightDrive.setPower(speed);
         teamUtil.log("Spinning Left");
-        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) { }
+        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) {
+        }
 
         leftDrive.setPower(0);
         rightDrive.setPower(0);
@@ -180,9 +190,10 @@ public class TwoWheelDrive {
 
         // start motion.
         leftDrive.setPower(speed);
-        rightDrive.setPower(speed*-1);
+        rightDrive.setPower(speed * -1);
         teamUtil.log("Spinning Right");
-        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) { }
+        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) {
+        }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
     }
@@ -203,9 +214,10 @@ public class TwoWheelDrive {
 
         // start motion.
         leftDrive.setPower(speed);
-        rightDrive.setPower(speed*-1);
+        rightDrive.setPower(speed * -1);
         teamUtil.log("Turning Right");
-        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) {}
+        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) {
+        }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
     }
@@ -226,12 +238,27 @@ public class TwoWheelDrive {
 
         // start motion.
         leftDrive.setPower(speed);
-        rightDrive.setPower(speed*-1);
+        rightDrive.setPower(speed * -1);
         teamUtil.log("Turning Left");
-        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) {}
+        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) {
+        }
 
         leftDrive.setPower(0);
         rightDrive.setPower(0);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void spinLeftWithIMU(double degrees, double speed) {
+        while (true) {
+            double currentIMU = getIMUHeading();
+            while (degrees > currentIMU) {
+                currentIMU = getIMUHeading();
+                leftDrive.setPower(speed * -1);
+                rightDrive.setPower(speed);
+
+            }
+
+        }
+
+    }
 }

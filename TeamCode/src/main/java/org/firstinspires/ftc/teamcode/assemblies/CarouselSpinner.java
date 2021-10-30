@@ -7,6 +7,7 @@ This is the class that has the carousel spinner in it, and has the code to run i
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
@@ -28,9 +29,9 @@ public class CarouselSpinner {
         // setting the direction of the spinner, different for each alliance
         spinner = hardwareMap.get(DcMotor.class, "spinner");
         if(teamUtil.alliance == teamUtil.Alliance.RED) {
-            spinner.setDirection(DcMotorSimple.Direction.FORWARD);
-        }else{
             spinner.setDirection(DcMotorSimple.Direction.REVERSE);
+        }else{
+            spinner.setDirection(DcMotorSimple.Direction.FORWARD);
         }
         spinner.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
@@ -50,10 +51,21 @@ public class CarouselSpinner {
     }
 
     public void spinAll(){
+        //for endgame
         for (int i = 0; i > 10; i++) {
             spinOnce();
             off();
             teamUtil.pause(1000);
         }
+    }
+    public void carouselControl(double speed) {
+        double motorPower;
+
+
+        motorPower = Range.clip(speed, 0, 1.0);
+
+
+        spinner.setPower(motorPower);
+
     }
 }

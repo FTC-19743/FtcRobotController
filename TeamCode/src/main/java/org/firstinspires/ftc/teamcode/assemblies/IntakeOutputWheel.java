@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.assemblies;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.RobotLog;
 
 
@@ -15,42 +16,58 @@ public class IntakeOutputWheel {
     HardwareMap hardwareMap;
 
 
-    private DcMotor intakeMotor = null;
-    private DcMotor outputMotor = null;
+    private DcMotor intakeOutputMotor = null;
+
+    public IntakeOutputWheel(){
+        teamUtil.log("Constructing Intake Output Wheel");
+        hardwareMap = teamUtil.theOpMode.hardwareMap;
+    }
 
     public void initialize() {
 
         teamUtil.log("Initializing Intake");
 
-        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
-        intakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        intakeOutputMotor = hardwareMap.get(DcMotor.class, "intake_motor");
+        intakeOutputMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        teamUtil.log("Initializing Output");
 
-        outputMotor = hardwareMap.get(DcMotor.class, "output_motor");
-        outputMotor.setDirection(DcMotor.Direction.FORWARD);
+
+
 
     }
     public void intakeGo(double speed){
-        intakeMotor.setPower(speed);
+        intakeOutputMotor.setPower(speed);
         }
 
 
     public void intakeStop(){
-        intakeMotor.setPower(0);
+        intakeOutputMotor.setPower(0);
     }
 
     public void intakeRunUntilResistance(double speed){
         log("Empty For Now");
     }
     public void outputGo(double speed){
-        outputMotor.setPower(speed);
+        intakeOutputMotor.setPower(speed);
     }
 
 
     public void outputStop(){
-        outputMotor.setPower(0);
+        intakeOutputMotor.setPower(0);
     }
+
+
+    public void intakeOutputControl(float speed) {
+        double motorPower;
+
+
+        motorPower = Range.clip(speed, -1.0, 1.0);
+
+
+        intakeOutputMotor.setPower(motorPower);
+
+    }
+
 
 
 
