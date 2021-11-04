@@ -248,17 +248,68 @@ public class TwoWheelDrive {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void spinLeftWithIMU(double degrees, double speed) {
-        while (true) {
-            double currentIMU = getIMUHeading();
-            while (degrees > currentIMU) {
-                currentIMU = getIMUHeading();
-                leftDrive.setPower(speed * -1);
-                rightDrive.setPower(speed);
-
-            }
-
+    public void spinRightWithIMU(double degrees, double speed) {
+        double currentIMU = getIMUHeading();
+        double targetIMU;
+        if (currentIMU + degrees >= 180)
+        {
+            targetIMU = degrees + currentIMU - 360;
         }
-
+        else{
+            targetIMU = degrees + currentIMU;
+        }
+        double distance = targetIMU - currentIMU;
+        if (distance >= 0){
+            return;
+        }
+        else{
+            distance = -1*(distance);
+        }
+        while (distance <= 0.5) {
+            distance = targetIMU - currentIMU;
+            if (distance >= 0){
+                return;
+            }
+            else{
+                distance = -1*(distance);
+            }
+            leftDrive.setPower(speed);
+            rightDrive.setPower(speed*-1);
+            currentIMU = getIMUHeading();
+        }
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+    }
+    public void spinLeftWithIMU(double degrees, double speed) {
+        double currentIMU = getIMUHeading();
+        double targetIMU;
+        if (currentIMU + degrees >= 180)
+        {
+            targetIMU = degrees + currentIMU - 360;
+        }
+        else{
+            targetIMU = degrees + currentIMU;
+        }
+        double distance = targetIMU - currentIMU;
+        if (distance >= 0){
+            return;
+        }
+        else{
+            distance = -1*(distance);
+        }
+        while (distance >= targetIMU - .5 || distance <= targetIMU +.5) {
+            distance = targetIMU - currentIMU;
+            if (distance >= 0){
+                return;
+            }
+            else{
+                distance = -1*(distance);
+            }
+            leftDrive.setPower(speed*-1);
+            rightDrive.setPower(speed);
+            currentIMU = getIMUHeading();
+        }
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
     }
 }
