@@ -248,7 +248,9 @@ public class TwoWheelDrive {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
     public void spinRightWithIMU(double degrees, double speed) {
+
         double currentIMU = getIMUHeading();
         double targetIMU;
         if (currentIMU + degrees >= 180)
@@ -279,6 +281,34 @@ public class TwoWheelDrive {
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+    }
+
+         */
+    public void spinRightWithIMU(double degrees, double speed) {
+        double currentIMU = getIMUHeading();
+        currentIMU = 0;
+        if(degrees>=180) {
+            while(currentIMU<180) {
+                currentIMU = getIMUHeading();
+                leftDrive.setPower(speed);
+                rightDrive.setPower(speed*-1);
+            }
+            double degreesLeft = degrees - currentIMU;
+            double finalHeading = -180 - degreesLeft;
+            while(currentIMU>finalHeading) {
+                currentIMU = getIMUHeading();
+                leftDrive.setPower(speed);
+                rightDrive.setPower(speed*-1);
+            }
+
+        }
+        else{
+            while(currentIMU<degrees) {
+                currentIMU = getIMUHeading();
+                leftDrive.setPower(speed);
+                rightDrive.setPower(speed*-1);
+            }
+        }
     }
     public void spinLeftWithIMU(double degrees, double speed) {
         double currentIMU = getIMUHeading();

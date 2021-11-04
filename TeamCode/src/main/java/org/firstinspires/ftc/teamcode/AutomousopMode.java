@@ -25,7 +25,7 @@ public class AutomousopMode extends LinearOpMode {
 
         waitForStart();
 
-        robot.drive.spinLeftWithIMU(90, .1);
+
         robot.drive.spinRightWithIMU(90, .1);
     }
 }
