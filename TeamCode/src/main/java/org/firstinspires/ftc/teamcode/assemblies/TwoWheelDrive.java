@@ -70,8 +70,16 @@ public class TwoWheelDrive {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    double getIMUHeading() {
+    double getIMUHeading(boolean reset) {
         Orientation anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        if(reset){
+
+            anglesCurrent.firstAngle=0;
+        }
+        if(reset=false){
+            log("first angle not reset");
+        }
+
         return (anglesCurrent.firstAngle);
     }
 
@@ -285,18 +293,18 @@ public class TwoWheelDrive {
 
          */
     public void spinRightWithIMU(double degrees, double speed) {
-        double currentIMU = getIMUHeading();
-        currentIMU = 0;
+        getIMUHeading(true);
+        double currentIMU = getIMUHeading(false);
         if(degrees>=180) {
             while(currentIMU<180) {
-                currentIMU = getIMUHeading();
+                currentIMU = getIMUHeading(false);
                 leftDrive.setPower(speed);
                 rightDrive.setPower(speed*-1);
             }
             double degreesLeft = degrees - currentIMU;
             double finalHeading = -180 - degreesLeft;
             while(currentIMU>finalHeading) {
-                currentIMU = getIMUHeading();
+                currentIMU = getIMUHeading(false);
                 leftDrive.setPower(speed);
                 rightDrive.setPower(speed*-1);
             }
@@ -304,12 +312,13 @@ public class TwoWheelDrive {
         }
         else{
             while(currentIMU<degrees) {
-                currentIMU = getIMUHeading();
+                currentIMU = getIMUHeading(false);
                 leftDrive.setPower(speed);
                 rightDrive.setPower(speed*-1);
             }
         }
     }
+    /*
     public void spinLeftWithIMU(double degrees, double speed) {
         double currentIMU = getIMUHeading();
         double targetIMU;
@@ -342,4 +351,6 @@ public class TwoWheelDrive {
         leftDrive.setPower(0);
         rightDrive.setPower(0);
     }
+
+     */
 }
