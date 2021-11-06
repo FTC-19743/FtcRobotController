@@ -70,15 +70,8 @@ public class TwoWheelDrive {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    double getIMUHeading(boolean reset) {
+    double getIMUHeading() {
         Orientation anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        if(reset){
-
-            anglesCurrent.firstAngle=0;
-        }
-        if(reset=false){
-            log("first angle not reset");
-        }
 
         return (anglesCurrent.firstAngle);
     }
@@ -256,7 +249,7 @@ public class TwoWheelDrive {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /*
+
     public void spinRightWithIMU(double degrees, double speed) {
 
         double currentIMU = getIMUHeading();
@@ -275,7 +268,7 @@ public class TwoWheelDrive {
         else{
             distance = -1*(distance);
         }
-        while (distance <= 0.5) {
+        while (distance >= -.5 && distance <= .5) {
             distance = targetIMU - currentIMU;
             if (distance >= 0){
                 return;
@@ -291,8 +284,12 @@ public class TwoWheelDrive {
         rightDrive.setPower(0);
     }
 
-         */
-    public void spinRightWithIMU(double degrees, double speed) {
+
+    /*
+    public void spinLeftWithIMU(double degrees, double speed) {
+
+    }
+
         getIMUHeading(true);
         double currentIMU = getIMUHeading(false);
         if(degrees>=180) {
@@ -318,16 +315,18 @@ public class TwoWheelDrive {
             }
         }
     }
-    /*
+    */
+
+
     public void spinLeftWithIMU(double degrees, double speed) {
         double currentIMU = getIMUHeading();
         double targetIMU;
-        if (currentIMU + degrees >= 180)
+        if (currentIMU - degrees <= -180)
         {
-            targetIMU = degrees + currentIMU - 360;
+            targetIMU = degrees + currentIMU + 360;
         }
         else{
-            targetIMU = degrees + currentIMU;
+            targetIMU = degrees - currentIMU;
         }
         double distance = targetIMU - currentIMU;
         if (distance >= 0){
@@ -336,7 +335,7 @@ public class TwoWheelDrive {
         else{
             distance = -1*(distance);
         }
-        while (distance >= targetIMU - .5 || distance <= targetIMU +.5) {
+        while (distance >= -.5 && distance <= .5) {
             distance = targetIMU - currentIMU;
             if (distance >= 0){
                 return;
@@ -352,5 +351,5 @@ public class TwoWheelDrive {
         rightDrive.setPower(0);
     }
 
-     */
+
 }
