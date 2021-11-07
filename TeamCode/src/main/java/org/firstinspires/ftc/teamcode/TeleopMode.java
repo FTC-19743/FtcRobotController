@@ -48,6 +48,8 @@ public class TeleopMode extends LinearOpMode {
 
 
         while (opModeIsActive()) {
+            //gamepad1 will be for the drive
+            //gamepad2 will be for the mechanisms
             String currentIMU = String.format("%.2f", getIMUHeading());
             teamUtil.telemetry.addLine("current IMU = " + currentIMU);
             teamUtil.telemetry.update();
@@ -59,18 +61,18 @@ public class TeleopMode extends LinearOpMode {
 
                 robot.drive.manualControl(-gamepad1.left_stick_y*2/3, gamepad1.right_stick_x*2/3);
             }
-            if(gamepad1.left_trigger > 0){
-                robot.intakeOutput.intakeOutputControl(gamepad1.left_trigger);
+            if(gamepad2.left_trigger > 0){
+                robot.intakeOutput.intakeOutputControl(gamepad2.left_trigger);
 
             }
-            else if(gamepad1.left_bumper){
+            else if(gamepad2.left_bumper){
                 robot.intakeOutput.intakeOutputControl(-.75f);
 
             }
             else{
                 robot.intakeOutput.outputStop();
             }
-            robot.spinner.carouselControl(gamepad1.right_trigger);
+            robot.spinner.carouselControl(gamepad2.right_trigger);
         }
     }
 }
