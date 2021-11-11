@@ -50,6 +50,8 @@ public class TeleopMode extends LinearOpMode {
         while (opModeIsActive()) {
             //gamepad1 will be for the drive
             //gamepad2 will be for the mechanisms
+            //blue is gamepad 1
+            //red is gamepad 2
             String currentIMU = String.format("%.2f", getIMUHeading());
             teamUtil.telemetry.addLine("current IMU = " + currentIMU);
             teamUtil.telemetry.update();

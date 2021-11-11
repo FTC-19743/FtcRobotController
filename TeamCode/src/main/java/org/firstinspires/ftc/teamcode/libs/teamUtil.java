@@ -34,6 +34,9 @@ public class teamUtil {
     // A helper method to see if a long running operation should continue.
     // Call this in your loops
     public static boolean keepGoing(long timeOutTime) {
+        String s=Long.toString(System.currentTimeMillis());
+
+        log(s);
         return ((inInitialization || theOpMode.opModeIsActive()) && (System.currentTimeMillis() < timeOutTime));
     }
 }

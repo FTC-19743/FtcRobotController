@@ -97,12 +97,14 @@ public class TwoWheelDrive {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void moveInches(double speed,
                            double inches) {
+
         int newLeftTarget;
         int newRightTarget;
 
         // Determine new target position, and pass to motor controller
         newLeftTarget = leftDrive.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
         newRightTarget = rightDrive.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
+
         leftDrive.setTargetPosition(newLeftTarget);
         rightDrive.setTargetPosition(newRightTarget);
 
@@ -114,10 +116,14 @@ public class TwoWheelDrive {
         leftDrive.setPower(Math.abs(speed));
         rightDrive.setPower(Math.abs(speed));
         teamUtil.log("Moving Forward");
-        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) {
+        long currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (leftDrive.isBusy() || rightDrive.isBusy())) {
+            teamUtil.log("waiting");
         }
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
 
     }
 
@@ -254,12 +260,12 @@ public class TwoWheelDrive {
 
         double currentIMU = getIMUHeading();
         double targetIMU;
-        if (currentIMU + degrees >= 180)
+        if (currentIMU - degrees >= -180)
         {
-            targetIMU = degrees + currentIMU - 360;
+            targetIMU = degrees - currentIMU + 360;
         }
         else{
-            targetIMU = degrees + currentIMU;
+            targetIMU = degrees - currentIMU;
         }
         double distance = targetIMU - currentIMU;
         if (distance >= 0){
@@ -268,7 +274,7 @@ public class TwoWheelDrive {
         else{
             distance = -1*(distance);
         }
-        while (distance >= -.5 && distance <= .5) {
+        while (distance <= .5) {
             distance = targetIMU - currentIMU;
             if (distance >= 0){
                 return;
@@ -321,24 +327,26 @@ public class TwoWheelDrive {
     public void spinLeftWithIMU(double degrees, double speed) {
         double currentIMU = getIMUHeading();
         double targetIMU;
-        if (currentIMU - degrees <= -180)
+        if (currentIMU + degrees >= 180)
         {
-            targetIMU = degrees + currentIMU + 360;
+            targetIMU = degrees + currentIMU - 360;
         }
         else{
-            targetIMU = degrees - currentIMU;
+            targetIMU = degrees + currentIMU;
         }
         double distance = targetIMU - currentIMU;
         if (distance >= 0){
-            return;
+
         }
         else{
             distance = -1*(distance);
         }
-        while (distance >= -.5 && distance <= .5) {
+
+        while (distance >= .5) {
             distance = targetIMU - currentIMU;
+            String distanceLog = String.format("%.2f", distance);
+            teamUtil.log(distanceLog);
             if (distance >= 0){
-                return;
             }
             else{
                 distance = -1*(distance);
