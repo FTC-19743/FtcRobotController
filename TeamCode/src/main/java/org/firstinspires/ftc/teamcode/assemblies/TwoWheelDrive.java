@@ -358,6 +358,50 @@ public class TwoWheelDrive {
         leftDrive.setPower(0);
         rightDrive.setPower(0);
     }
+    public void spinRightWithIMUV2(double degrees, double speed){
+        double currentIMU = getIMUHeading();
+        double initialIMU = getIMUHeading();
+        //code for when imu is positive and right spin is needed that will put ultimately
+        //put imu into positive once again
+        if(currentIMU>=0 && currentIMU-degrees<180){
+            while(currentIMU>-180){
+                currentIMU=getIMUHeading();
+                leftDrive.setPower(speed);
+                rightDrive.setPower(-1*speed);
+                //prints IMU after every instance of while loop
+                String IMUToPrint1 = String.format("%.2f", getIMUHeading());
+                log(IMUToPrint1);
+
+            double degreesTurned = initialIMU*-1-180;
+            double degreesStillNeeded = degrees-degreesTurned;
+            double IMUNeeded = 179.999999-degreesStillNeeded;
+            while(currentIMU>IMUNeeded){
+                currentIMU=getIMUHeading();
+                leftDrive.setPower(speed);
+                rightDrive.setPower(-1*speed);
+                //prints IMU after every instance of while loop
+                String IMUToPrint2 = String.format("%.2f", getIMUHeading());
+                log(IMUToPrint2);
+            }
+
+
+            }
+        }
+        else if(currentIMU>=0 && currentIMU-degrees>=180){
+            while(currentIMU>degrees) {
+                currentIMU = getIMUHeading();
+                leftDrive.setPower(speed);
+                rightDrive.setPower(-1 * speed);
+                //prints IMU after every instance of while loop
+                String IMUToPrint1 = String.format("%.2f", getIMUHeading());
+                log(IMUToPrint1);
+            }
+        }
+
+
+
+
+    }
 
 
 }
