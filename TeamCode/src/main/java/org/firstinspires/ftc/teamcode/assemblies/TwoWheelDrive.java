@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.RobotLog;
-
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -39,6 +39,10 @@ public class TwoWheelDrive {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static void detailLog(String logString){
+        RobotLog.d("DetailLOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
+    }
     public TwoWheelDrive() {
         teamUtil.log("Constructing Drive");
         hardwareMap = teamUtil.theOpMode.hardwareMap;
@@ -122,6 +126,8 @@ public class TwoWheelDrive {
         }
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
 
 
 
@@ -359,44 +365,75 @@ public class TwoWheelDrive {
         rightDrive.setPower(0);
     }
     public void spinRightWithIMUV2(double degrees, double speed){
+
         double currentIMU = getIMUHeading();
         double initialIMU = getIMUHeading();
+
+        /*
+        while (true) {
+
+            if(degrees!=0){
+                while(currentIMU!=360){
+
+                    currentIMU=getIMUHeading();
+                    String IMUToPrint = String.format("%.2f", getIMUHeading());
+                    log(IMUToPrint);
+                    String InitialIMUToPrint = String.format("%.2f",currentIMU);
+                    log(InitialIMUToPrint);
+                    rightDrive.setPower(-speed);
+                    leftDrive.setPower(speed);
+                }
+            }
+        }
+        */
         //code for when imu is positive and right spin is needed that will put ultimately
         //put imu into positive once again
         if(currentIMU>=0 && currentIMU-degrees<180){
-            while(currentIMU>-180){
-                currentIMU=getIMUHeading();
+            while(currentIMU<0) {
+                currentIMU = getIMUHeading();
                 leftDrive.setPower(speed);
-                rightDrive.setPower(-1*speed);
+                rightDrive.setPower(-1 * speed);
                 //prints IMU after every instance of while loop
-                String IMUToPrint1 = String.format("%.2f", getIMUHeading());
+                String IMUToPrint1 = String.format("%.2f", currentIMU);
                 log(IMUToPrint1);
-
+            }
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
             double degreesTurned = initialIMU*-1-180;
             double degreesStillNeeded = degrees-degreesTurned;
             double IMUNeeded = 179.999999-degreesStillNeeded;
+            String degreesTurnedToPrint = String.format("%.2f", degreesTurned);
+            log(degreesTurnedToPrint);
+            String degreesStillNeededToPrint = String.format("%.2f", degreesStillNeeded);
+            log(degreesStillNeededToPrint);
+            String IMUNeededToPrint = String.format("%.2f", IMUNeeded);
+            log(IMUNeededToPrint);
             while(currentIMU>IMUNeeded){
+                getIMUHeading();
                 currentIMU=getIMUHeading();
                 leftDrive.setPower(speed);
                 rightDrive.setPower(-1*speed);
                 //prints IMU after every instance of while loop
-                String IMUToPrint2 = String.format("%.2f", getIMUHeading());
+                String IMUToPrint2 = String.format("%.2f", currentIMU);
                 log(IMUToPrint2);
             }
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
 
 
-            }
         }
         else if(currentIMU>=0 && currentIMU-degrees>=180){
             while(currentIMU>degrees) {
                 currentIMU = getIMUHeading();
                 leftDrive.setPower(speed);
-                rightDrive.setPower(-1 * speed);
+                rightDrive.setPower(-1*speed);
                 //prints IMU after every instance of while loop
-                String IMUToPrint1 = String.format("%.2f", getIMUHeading());
+                String IMUToPrint1 = String.format("%.2f", currentIMU);
                 log(IMUToPrint1);
             }
         }
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
 
 
 

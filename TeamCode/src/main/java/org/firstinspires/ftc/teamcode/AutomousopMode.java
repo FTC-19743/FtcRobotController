@@ -55,8 +55,9 @@ public class AutomousopMode extends LinearOpMode {
                 //goes forward to drop off the freight that you start with
                 robot.drive.moveInches(.5,16);
 
-                robot.drive.spinLeftWithIMU(90,.5);
-                robot.spinner.spinOnce();
+                robot.drive.spinRightWithIMUV2(90,.25);
+                //robot.drive.moveBackInches(.5,16);
+                //robot.spinner.spinOnce();
                 /*
 
                 //drops off the freight that you start with
