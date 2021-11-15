@@ -365,9 +365,75 @@ public class TwoWheelDrive {
         rightDrive.setPower(0);
     }
     public void spinRightWithIMUV2(double degrees, double speed){
-
-        double currentIMU = getIMUHeading();
         double initialIMU = getIMUHeading();
+        double IMUNeeded = initialIMU-degrees;
+        String initialIMUToPrint = String.format("%.2f", initialIMU);
+        String IMUNeededToPrint = String.format("%.2f", IMUNeeded);
+        detailLog("Initial IMU: " + initialIMUToPrint);
+        detailLog("IMU Needed: " + IMUNeededToPrint);
+        //if the end IMU is an impossible value, this code allows the robot to transition
+        //from the left hemisphere to the right without issues
+        //IMU Diagram Doc: https://docs.google.com/document/d/1RI6dZkmHRWhUBy-ZgONwAEO7AxOb_vjcoX40VSjJYjg/edit
+        if(IMUNeeded<-180){
+            double currentIMU = getIMUHeading();
+            while(currentIMU!=179.999999){
+                currentIMU=getIMUHeading();
+                leftDrive.setPower(speed);
+                rightDrive.setPower(-1*speed);
+                String currentIMUToPrint = String.format("%.2f", initialIMU);
+                detailLog(currentIMUToPrint);
+            }
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+            //finds out how many degrees were traveled depending on where the robot was initially
+            //facing
+            double degreesTraveled=0;
+            if(initialIMU < 0){
+                degreesTraveled = 180+initialIMU;
+            }
+            else if(initialIMU==0){
+
+            }
+            else{
+                degreesTraveled = 180-initialIMU;
+            }
+            currentIMU=getIMUHeading();
+            //Finds out how far to travel and prints important values
+            double degreesLeft = degrees-degreesTraveled;
+            double IMUNeeded2 = 179.999999-degreesLeft;
+            String degreesTraveledToPrint = String.format("%.2f", degreesTraveled);
+            String degreesLeftToPrint = String.format("%.2f", degreesLeft);
+            String IMUNeeded2ToPrint = String.format("%.2f", IMUNeeded2);
+            detailLog("Degrees Traveled: " + degreesTraveledToPrint);
+            detailLog("Degrees Left To Travel " + degreesLeftToPrint);
+            detailLog("IMU needed as robot enters left hemisphere: " + IMUNeeded2ToPrint);
+
+            while(currentIMU>IMUNeeded2){
+                currentIMU=getIMUHeading();
+                leftDrive.setPower(speed);
+                rightDrive.setPower(-1*speed);
+                String currentIMUToPrint = String.format("%.2f", initialIMU);
+                detailLog(currentIMUToPrint);
+
+            }
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+
+        }
+        //If math is simple and no conversion is needed the robot will spin without issue
+        else{
+            double currentIMU = getIMUHeading();
+            while(currentIMU>IMUNeeded){
+                currentIMU=getIMUHeading();
+                leftDrive.setPower(speed);
+                rightDrive.setPower(-1*speed);
+                String currentIMUToPrint = String.format("%.2f", initialIMU);
+                detailLog(currentIMUToPrint);
+            }
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+        }
+
 
         /*
         while (true) {
@@ -385,7 +451,7 @@ public class TwoWheelDrive {
                 }
             }
         }
-        */
+
         //code for when imu is positive and right spin is needed that will put ultimately
         //put imu into positive once again
         if(currentIMU>=0 && currentIMU-degrees<180){
@@ -434,6 +500,8 @@ public class TwoWheelDrive {
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+        */
+        
 
 
 
