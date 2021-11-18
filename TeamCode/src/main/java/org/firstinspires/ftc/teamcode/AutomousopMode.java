@@ -53,7 +53,7 @@ public class AutomousopMode extends LinearOpMode {
             //code for red alliance
             else{
                 //goes forward to drop off the freight that you start with
-                robot.drive.moveInches(.5,16);
+                //robot.drive.moveInches(.5,16);
 
                 robot.drive.spinRightWithIMUV2(90,.25);
                 //robot.drive.moveBackInches(.5,16);

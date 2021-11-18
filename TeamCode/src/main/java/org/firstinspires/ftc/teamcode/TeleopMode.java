@@ -9,6 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import com.qualcomm.robotcore.util.RobotLog;
+
+import org.firstinspires.ftc.teamcode.assemblies.OutakeArm;
 import org.firstinspires.ftc.teamcode.assemblies.Robot;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
@@ -56,24 +58,38 @@ public class TeleopMode extends LinearOpMode {
             teamUtil.telemetry.addLine("current IMU = " + currentIMU);
             teamUtil.telemetry.update();
             log(currentIMU);
+
             if(gamepad1.right_bumper == true){
                 robot.drive.manualControl(-gamepad1.left_stick_y, gamepad1.right_stick_x);
-            }
-            else{
-
+            } else{
                 robot.drive.manualControl(-gamepad1.left_stick_y*2/3, gamepad1.right_stick_x*2/3);
             }
+
             if(gamepad2.left_trigger > 0){
-                robot.intakeOutput.intakeOutputControl(gamepad2.left_trigger);
+                robot.outakeArm.spinnerIntake();
+            } else if(gamepad2.right_trigger>0){
+                robot.outakeArm.spinnerOutput();
+            } else {
+                robot.outakeArm.spinnerStop();
+            }
+            if(gamepad2.dpad_down==true){
+                while(gamepad2.dpad_down){
+                }
+                robot.outakeArm.runArmToPosition(robot.outakeArm.Level1);
+            } else if(gamepad2.dpad_left==true||gamepad2.dpad_right==true){
+                while(gamepad2.dpad_left||gamepad2.dpad_right){
+                }
+                robot.outakeArm.runArmToPosition(robot.outakeArm.Level2);
+            } else if(gamepad2.dpad_up==true){
+                while(gamepad2.dpad_up){
+                }
+                robot.outakeArm.runArmToPosition(robot.outakeArm.Level3);
+            } else if(gamepad2.x==true){
+                while(gamepad2.x){
+                }
+                robot.outakeArm.runArmToPosition(robot.outakeArm.Ground);
+            }
 
-            }
-            else if(gamepad2.left_bumper){
-                robot.intakeOutput.intakeOutputControl(-.75f);
-
-            }
-            else{
-                robot.intakeOutput.outputStop();
-            }
             robot.spinner.carouselControl(gamepad2.right_trigger);
         }
     }

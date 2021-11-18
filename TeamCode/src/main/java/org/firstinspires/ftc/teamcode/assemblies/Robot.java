@@ -18,7 +18,7 @@ public class Robot {
     Telemetry telemetry;
 
     public TwoWheelDrive drive;
-    public IntakeOutputWheel intakeOutput;
+    public OutakeArm outakeArm;
     public CarouselSpinner spinner;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ public class Robot {
         teamUtil.log("Constructing Robot");
         hardwareMap = teamUtil.theOpMode.hardwareMap;
         drive = new TwoWheelDrive();
-        intakeOutput = new IntakeOutputWheel();
+        outakeArm = new OutakeArm();
         spinner = new CarouselSpinner();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         //These are the parameters that the imu uses in the code to name and keep track of the data
@@ -46,7 +46,7 @@ public class Robot {
         imu.initialize(parameters);
         teamUtil.log("Initializing Robot");
         drive.initialize();
-        intakeOutput.initialize();
+        outakeArm.init();
         spinner.init();
     }
 
