@@ -9,11 +9,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
 public class CarouselSpinner {
 
-
+    Telemetry telemetry;
     HardwareMap hardwareMap;
     public DcMotor spinner;
 
@@ -38,6 +39,11 @@ public class CarouselSpinner {
 
     public void on(double power) {
         spinner.setPower(power);
+    }
+
+    public void spinnerTelemetry(){
+        telemetry.addLine("Spinner speed: " + spinner.getPower());
+        //telemetry.addLine("spinner encoder position: " + spinner.getCurrentPosition());
     }
 
     public void off(){
