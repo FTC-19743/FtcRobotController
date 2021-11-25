@@ -47,6 +47,7 @@ public class Robot {
         teamUtil.log("Initializing Robot");
         drive.initialize();
         outakeArm.init();
+        outakeArm.resetArm();
         spinner.init();
     }
 

@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.assemblies.OutakeArm;
 import org.firstinspires.ftc.teamcode.assemblies.Robot;
+import org.firstinspires.ftc.teamcode.assemblies.TwoWheelDrive;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
 @TeleOp(name="TeleopMode", group="Linear Opmode")
@@ -45,6 +46,8 @@ public class TeleopMode extends LinearOpMode {
 
         robot = new Robot();
         robot.init();
+        telemetry.addLine("Ready to start");
+        telemetry.update();
 
         waitForStart();
 
@@ -55,9 +58,8 @@ public class TeleopMode extends LinearOpMode {
             //blue is gamepad 1
             //red is gamepad 2
             String currentIMU = String.format("%.2f", getIMUHeading());
-            teamUtil.telemetry.addLine("current IMU = " + currentIMU);
-            teamUtil.telemetry.update();
-            log(currentIMU);
+
+            //log(currentIMU);
 
             if(gamepad1.right_bumper == true){
                 robot.drive.manualControl(-gamepad1.left_stick_y, gamepad1.right_stick_x);
@@ -84,13 +86,31 @@ public class TeleopMode extends LinearOpMode {
                 while(gamepad2.dpad_up){
                 }
                 robot.outakeArm.runArmToPosition(robot.outakeArm.Level3);
-            } else if(gamepad2.x==true){
-                while(gamepad2.x){
+            } else if(gamepad2.a==true){
+                while(gamepad2.a){
                 }
                 robot.outakeArm.runArmToPosition(robot.outakeArm.Ground);
-            }
+            } //else if(gamepad2.y==true){
+                //while(gamepad2.y){
+               // }
 
-            robot.spinner.carouselControl(gamepad2.right_trigger);
+               // robot.outakeArm.resetArm();
+
+               // robot.drive.manualControl(0,0);
+           // }
+            if(gamepad2.right_bumper==true) {
+                while (gamepad2.right_bumper) {
+                    robot.spinner.on(1);
+                }
+                robot.spinner.off();
+
+            }
+            robot.outakeArm.writeTelemetry();
+            robot.drive.writeTelemetry();
+            robot.spinner.spinnerTelemetry();
+            telemetry.update();
+
+
         }
     }
 }

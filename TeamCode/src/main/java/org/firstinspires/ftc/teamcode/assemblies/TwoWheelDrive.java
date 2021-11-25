@@ -2,11 +2,14 @@ package org.firstinspires.ftc.teamcode.assemblies;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -16,6 +19,7 @@ import org.firstinspires.ftc.teamcode.libs.teamUtil;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public class TwoWheelDrive {
     HardwareMap hardwareMap;
+    Telemetry telemetry;
 
     private BNO055IMU imu; //This variable is the imu
     private DcMotor leftDrive = null;
@@ -40,12 +44,24 @@ public class TwoWheelDrive {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public void writeTelemetry(){
+        telemetry.addData("Left Motor Position", "Wheel Position:%d", leftDrive.getCurrentPosition());
+        telemetry.addData("Right Motor Position", "Wheel Position:%d", rightDrive.getCurrentPosition());
+        //telemetry.addData("Left Motor Speed", "Wheel Speed:%f", leftDrive.getPower());
+        //telemetry.addData("Right Motor Speed", "Wheel Speed:%f", rightDrive.getPower());
+        telemetry.addData("IMU Heading", "IMU Value:%f", getIMUHeading());
+
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static void detailLog(String logString){
         RobotLog.d("DetailLOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
     public TwoWheelDrive() {
         teamUtil.log("Constructing Drive");
         hardwareMap = teamUtil.theOpMode.hardwareMap;
+        telemetry = teamUtil.theOpMode.telemetry;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,6 +101,7 @@ public class TwoWheelDrive {
     public void manualControl(float power, float spin) {
         double leftPower;
         double rightPower;
+        //teamUtil.log("manualControl - P:"+power+" S:"+ spin);
 
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
@@ -92,6 +109,8 @@ public class TwoWheelDrive {
         double turn = spin;
         leftPower = Range.clip(drive + turn, -1.0, 1.0);
         rightPower = Range.clip(drive - turn, -1.0, 1.0);
+
+        //teamUtil.log("manualControl - LP:"+leftPower+" RP:"+ rightPower);
 
         // Send calculated power to wheels
         leftDrive.setPower(leftPower);
@@ -122,13 +141,17 @@ public class TwoWheelDrive {
         teamUtil.log("Moving Forward");
         long currentTime = System.currentTimeMillis() + 5000;
         while (teamUtil.keepGoing(currentTime) && (leftDrive.isBusy() || rightDrive.isBusy())) {
+            String leftCurrentPosition = String.format("%d", leftDrive.getCurrentPosition());
+            String rightCurrentPosition = String.format("%d", rightDrive.getCurrentPosition());
+            detailLog("Left Position: " + leftCurrentPosition);
+            detailLog("Right Position: " + rightCurrentPosition);
             teamUtil.log("waiting");
         }
+
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftDrive.setPower(0);
         rightDrive.setPower(0);
-
 
 
     }
@@ -139,10 +162,20 @@ public class TwoWheelDrive {
                                double inches) {
         int newLeftTarget;
         int newRightTarget;
+        String leftCurrentPosition = String.format("%d", leftDrive.getCurrentPosition());
+        String rightCurrentPosition = String.format("%d", rightDrive.getCurrentPosition());
+
+        detailLog("Left Position: " + leftCurrentPosition);
+        detailLog("Right Position: " + rightCurrentPosition);
+
 
         // Determine new target position, and pass to motor controller
-        newLeftTarget = leftDrive.getCurrentPosition() + (int) ((inches * COUNTS_PER_INCH) * -1);
-        newRightTarget = rightDrive.getCurrentPosition() + (int) ((inches * COUNTS_PER_INCH) * -1);
+        newLeftTarget = leftDrive.getCurrentPosition() - (int) (inches * COUNTS_PER_INCH);
+        newRightTarget = rightDrive.getCurrentPosition() - (int) (inches * COUNTS_PER_INCH);
+        String leftTarget = String.format("%d",newLeftTarget);
+        String rightTarget = String.format("%d",newRightTarget);
+        detailLog("Left Target: " + leftTarget);
+        detailLog("Right Target: " + rightTarget);
         leftDrive.setTargetPosition(newLeftTarget);
         rightDrive.setTargetPosition(newRightTarget);
 
@@ -154,7 +187,12 @@ public class TwoWheelDrive {
         leftDrive.setPower(speed * -1);
         rightDrive.setPower(speed * -1);
         teamUtil.log("Moving Backward");
-        while (teamUtil.keepGoing(5000) && (leftDrive.isBusy() && rightDrive.isBusy())) {
+        long currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (leftDrive.isBusy() || rightDrive.isBusy())) {
+
+            detailLog("Left Position: " + leftCurrentPosition);
+            detailLog("Right Position: " + rightCurrentPosition);
+            teamUtil.log("waiting");
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
@@ -331,6 +369,7 @@ public class TwoWheelDrive {
 
 
     public void spinLeftWithIMU(double degrees, double speed) {
+
         double currentIMU = getIMUHeading();
         double targetIMU;
         if (currentIMU + degrees >= 180)
@@ -365,6 +404,8 @@ public class TwoWheelDrive {
         rightDrive.setPower(0);
     }
     public void spinRightWithIMUV2(double degrees, double speed){
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double initialIMU = getIMUHeading();
         double IMUNeeded = initialIMU-degrees;
         String initialIMUToPrint = String.format("%.2f", initialIMU);
@@ -427,7 +468,7 @@ public class TwoWheelDrive {
                 currentIMU=getIMUHeading();
                 leftDrive.setPower(speed);
                 rightDrive.setPower(-1*speed);
-                String currentIMUToPrint = String.format("%.2f", initialIMU);
+                String currentIMUToPrint = String.format("%.2f", currentIMU);
                 detailLog(currentIMUToPrint);
             }
             leftDrive.setPower(0);
@@ -508,5 +549,83 @@ public class TwoWheelDrive {
 
     }
 
+    public void spinLeftWithIMUV2(double degrees, double speed){
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        double initialIMU = getIMUHeading();
+        double IMUNeeded = initialIMU+degrees;
+        String initialIMUToPrint = String.format("%.2f", initialIMU);
+        String IMUNeededToPrint = String.format("%.2f", IMUNeeded);
+        detailLog("Initial IMU: " + initialIMUToPrint);
+        detailLog("IMU Needed: " + IMUNeededToPrint);
 
+        //IMU Diagram Doc: https://docs.google.com/document/d/1RI6dZkmHRWhUBy-ZgONwAEO7AxOb_vjcoX40VSjJYjg/edit
+        if(IMUNeeded>180){
+            double currentIMU = getIMUHeading();
+            while(currentIMU!=179.999){
+                currentIMU=getIMUHeading();
+                leftDrive.setPower(-1*speed);
+                rightDrive.setPower(speed);
+                String currentIMUToPrint = String.format("%.2f", initialIMU);
+                detailLog(currentIMUToPrint);
+            }
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+            //finds out how many degrees were traveled depending on where the robot was initially
+            //facing
+            double degreesTraveled=0;
+            if(initialIMU < 0){
+                degreesTraveled = 179.999-initialIMU;
+            }
+            else if(initialIMU==0){
+
+            }
+            else{
+                degreesTraveled = 179.999+initialIMU*-1;
+            }
+            currentIMU=getIMUHeading();
+            //Finds out how far to travel and prints important values
+            double degreesLeft = degrees-degreesTraveled;
+            double IMUNeeded2 = -179.999999+degreesLeft;
+            String degreesTraveledToPrint = String.format("%.2f", degreesTraveled);
+            String degreesLeftToPrint = String.format("%.2f", degreesLeft);
+            String IMUNeeded2ToPrint = String.format("%.2f", IMUNeeded2);
+            detailLog("Degrees Traveled: " + degreesTraveledToPrint);
+            detailLog("Degrees Left To Travel " + degreesLeftToPrint);
+            detailLog("IMU needed as robot enters left hemisphere: " + IMUNeeded2ToPrint);
+
+            while(currentIMU<IMUNeeded2){
+                currentIMU=getIMUHeading();
+                leftDrive.setPower(-1*speed);
+                rightDrive.setPower(speed);
+                String currentIMUToPrint = String.format("%.2f", initialIMU);
+                detailLog(currentIMUToPrint);
+
+            }
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+
+        }
+        //If math is simple and no conversion is needed the robot will spin without issue
+        else{
+            double currentIMU = getIMUHeading();
+            while(currentIMU<IMUNeeded){
+                currentIMU=getIMUHeading();
+                leftDrive.setPower(-1*speed);
+                rightDrive.setPower(speed);
+                String currentIMUToPrint = String.format("%.2f", initialIMU);
+                detailLog(currentIMUToPrint);
+            }
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+        }
+
+
+
+
+
+
+
+
+    }
 }

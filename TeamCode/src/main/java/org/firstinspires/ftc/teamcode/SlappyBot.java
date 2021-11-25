@@ -42,7 +42,7 @@ public class SlappyBot extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        //slappyArm = hardwareMap.get(DcMotor.class, "arm");
+        slappyArm = hardwareMap.get(DcMotor.class, "arm");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery

@@ -35,36 +35,44 @@ public class AutomousopMode extends LinearOpMode {
                 //goes forward to drop off the freight that you start with
                 robot.drive.moveInches(.5,19);
 
-                robot.drive.spinRightWithIMU(90,.5);
-                /*
+                robot.drive.spinRightWithIMUV2(90,.5);
+
                 //drops off the freight that you start with
                 robot.drive.moveInches(.5,9);
-                //goes to the carousel
                 robot.drive.moveBackInches(.5, 2);
-                robot.drive.spinRightWithIMU(80,.5);
-                robot.drive.moveInches(.5,14);
+                //goes to the carousel
+                robot.drive.spinLeftWithIMUV2(80,.5);
+                robot.drive.moveBackInches(.5,14);
                 //spins the duck off of the carousel
                 robot.spinner.spinOnce();
                 //moves back into the storage area for the parking bonus
-                robot.drive.moveBackInches(.5,16);
-                robot.drive.spinLeftWithIMU(70, .5);
-                */
+                robot.drive.moveInches(.5,16);
+                robot.drive.spinLeftWithIMUV2(70, .5);
+
             }
             //code for red alliance
             else{
                 //goes forward to drop off the freight that you start with
-                //robot.drive.moveInches(.5,16);
+                robot.drive.moveInches(.5,24);
+                robot.outakeArm.runArmToPosition(robot.outakeArm.Level3);
+                robot.drive.spinRightWithIMUV2(38, .25);
 
-                robot.drive.spinRightWithIMUV2(90,.25);
-                //robot.drive.moveBackInches(.5,16);
-                //robot.spinner.spinOnce();
-                /*
+                robot.drive.moveInches(.5,11);
+                robot.outakeArm.spinnerOutput();
+                teamUtil.pause(2000);
+                robot.outakeArm.spinnerStop();
+                robot.outakeArm.runArmToPosition(robot.outakeArm.Level3);
+                robot.drive.moveBackInches(.5,9);
+                robot.drive.spinRightWithIMUV2(35,.25);
+                robot.drive.moveBackInches(.5,15);
+
 
                 //drops off the freight that you start with
+                /*
                 robot.drive.moveInches(.5,9);
                 //goes to the carousel
                 robot.drive.moveBackInches(.5, 2);
-                robot.drive.spinLeftWithIMU(80,.5);
+                robot.drive.spinLeftWithIMUV2(80,.5);
                 robot.drive.moveInches(.5,14);
                 //spins the duck off of the carousel
                 robot.spinner.spinOnce();
@@ -72,7 +80,6 @@ public class AutomousopMode extends LinearOpMode {
                 robot.drive.moveBackInches(.5,16);
                 robot.drive.spinRightWithIMU(70, .5);
                 */
-
         }
 
 

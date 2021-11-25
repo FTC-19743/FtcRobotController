@@ -22,6 +22,7 @@ public class CarouselSpinner {
     public CarouselSpinner(){
         teamUtil.log("Constructing Spinner");
         hardwareMap = teamUtil.theOpMode.hardwareMap;
+        telemetry = teamUtil.theOpMode.telemetry;
     }
 
 
@@ -42,8 +43,8 @@ public class CarouselSpinner {
     }
 
     public void spinnerTelemetry(){
-        telemetry.addLine("Spinner speed: " + spinner.getPower());
-        //telemetry.addLine("spinner encoder position: " + spinner.getCurrentPosition());
+        telemetry.addData("Spinner Speed","Motor Speed:%f",spinner.getPower());
+        telemetry.addData("Spinner Position","Motor Position:%d",spinner.getCurrentPosition());
     }
 
     public void off(){

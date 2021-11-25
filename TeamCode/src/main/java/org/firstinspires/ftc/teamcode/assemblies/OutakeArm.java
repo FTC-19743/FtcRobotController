@@ -14,10 +14,10 @@ public class OutakeArm {
     Telemetry telemetry;
     public DcMotorEx armMotor;
     public CRServo spinnerServo;
-    public static int Ground = 0;
-    public static int Level1 = 0;
-    public static int Level2 = 0;
-    public static int Level3 = 0;
+    public static int Ground = 580;
+    public static int Level1 = 516;
+    public static int Level2 = 390;
+    public static int Level3 = 248;
     public static int ArmSpeed = 400;
 
     public OutakeArm(){
@@ -32,20 +32,24 @@ public class OutakeArm {
         spinnerServo = hardwareMap.get(CRServo.class,"outake_spinner");
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
     }
     public void writeTelemetry(){
         telemetry.addData("Outake","Arm Position:%d",armMotor.getCurrentPosition());
+        telemetry.addData("Outake Speed","Arm Speed:%f",armMotor.getPower());
+
     }
 
     public void resetArm(){
-        armMotor.setPower(-0.1);
-        int encoderPosition = armMotor.getTargetPosition();
+        int encoderPosition = armMotor.getCurrentPosition();
+        armMotor.setPower(-0.3);
         teamUtil.pause(500);
-        while(armMotor.getTargetPosition()!=encoderPosition){
-            encoderPosition = armMotor.getTargetPosition();
-            teamUtil.pause(100);
+        while(armMotor.getCurrentPosition()!=encoderPosition){
+            encoderPosition = armMotor.getCurrentPosition();
+            teamUtil.pause(250);
         }
         armMotor.setPower(0);
+        teamUtil.pause(500);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
@@ -66,11 +70,11 @@ public class OutakeArm {
     }
 
     public void spinnerIntake(){
-        spinnerServo.setPower(1);
+        spinnerServo.setPower(-1);
     }
 
     public void spinnerOutput(){
-        spinnerServo.setPower(-1);
+        spinnerServo.setPower(1);
     }
 
     public void spinnerStop(){
