@@ -20,6 +20,7 @@ public class Robot {
     public TwoWheelDrive drive;
     public OutakeArm outakeArm;
     public CarouselSpinner spinner;
+    public TSEDetector detector;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public Robot() {
@@ -49,6 +50,7 @@ public class Robot {
         outakeArm.init();
         outakeArm.resetArm();
         spinner.init();
+        detector.initialize();
     }
 
 }

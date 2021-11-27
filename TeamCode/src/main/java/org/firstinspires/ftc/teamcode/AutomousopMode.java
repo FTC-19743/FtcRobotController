@@ -27,6 +27,11 @@ public class AutomousopMode extends LinearOpMode {
 
         robot = new Robot();
         robot.init();
+        robot.detector.activate();
+        while(!opModeIsActive()){
+            teamUtil.pause(250);
+            robot.detector.detect();
+        }
 
         waitForStart();
         //code for blue alliance
