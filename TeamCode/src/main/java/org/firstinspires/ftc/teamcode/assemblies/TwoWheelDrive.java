@@ -407,7 +407,7 @@ public class TwoWheelDrive {
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double initialIMU = getIMUHeading();
-        double IMUNeeded = initialIMU-degrees;
+        double IMUNeeded = initialIMU-degrees+8;
         String initialIMUToPrint = String.format("%.2f", initialIMU);
         String IMUNeededToPrint = String.format("%.2f", IMUNeeded);
         detailLog("Initial IMU: " + initialIMUToPrint);
@@ -455,8 +455,11 @@ public class TwoWheelDrive {
                 rightDrive.setPower(-1*speed);
                 String currentIMUToPrint = String.format("%.2f", initialIMU);
                 detailLog(currentIMUToPrint);
+                currentIMU=getIMUHeading();
 
             }
+            leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             leftDrive.setPower(0);
             rightDrive.setPower(0);
 
@@ -470,7 +473,10 @@ public class TwoWheelDrive {
                 rightDrive.setPower(-1*speed);
                 String currentIMUToPrint = String.format("%.2f", currentIMU);
                 detailLog(currentIMUToPrint);
+                currentIMU=getIMUHeading();
             }
+            leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             leftDrive.setPower(0);
             rightDrive.setPower(0);
         }
@@ -553,7 +559,7 @@ public class TwoWheelDrive {
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double initialIMU = getIMUHeading();
-        double IMUNeeded = initialIMU+degrees;
+        double IMUNeeded = initialIMU+degrees-8;
         String initialIMUToPrint = String.format("%.2f", initialIMU);
         String IMUNeededToPrint = String.format("%.2f", IMUNeeded);
         detailLog("Initial IMU: " + initialIMUToPrint);
@@ -600,8 +606,11 @@ public class TwoWheelDrive {
                 rightDrive.setPower(speed);
                 String currentIMUToPrint = String.format("%.2f", initialIMU);
                 detailLog(currentIMUToPrint);
+                currentIMU=getIMUHeading();
 
             }
+            leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             leftDrive.setPower(0);
             rightDrive.setPower(0);
 
@@ -615,7 +624,10 @@ public class TwoWheelDrive {
                 rightDrive.setPower(speed);
                 String currentIMUToPrint = String.format("%.2f", initialIMU);
                 detailLog(currentIMUToPrint);
+                currentIMU=getIMUHeading();
             }
+            leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             leftDrive.setPower(0);
             rightDrive.setPower(0);
         }

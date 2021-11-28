@@ -28,9 +28,18 @@ public class AutomousopMode extends LinearOpMode {
         robot = new Robot();
         robot.init();
         robot.detector.activate();
+        int lastDetection = 0;
+        int newDetection;
         while(!opModeIsActive()){
             teamUtil.pause(250);
-            robot.detector.detect();
+            newDetection = robot.detector.detect();
+            if(newDetection>0){
+                lastDetection=newDetection;
+            }
+            telemetry.addData("Detection Value: ",lastDetection);
+            telemetry.update();
+
+
         }
 
         waitForStart();
@@ -57,6 +66,26 @@ public class AutomousopMode extends LinearOpMode {
             }
             //code for red alliance
             else{
+                if(lastDetection == 1){
+
+                    robot.drive.moveInches(.3,34);
+                    //teamUtil.pause(500);
+                    robot.drive.spinRightWithIMUV2(90,.05);
+
+                    robot.drive.moveInches(.65,1.75);
+
+                    robot.outakeArm.runArmToPosition(robot.outakeArm.Level1);
+                    teamUtil.pause(1500);
+                    robot.outakeArm.spinnerOutput();
+
+                    teamUtil.pause(2000);
+                    robot.outakeArm.spinnerStop();
+                    robot.drive.moveBackInches(.3,40);
+                    teamUtil.pause(5000);
+
+
+                }
+                /*
                 //goes forward to drop off the freight that you start with
                 robot.drive.moveInches(.5,24);
                 robot.outakeArm.runArmToPosition(robot.outakeArm.Level3);

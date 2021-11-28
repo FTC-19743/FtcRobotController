@@ -31,37 +31,9 @@ public class TSEDetector {
     private static final String VUFORIA_KEY =
             "Aek7e0f/////AAABmQVqFuJnNEFosHXJFebMMqiNWhdbJ0N0rL1VvGfQVwrRgnvjoNhY8h5V5vgtui/tirazPIaHKxq5qvd5FVFA9HygGZF4G5rDWkOg7r0FdpKlFr2lDArT2XPAcBCnTCVdqkbY6ri0/xsLoWpHpQY6pYrRtDpOxLdso0xmPdGPzO3XHkEvcLuYhb/QJyAv/Svx7oSuxfcE+mv5LHQcdsdC1C3WEhWLcF8QrmQFzKR4yQRjl2ieRaQkYyLr/ATIBvkIZdK5aYfGhW4aCRZWoBg5xoifJITuO68EK9up2mDb2ETM+BuXS4d0RqWKpuVI7u6f0RiOrrlmUHtQhhuHPxkjdPG6812jKMnH+qDrBlLTJlUV";
 
-
     private VuforiaLocalizer vuforia;
 
     private TFObjectDetector tfod;
-
-    private void initVuforia() {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
-
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
-    }
-
-
-    private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.8f;
-        tfodParameters.isModelTensorFlow2 = true;
-        tfodParameters.inputSize = 320;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
-    }
 
     HardwareMap hardwareMap;
     Telemetry telemetry;
@@ -69,6 +41,7 @@ public class TSEDetector {
     public TSEDetector(){
         teamUtil.log("Constructing Duck Detector");
         hardwareMap = teamUtil.theOpMode.hardwareMap;
+        telemetry = teamUtil.theOpMode.telemetry;
     }
     public void writeTelemetry(){
     }
@@ -77,9 +50,6 @@ public class TSEDetector {
 
         initVuforia();
         initTfod();
-
-
-
 
 
     }
@@ -104,22 +74,49 @@ public class TSEDetector {
         //middle is 2
         //right is 3
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-        if (updatedRecognitions != null) {
-            telemetry.addData("# Object Detected", updatedRecognitions.size());
-            // step through the list of recognitions and display boundary info.
-            int i = 0;
-            for (Recognition recognition : updatedRecognitions) {
-                telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                        recognition.getLeft(), recognition.getTop());
-                telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                        recognition.getRight(), recognition.getBottom());
-                i++;
-            }
-            telemetry.update();
-
+        if (updatedRecognitions == null) {
+            return 0;
         }
-        return 1;
+        else{
+            for (Recognition recognition : updatedRecognitions) {
+                if (recognition.getLabel() == LABELS[2]) {
+                    if (recognition.getLeft() > 150) {
+                        return 3;
+                    } else {
+                        return 2;
+                    }
+                }
+            }
+            return 1;
+        }
     }
+
+    private void initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+    }
+
+
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minResultConfidence = 0.6f;
+        tfodParameters.isModelTensorFlow2 = true;
+        tfodParameters.inputSize = 320;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+    }
+
 
 }

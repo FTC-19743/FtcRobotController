@@ -29,6 +29,7 @@ public class Robot {
         drive = new TwoWheelDrive();
         outakeArm = new OutakeArm();
         spinner = new CarouselSpinner();
+        detector = new TSEDetector();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         //These are the parameters that the imu uses in the code to name and keep track of the data
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
