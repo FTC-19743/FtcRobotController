@@ -55,6 +55,8 @@ public class TwoWheelDrive {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     public static void detailLog(String logString){
         RobotLog.d("DetailLOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
@@ -115,6 +117,19 @@ public class TwoWheelDrive {
         // Send calculated power to wheels
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
+    }
+
+    public void motorsOn(double power){
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDrive.setPower(power);
+        rightDrive.setPower(power);
+    }
+
+
+    public void motorsOff(){
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -417,11 +432,11 @@ public class TwoWheelDrive {
         //IMU Diagram Doc: https://docs.google.com/document/d/1RI6dZkmHRWhUBy-ZgONwAEO7AxOb_vjcoX40VSjJYjg/edit
         if(IMUNeeded<-180){
             double currentIMU = getIMUHeading();
-            while(currentIMU!=179.999999){
+            while(currentIMU<0){
                 currentIMU=getIMUHeading();
                 leftDrive.setPower(speed);
                 rightDrive.setPower(-1*speed);
-                String currentIMUToPrint = String.format("%.2f", initialIMU);
+                String currentIMUToPrint = String.format("%.2f", currentIMU);
                 detailLog(currentIMUToPrint);
             }
             leftDrive.setPower(0);
@@ -443,14 +458,17 @@ public class TwoWheelDrive {
             double degreesLeft = degrees-degreesTraveled;
             double IMUNeeded2 = 179.999999-degreesLeft;
             String degreesTraveledToPrint = String.format("%.2f", degreesTraveled);
+            detailLog(degreesTraveledToPrint);
             String degreesLeftToPrint = String.format("%.2f", degreesLeft);
+            detailLog(degreesLeftToPrint);
+
             String IMUNeeded2ToPrint = String.format("%.2f", IMUNeeded2);
-            detailLog("Degrees Traveled: " + degreesTraveledToPrint);
-            detailLog("Degrees Left To Travel " + degreesLeftToPrint);
-            detailLog("IMU needed as robot enters left hemisphere: " + IMUNeeded2ToPrint);
+
+
+            detailLog(IMUNeeded2ToPrint);
 
             while(currentIMU>IMUNeeded2){
-                currentIMU=getIMUHeading();
+                //currentIMU=getIMUHeading();
                 leftDrive.setPower(speed);
                 rightDrive.setPower(-1*speed);
                 String currentIMUToPrint = String.format("%.2f", initialIMU);
@@ -468,7 +486,7 @@ public class TwoWheelDrive {
         else{
             double currentIMU = getIMUHeading();
             while(currentIMU>IMUNeeded){
-                currentIMU=getIMUHeading();
+                //currentIMU=getIMUHeading();
                 leftDrive.setPower(speed);
                 rightDrive.setPower(-1*speed);
                 String currentIMUToPrint = String.format("%.2f", currentIMU);
