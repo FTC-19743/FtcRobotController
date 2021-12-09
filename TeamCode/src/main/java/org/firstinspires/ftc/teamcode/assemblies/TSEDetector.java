@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
 import java.util.List;
+import java.util.logging.StreamHandler;
 
 public class TSEDetector {
 
@@ -20,10 +21,8 @@ public class TSEDetector {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
 
-    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_DM.tflite";
     private static final String[] LABELS = {
-            "Ball",
-            "Cube",
             "Duck",
             "Marker"
     };
@@ -73,14 +72,15 @@ public class TSEDetector {
         //left is 1
         //middle is 2
         //right is 3
+        int threshold = teamUtil.alliance == teamUtil.Alliance.RED ? 150 : 300;
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
         if (updatedRecognitions == null) {
             return 0;
         }
         else{
             for (Recognition recognition : updatedRecognitions) {
-                if (recognition.getLabel() == LABELS[2]) {
-                    if (recognition.getLeft() > 150) {
+                if (recognition.getLabel() == LABELS[0]) {
+                    if (recognition.getLeft() > threshold) {
                         return 3;
                     } else {
                         return 2;

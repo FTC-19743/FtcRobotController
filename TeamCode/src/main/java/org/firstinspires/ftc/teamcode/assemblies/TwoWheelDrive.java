@@ -586,7 +586,7 @@ public class TwoWheelDrive {
         //IMU Diagram Doc: https://docs.google.com/document/d/1RI6dZkmHRWhUBy-ZgONwAEO7AxOb_vjcoX40VSjJYjg/edit
         if(IMUNeeded>180){
             double currentIMU = getIMUHeading();
-            while(currentIMU!=179.999){
+            while(currentIMU>0){
                 currentIMU=getIMUHeading();
                 leftDrive.setPower(-1*speed);
                 rightDrive.setPower(speed);

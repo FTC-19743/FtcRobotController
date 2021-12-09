@@ -15,7 +15,7 @@ public class OutakeArm {
     public DcMotorEx armMotor;
     public CRServo spinnerServo;
     public static int Ground = 580;
-    public static int Level1 = 490;
+    public static int Level1 = 465;
     public static int Level2 = 370;
     public static int Level3 = 248;
     public static int Top = 10;

@@ -75,22 +75,24 @@ public class TeleopMode extends LinearOpMode {
                 robot.outakeArm.spinnerStop();
             }
             if(gamepad2.dpad_down==true){
-                while(gamepad2.dpad_down){
-                }
+                //while(gamepad2.dpad_down){ }
                 robot.outakeArm.runArmToPosition(robot.outakeArm.Level1);
             } else if(gamepad2.dpad_left==true||gamepad2.dpad_right==true){
-                while(gamepad2.dpad_left||gamepad2.dpad_right){
-                }
+                //while(gamepad2.dpad_left||gamepad2.dpad_right){ }
                 robot.outakeArm.runArmToPosition(robot.outakeArm.Level2);
             } else if(gamepad2.dpad_up==true){
-                while(gamepad2.dpad_up){
-                }
+                //while(gamepad2.dpad_up){ }
                 robot.outakeArm.runArmToPosition(robot.outakeArm.Level3);
             } else if(gamepad2.a==true){
-                while(gamepad2.a){
-                }
+                //while(gamepad2.a){ }
                 robot.outakeArm.runArmToPosition(robot.outakeArm.Ground);
-            } //else if(gamepad2.y==true){
+
+            } else if(gamepad2.y == true) {
+                //while(gamepad2.y){ }
+                robot.outakeArm.runArmToPosition(robot.outakeArm.Top);
+            }
+
+            //else if(gamepad2.y==true){
                 //while(gamepad2.y){
                // }
 
@@ -99,11 +101,10 @@ public class TeleopMode extends LinearOpMode {
                // robot.drive.manualControl(0,0);
            // }
             if(gamepad2.right_bumper==true) {
-                while (gamepad2.right_bumper) {
-                    robot.spinner.on(1);
-                }
+                robot.spinner.on(.75);
+            }
+            else{
                 robot.spinner.off();
-
             }
             robot.outakeArm.writeTelemetry();
             robot.drive.writeTelemetry();
