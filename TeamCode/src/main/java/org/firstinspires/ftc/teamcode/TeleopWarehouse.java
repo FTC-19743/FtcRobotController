@@ -13,8 +13,8 @@ import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Autonomous Red")
-public class AutonomousopModeRed extends LinearOpMode {
+@Autonomous(name="Autonomous Warehouse")
+public class TeleopWarehouse extends LinearOpMode {
     public static void log(String logString) {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
@@ -34,21 +34,10 @@ public class AutonomousopModeRed extends LinearOpMode {
         robot.detector.activate();
         int lastDetection = 0;
         int newDetection;
-        while (!opModeIsActive()) {
-            teamUtil.pause(250);
-            newDetection = robot.detector.detect();
-            if (newDetection > 0) {
-                lastDetection = newDetection;
-            }
-            telemetry.addData("Detection Value: ", lastDetection);
-            telemetry.update();
-
-
-        }
 
 
         waitForStart();
-        robot.doAuto(lastDetection);
-    }
+        robot.drive.moveInches(.3, 20);
 
+    }
 }

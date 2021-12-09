@@ -14,10 +14,10 @@ public class OutakeArm {
     Telemetry telemetry;
     public DcMotorEx armMotor;
     public CRServo spinnerServo;
-    public static int Ground = 580;
-    public static int Level1 = 465;
-    public static int Level2 = 370;
-    public static int Level3 = 248;
+    public static int Ground = 540;
+    public static int Level1 = 500;
+    public static int Level2 = 380;
+    public static int Level3 = 269;
     public static int Top = 10;
     public static int ArmSpeed = 400;
 

@@ -63,7 +63,7 @@ public class Robot {
                 drive.moveInches(.3, 36);
                 //teamUtil.pause(500);
                 if (path == 1) {
-                    outakeArm.runArmToPosition(outakeArm.Level1);
+                    //outakeArm.runArmToPosition(outakeArm.Level1);
                 } else if (path == 2) {
                     outakeArm.runArmToPosition(outakeArm.Level2);
                 } else {
@@ -73,12 +73,14 @@ public class Robot {
                 drive.spinLeftWithIMUV2(90, .1);
 
                 if (path == 1) {
+                    drive.moveBackInches(.5,2);
+                    outakeArm.runArmToPosition(outakeArm.Level1);
+                    teamUtil.pause(2000);
                     drive.moveInches(.25, 2);
-                    //drive.moveInches(.25, 8.5);
                 } else if (path == 2) {
                     drive.moveInches(.25, 5);
                 } else {
-                    drive.moveInches(.25, 9.5);
+                    drive.moveInches(.25, 6.9);
                 }
                 outakeArm.spinnerOutput();
                 teamUtil.pause(1000);
@@ -87,7 +89,7 @@ public class Robot {
 
                 outakeArm.runToTop();
                 if (path == 1) {
-                    drive.moveBackInches(.4, 26.5);
+                    drive.moveBackInches(.4, 25.5);
                     //drive.moveBackInches(.4, 35);
                 } else if (path == 2) {
                     drive.moveBackInches(.4, 29.5);
@@ -102,16 +104,16 @@ public class Robot {
 
                 teamUtil.pause(1000);
                 drive.spinLeftWithIMUV2(32, .1);
-                drive.moveInches(.35, 11.5);
+                drive.moveInches(.35, 12);
                 drive.motorsOn(.05);
-                spinner.on(.75);
-                teamUtil.pause(3100);
+                spinner.on(.55);
+                teamUtil.pause(3600);
                 spinner.off();
                 drive.motorsOff();
                 drive.moveBackInches(.35, 2);
                 drive.spinRightWithIMUV2(40, .25);
 
-                drive.moveBackInches(.35, 19);
+                drive.moveBackInches(.35, 19.5);
 
             }
         }
@@ -124,7 +126,7 @@ public class Robot {
                     drive.moveInches(.3, 36);
                     //teamUtil.pause(500);
                     if (path == 1) {
-                        outakeArm.runArmToPosition(outakeArm.Level1);
+                       // outakeArm.runArmToPosition(outakeArm.Level1);
                     } else if (path == 2) {
                         outakeArm.runArmToPosition(outakeArm.Level2);
                     } else {
@@ -134,11 +136,14 @@ public class Robot {
                     drive.spinRightWithIMUV2(90, .1);
 
                     if (path == 1) {
+                        drive.moveBackInches(.5,2);
+                        outakeArm.runArmToPosition(outakeArm.Level1);
+                        teamUtil.pause(2000);
                         drive.moveInches(.25, 2);
                     } else if (path == 2) {
                         drive.moveInches(.25, 5);
                     } else {
-                        drive.moveInches(.25, 10.5);
+                        drive.moveInches(.25, 6.5);
                     }
                     outakeArm.spinnerOutput();
                     teamUtil.pause(1000);
@@ -147,7 +152,7 @@ public class Robot {
 
                     outakeArm.runToTop();
                     if (path == 1) {
-                        drive.moveBackInches(.4, 26.5);
+                        drive.moveBackInches(.4, 25.5);
                     } else if (path == 2) {
                         drive.moveBackInches(.4, 29.5);
                     } else {
@@ -163,7 +168,7 @@ public class Robot {
                     drive.spinRightWithIMUV2(45, .1);
                     drive.moveInches(.35, 11);
                     drive.motorsOn(.05);
-                    spinner.on(.75);
+                    spinner.on(.55);
                     teamUtil.pause(3100);
                     spinner.off();
                     drive.motorsOff();
@@ -174,6 +179,9 @@ public class Robot {
 
 
             }
+
+
+
 
     }
 }

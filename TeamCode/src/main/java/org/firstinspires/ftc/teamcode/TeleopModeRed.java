@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.assemblies.Robot;
 import org.firstinspires.ftc.teamcode.assemblies.TwoWheelDrive;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
-@TeleOp(name="TeleopMode", group="Linear Opmode")
-public class TeleopMode extends LinearOpMode {
+@TeleOp(name="TeleopModeRed", group="Linear Opmode")
+public class TeleopModeRed extends LinearOpMode {
     public BNO055IMU imu;
 
 
