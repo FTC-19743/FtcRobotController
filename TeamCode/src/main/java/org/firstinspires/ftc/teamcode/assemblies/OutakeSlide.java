@@ -33,7 +33,7 @@ public class OutakeSlide {
     }
 
     public void writeTelemetry(){
-        telemetry.addData("Outake Slider","Slider Position:%d",outakeSlider.getPosition());
+        telemetry.addData("Outake Slider","Slider Position:%f",outakeSlider.getPosition());
     }
 
     public void resetSlider(){
