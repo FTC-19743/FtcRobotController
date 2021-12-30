@@ -19,8 +19,10 @@ public class Robot {
 
     public TwoWheelDrive drive;
     public OutakeArm outakeArm;
+    public OutakeSlide outakeSlide;
     public CarouselSpinner spinner;
     public TSEDetector detector;
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public Robot() {
@@ -28,6 +30,7 @@ public class Robot {
         hardwareMap = teamUtil.theOpMode.hardwareMap;
         drive = new TwoWheelDrive();
         outakeArm = new OutakeArm();
+        outakeSlide = new OutakeSlide();
         spinner = new CarouselSpinner();
         detector = new TSEDetector();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -50,6 +53,8 @@ public class Robot {
         drive.initialize();
         outakeArm.init();
         outakeArm.resetArm();
+        outakeSlide.init();
+        outakeSlide.resetSlider();
         spinner.init();
         detector.initialize();
     }

@@ -109,6 +109,7 @@ public class TeleopModeBlue extends LinearOpMode {
             robot.outakeArm.writeTelemetry();
             robot.drive.writeTelemetry();
             robot.spinner.spinnerTelemetry();
+            robot.outakeSlide.writeTelemetry();
             telemetry.update();
 
 
