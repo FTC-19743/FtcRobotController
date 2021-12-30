@@ -14,12 +14,12 @@ public class OutakeArm {
     Telemetry telemetry;
     public DcMotorEx armMotor;
     public CRServo spinnerServo;
-    public static int Ground = 548;
-    public static int Level1 = 500;
-    public static int Level2 = 380;
-    public static int Level3 = 269;
+    public static int Ground = 0; // was 548
+    public static int Level1 = -495; // was 500
+    public static int Level2 = -1176; // was 380
+    public static int Level3 = -1667; // was 269
     public static int Top = 10;
-    public static int ArmSpeed = 400;
+    public static int ArmSpeed = 2700; // was 400
 
     public OutakeArm(){
         teamUtil.log("Constructing Outake Arm");
@@ -43,7 +43,7 @@ public class OutakeArm {
 
     public void resetArm(){
         int encoderPosition = armMotor.getCurrentPosition();
-        armMotor.setPower(-0.3);
+        armMotor.setPower(0.1);
         teamUtil.pause(500);
         while(armMotor.getCurrentPosition()!=encoderPosition){
             encoderPosition = armMotor.getCurrentPosition();
