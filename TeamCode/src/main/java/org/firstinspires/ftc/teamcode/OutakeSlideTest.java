@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Outake Test")
+@TeleOp(name="OutakeSliderTest", group="Linear Opmode")
 public class OutakeSlideTest extends LinearOpMode {
     public static void log(String logString) {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
@@ -21,26 +21,34 @@ public class OutakeSlideTest extends LinearOpMode {
 
     Robot robot;
 
+
+
     @Override
-
     public void runOpMode() {
-        teamUtil.init(this);
-        teamUtil.alliance = teamUtil.Alliance.RED;
-        teamUtil.telemetry.addLine("Initializing Op Mode...please wait");
-        teamUtil.telemetry.update();
-
-
         robot = new Robot();
         robot.init();
-
-
+        telemetry.addLine("Ready to start");
+        telemetry.update();
 
         waitForStart();
-        //robot.outakeSlide.runSliderToPosition(robot.outakeSlide.Level1);
-        //robot.outakeSlide.runSliderToPosition(robot.outakeSlide.Level2);
-        //robot.outakeSlide.runSliderToPosition(robot.outakeSlide.Level3);
 
 
+        while (opModeIsActive()) {
+            if(gamepad1.dpad_up == true){
+                while(gamepad1.dpad_up){
+                }
+                double positionNeeded = robot.outakeSlide.outakeSlider.getPosition() + .05;
+                robot.outakeSlide.outakeSlider.setPosition(positionNeeded);
+                telemetry.addData("Outake Slider","Slider Position:%f", robot.outakeSlide.outakeSlider.getPosition());
+            }
+            else if(gamepad1.dpad_down == true){
+                while(gamepad1.dpad_down){
+                }
+                double positionNeeded = robot.outakeSlide.outakeSlider.getPosition() - .05;
+                robot.outakeSlide.outakeSlider.setPosition(positionNeeded);
+                telemetry.addData("Outake Slider","Slider Position:%f",robot.outakeSlide.outakeSlider.getPosition());
+            }
+        }
     }
 }
 
