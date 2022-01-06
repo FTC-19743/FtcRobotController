@@ -67,6 +67,26 @@ public class TeleopModeBlue extends LinearOpMode {
                 robot.drive.manualControl(-gamepad1.left_stick_y*2/3, gamepad1.right_stick_x*2/3);
             }
 
+            if(gamepad2.x == true){
+                while(gamepad2.x){
+                }
+                robot.outakeArm.sliderDecrease();
+            }
+
+            if(gamepad2.b == true){
+                while(gamepad2.b){
+                }
+                robot.outakeArm.sliderIncrement();
+            }
+
+            if(gamepad2.left_stick_y < -0.5){
+                robot.outakeArm.runArmUp();
+            }else if(gamepad2.left_stick_y > 0.5){
+                robot.outakeArm.runArmDown();
+            } else{
+                robot.outakeArm.stopArm();
+            }
+
             if(gamepad2.left_trigger > 0){
                 robot.outakeArm.spinnerIntake();
             } else if(gamepad2.right_trigger>0){
@@ -106,10 +126,11 @@ public class TeleopModeBlue extends LinearOpMode {
             else{
                 robot.spinner.off();
             }
+            telemetry.addData("Left Stick Value","Left Stick Value %f",gamepad2.left_stick_y);
             robot.outakeArm.writeTelemetry();
             robot.drive.writeTelemetry();
             robot.spinner.spinnerTelemetry();
-            robot.outakeSlide.writeTelemetry();
+
             telemetry.update();
 
 

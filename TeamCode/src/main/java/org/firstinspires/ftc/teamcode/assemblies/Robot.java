@@ -111,8 +111,8 @@ public class Robot {
                 drive.spinLeftWithIMUV2(32, .1);
                 drive.moveInches(.35, 12);
                 drive.motorsOn(.05);
-                spinner.on(.55);
-                teamUtil.pause(5600);
+                spinner.on(.30);
+                teamUtil.pause(4500);
                 spinner.off();
                 drive.motorsOff();
                 drive.moveBackInches(.35, 2);
@@ -173,8 +173,8 @@ public class Robot {
                     drive.spinRightWithIMUV2(45, .1);
                     drive.moveInches(.35, 11);
                     drive.motorsOn(.05);
-                    spinner.on(.55);
-                    teamUtil.pause(5100);
+                    spinner.on(.30);
+                    teamUtil.pause(4500);
                     spinner.off();
                     drive.motorsOff();
                     drive.spinLeftWithIMUV2(45, .25);
