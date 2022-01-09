@@ -57,7 +57,7 @@ public class TSEDetector {
         if (tfod != null) {
             tfod.activate();
 
-            //tfod.setZoom(1, 16.0/9.0);
+            tfod.setZoom(1.2, 16.0/9.0);
         }
     }
     public void deactivate(){
@@ -111,7 +111,7 @@ public class TSEDetector {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.675f;
+        tfodParameters.minResultConfidence = 0.65f;
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 320;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);

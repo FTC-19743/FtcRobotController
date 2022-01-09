@@ -17,14 +17,20 @@ public class OutakeArm {
     public DcMotorEx armMotor;
     public CRServo spinnerServo;
     public Servo outakeSlider;
-    public static int Ground = 0; // was 548
-    public static int Level1 = -495; // was 500
-    public static int Level2 = -1176; // was 380
-    public static int Level3 = -1667; // was 269
-    public static int Top = 10;
+    public static int Ground = 0;
+    public static int Level1 = 970;
+    public static int Level2 = 2250;
+    public static double Level2SliderPosition = .75;
+    public static int Level3 = 3200;
+    public static int Level3SliderPosition = 0;
+    //public static int Top = 10;
     public static int ArmSpeed = 2700; // was 400
-    public static int MaxPosition =50000; //TODO
-    public static int StallBuffer = 500; //TODO
+    public static int MaxPosition =4000; //max possible position used for TSE
+    public static int StallBuffer = 450; //lift off the stall distance
+    public static int ManualArmIncrement = 50;
+    public static int ArmVelocity = 3000;
+    //public static int Level1WithTelescope = 970;
+
 
     public static void log(String logString) {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
@@ -41,8 +47,9 @@ public class OutakeArm {
         armMotor = hardwareMap.get(DcMotorEx.class, "outake_arm");
         spinnerServo = hardwareMap.get(CRServo.class,"outake_spinner");
         outakeSlider = hardwareMap.get(Servo.class,"outake_slider");
-        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        armMotor.setTargetPosition(armMotor.getCurrentPosition());
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
     }
@@ -54,13 +61,14 @@ public class OutakeArm {
     }
 
     public void resetArm(){
+        outakeSlider.setPosition(1);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         int lastEncoderPosition = armMotor.getCurrentPosition();
-        armMotor.setPower(-.1);
+        armMotor.setPower(-.2);
         teamUtil.pause(250);
         while(armMotor.getCurrentPosition()!=lastEncoderPosition){
             lastEncoderPosition= armMotor.getCurrentPosition();
-            teamUtil.pause(250);
+            teamUtil.pause(50);
         }
         armMotor.setPower(0);
 
@@ -72,13 +80,17 @@ public class OutakeArm {
         }
         armMotor.setPower(0);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         log("Arm Motor Stalled");
+    }
+    public void runArmToPosition(int level){//TODO take method out when no longer referenced
     }
 
     public void runToTop(){
-        runArmToPosition(Top);
+        //runArmToPosition(Top);
     }
-
+    /*
     public void runArmToPosition(int position){
         armMotor.setTargetPosition(position);
 
@@ -94,32 +106,60 @@ public class OutakeArm {
         long currentTime = System.currentTimeMillis() + 5000;
 
     }
+
+     */
+
+    public void runToFirstLevel(){
+        armMotor.setTargetPosition(Level1);
+        armMotor.setVelocity(ArmVelocity);
+        outakeSlider.setPosition(1);
+    }
+
+    public void runToSecondLevel(){
+        armMotor.setTargetPosition(Level2);
+        armMotor.setVelocity(ArmVelocity);
+        outakeSlider.setPosition(Level2SliderPosition);
+    }
+
+    public void runToThirdLevel(){
+        armMotor.setTargetPosition(Level3);
+        armMotor.setVelocity(ArmVelocity);
+        outakeSlider.setPosition(Level3SliderPosition);
+    }
+
+    public void runToGround(){
+        armMotor.setTargetPosition(0);
+        armMotor.setVelocity(ArmVelocity);
+        outakeSlider.setPosition(1);
+    }
+
     public void runArmUp(){
+
         log("running arm up");
-        double currentPosition= armMotor.getCurrentPosition();
-        if(currentPosition>MaxPosition){
-            armMotor.setPower(0);
+
+        int currentPosition= armMotor.getCurrentPosition();
+        if(currentPosition+ManualArmIncrement<MaxPosition){
+            armMotor.setTargetPosition(currentPosition+ManualArmIncrement);
         }
-        else{
-            armMotor.setVelocity(3000);
-        }
+
 
     }
 
     public void runArmDown(){
-        log("running arm down");
-        double currentPosition= armMotor.getCurrentPosition();
-        if(currentPosition==0){
-            armMotor.setPower(0);
-        }
-        else{
-            armMotor.setVelocity(-3000);
+
+        log("running arm up");
+
+        int currentPosition= armMotor.getCurrentPosition();
+        if(currentPosition-ManualArmIncrement>0){
+            armMotor.setTargetPosition(currentPosition-ManualArmIncrement);
         }
 
     }
 
     public void stopArm(){
+        log("Arm Stopped");
         armMotor.setPower(0);
+
     }
 
     public void spinnerIntake(){
