@@ -75,7 +75,7 @@ public class AutoWarehouseRed extends LinearOpMode {
             robot.outakeArm.spinnerStop();
 
 
-            robot.outakeArm.runArmToPosition(robot.outakeArm.Top);
+            //robot.outakeArm.runArmToPosition(robot.outakeArm.Top);
             robot.drive.moveBackInches(.25,8);
             robot.drive.spinLeftWithIMUV2(143,.25);
             robot.drive.moveInches(.35,25);
@@ -96,7 +96,7 @@ public class AutoWarehouseRed extends LinearOpMode {
             robot.outakeArm.spinnerOutput();
             teamUtil.pause(1500);
             robot.outakeArm.spinnerStop();
-            robot.outakeArm.runArmToPosition(robot.outakeArm.Top);
+            //robot.outakeArm.runArmToPosition(robot.outakeArm.Top);
             robot.drive.moveBackInches(.25,8);
             robot.drive.spinLeftWithIMUV2(143,.25);
             robot.drive.moveInches(.35,20);
@@ -114,7 +114,7 @@ public class AutoWarehouseRed extends LinearOpMode {
             robot.outakeArm.spinnerOutput();
             teamUtil.pause(1500);
             robot.outakeArm.spinnerStop();
-            robot.outakeArm.runArmToPosition(robot.outakeArm.Top);
+            //robot.outakeArm.runArmToPosition(robot.outakeArm.Top);
             robot.drive.moveBackInches(.25,10);
 
 

@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.assemblies.Robot;
 import org.firstinspires.ftc.teamcode.assemblies.TwoWheelDrive;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
-@TeleOp(name="TeleopModeRed", group="Linear Opmode")
-public class TeleopModeRed extends LinearOpMode {
+@TeleOp(name="TeleopMode", group="Linear Opmode")
+public class TeleopMode extends LinearOpMode {
     public BNO055IMU imu;
 
 
@@ -59,13 +59,32 @@ public class TeleopModeRed extends LinearOpMode {
             //red is gamepad 2
             String currentIMU = String.format("%.2f", getIMUHeading());
 
-            //log(currentIMU);
+            log(currentIMU);
 
             if(gamepad1.right_bumper == true){
                 robot.drive.manualControl(-gamepad1.left_stick_y, gamepad1.right_stick_x);
             } else{
                 robot.drive.manualControl(-gamepad1.left_stick_y*2/3, gamepad1.right_stick_x*2/3);
             }
+
+            if(gamepad2.x == true){
+                while(gamepad2.x){
+                }
+                robot.outakeArm.sliderDecrease();
+            }
+
+            if(gamepad2.b == true){
+                while(gamepad2.b){
+                }
+                robot.outakeArm.sliderIncrement();
+            }
+
+            if(gamepad2.left_stick_y < -0.5){
+                robot.outakeArm.runArmUp();
+            }else if(gamepad2.left_stick_y > 0.5){
+                robot.outakeArm.runArmDown();
+            }
+
 
             if(gamepad2.left_trigger > 0){
                 robot.outakeArm.spinnerIntake();
@@ -76,40 +95,34 @@ public class TeleopModeRed extends LinearOpMode {
             }
             if(gamepad2.dpad_down==true){
                 //while(gamepad2.dpad_down){ }
-                robot.outakeArm.runArmToPosition(robot.outakeArm.Level1);
+                robot.outakeArm.runToFirstLevel();
             } else if(gamepad2.dpad_left==true||gamepad2.dpad_right==true){
                 //while(gamepad2.dpad_left||gamepad2.dpad_right){ }
-                robot.outakeArm.runArmToPosition(robot.outakeArm.Level2);
+                robot.outakeArm.runToSecondLevel();
             } else if(gamepad2.dpad_up==true){
                 //while(gamepad2.dpad_up){ }
-                robot.outakeArm.runArmToPosition(robot.outakeArm.Level3);
+                robot.outakeArm.runToThirdLevel();
             } else if(gamepad2.a==true){
                 //while(gamepad2.a){ }
-                robot.outakeArm.runArmToPosition(robot.outakeArm.Ground);
+                robot.outakeArm.runToGround();
 
             } else if(gamepad2.y == true) {
                 //while(gamepad2.y){ }
-                robot.outakeArm.runArmToPosition(robot.outakeArm.Top);
+                //robot.outakeArm.runArmToPosition(robot.outakeArm.Top);
             }
 
-            //else if(gamepad2.y==true){
-                //while(gamepad2.y){
-               // }
-
-               // robot.outakeArm.resetArm();
-
-               // robot.drive.manualControl(0,0);
-           // }
             if(gamepad2.right_bumper==true) {
-                robot.spinner.on(.75);
-            }
-            else{
+                robot.spinner.on(-.5);
+            } else  if(gamepad2.left_bumper==true) {
+                robot.spinner.on(.5);
+            } else {
                 robot.spinner.off();
             }
+
             robot.outakeArm.writeTelemetry();
-            robot.drive.writeTelemetry();
-            robot.spinner.spinnerTelemetry();
-            robot.outakeSlide.writeTelemetry();
+            //robot.drive.writeTelemetry();
+            //robot.spinner.spinnerTelemetry();
+
             telemetry.update();
 
 

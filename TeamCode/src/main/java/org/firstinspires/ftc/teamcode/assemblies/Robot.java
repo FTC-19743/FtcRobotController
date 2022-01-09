@@ -52,78 +52,96 @@ public class Robot {
         teamUtil.log("Initializing Robot");
         drive.initialize();
         outakeArm.init();
-        //outakeArm.resetArm();
+        outakeArm.resetArm();
         outakeSlide.init();
         //outakeSlide.resetSlider();
         spinner.init();
-        detector.initialize();
+
     }
-    
+
     public void doAuto(int path) {
         if (teamUtil.alliance == teamUtil.Alliance.BLUE) {
             if (path != 0) {
+                double startingIMU = drive.getIMUHeading();
+                /*
                 outakeArm.spinnerOutput();
                 teamUtil.pause(100);
                 outakeArm.spinnerStop();
-                drive.moveInches(.3, 36);
+
+                 */
+
                 //teamUtil.pause(500);
                 if (path == 1) {
-                    //outakeArm.runArmToPosition(outakeArm.Level1);
+                    outakeArm.runToFirstLevel();
                 } else if (path == 2) {
-                    outakeArm.runArmToPosition(outakeArm.Level2);
+                    outakeArm.runToSecondLevel();
                 } else {
-                    outakeArm.runArmToPosition(outakeArm.Level3);
+                    outakeArm.runToThirdLevel();
                 }
-
-                drive.spinLeftWithIMUV2(90, .1);
+                drive.moveInches(.3, 39);
+                drive.spinLeftWithIMUV2(90, .25);
 
                 if (path == 1) {
-                    drive.moveBackInches(.5,2);
-                    outakeArm.runArmToPosition(outakeArm.Level1);
-                    teamUtil.pause(2000);
-                    drive.moveInches(.25, 2);
+                    drive.moveInches(.25,5.7);
                 } else if (path == 2) {
                     drive.moveInches(.25, 5);
                 } else {
-                    drive.moveInches(.25, 6.9);
+                    drive.moveInches(.25, 6.5);
                 }
+
                 outakeArm.spinnerOutput();
                 teamUtil.pause(1000);
                 outakeArm.spinnerStop();
 
-
-                outakeArm.runToTop();
+                //outakeArm.runToTop();
                 if (path == 1) {
-                    drive.moveBackInches(.4, 25.5);
+                    drive.moveBackInches(.4, 33);
+                    outakeArm.runToGround();
+                    drive.moveBackInches(.25,2);
                     //drive.moveBackInches(.4, 35);
                 } else if (path == 2) {
-                    drive.moveBackInches(.4, 29.5);
+                    drive.moveBackInches(.4, 32);
+                    outakeArm.runToGround();
+                    //drive.moveBackInches(.25,3);
                 } else {
-                    drive.moveBackInches(.4, 34.5);
+                    drive.moveBackInches(.4, 33.5);
+                    outakeArm.runToGround();
+                    //drive.moveBackInches(.25,2);
                 }
 
-                teamUtil.pause(1000);
-                drive.moveInches(.25, 5);
-                drive.spinLeftWithIMUV2(90, .1);
-                drive.moveInches(.35, 28);
+                teamUtil.pause(250);
+                drive.motorsOn(-.25);
+                teamUtil.pause(2000);
+                drive.motorsOff();
+                drive.moveInches(.2, 5);
+                drive.spinRightWithIMUV2(90, .2);
+                drive.moveBackInches(.35, 29);
 
-                teamUtil.pause(1000);
-                drive.spinLeftWithIMUV2(32, .1);
-                drive.moveInches(.35, 12);
-                drive.motorsOn(.05);
-                spinner.on(.30);
+                teamUtil.pause(250);
+                drive.moveBackInches(.1, 4);
+                drive.motorsOn(-.03);
+                spinner.on(.40);
                 teamUtil.pause(4500);
                 spinner.off();
                 drive.motorsOff();
-                drive.moveBackInches(.35, 2);
-                drive.spinRightWithIMUV2(40, .25);
+                double currentIMU = drive.getIMUHeading();
+                double degreesNeeded = currentIMU-startingIMU;
+                if(degreesNeeded<0){
+                    degreesNeeded = degreesNeeded*-1;
+                    drive.spinLeftWithIMUV2(degreesNeeded,.25);
+                }
+                else{
+                    drive.spinRightWithIMUV2(degreesNeeded,.25);
+                }
 
-                drive.moveBackInches(.35, 19.5);
+                drive.moveInches(.35, 19.5);
 
             }
         }
+            /*
             //code for red alliance
             else {
+
                 if (path != 0) {
                     outakeArm.spinnerOutput();
                     teamUtil.pause(100);
@@ -180,13 +198,9 @@ public class Robot {
                     drive.spinLeftWithIMUV2(45, .25);
                     drive.moveBackInches(.35, 17);
 
-                }
-
-
-            }
-
-
-
-
+                 */
     }
 }
+
+
+
