@@ -132,6 +132,21 @@ public class OutakeArm {
         armMotor.setVelocity(ArmVelocity);
         outakeSlider.setPosition(1);
     }
+    public void runToGroundForDucks(){
+        armMotor.setTargetPosition(650);
+        armMotor.setVelocity(ArmVelocity);
+        outakeSlider.setPosition(0);
+    }
+    public void runToSharedHub(){
+        armMotor.setTargetPosition(1690);
+        armMotor.setVelocity(ArmVelocity);
+        outakeSlider.setPosition(0.75);
+    }
+    public void runToCap(){
+        armMotor.setTargetPosition(3999);
+        armMotor.setVelocity(ArmVelocity);
+        outakeSlider.setPosition(0);
+    }
 
     public void runArmUp(){
 
@@ -165,6 +180,8 @@ public class OutakeArm {
     public void spinnerIntake(){
         spinnerServo.setPower(-1);
     }
+
+    public void spinnerIntakeSlow(){spinnerServo.setPower(-.5);}
 
     public void spinnerOutput(){
         spinnerServo.setPower(1);

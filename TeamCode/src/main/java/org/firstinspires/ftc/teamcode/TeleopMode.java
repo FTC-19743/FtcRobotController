@@ -66,7 +66,15 @@ public class TeleopMode extends LinearOpMode {
             } else{
                 robot.drive.manualControl(-gamepad1.left_stick_y*2/3, gamepad1.right_stick_x*2/3);
             }
+            /*
+            if(gamepad2.right_stick_y < -0.5){
+                robot.outakeArm.sliderDecrease();
+            }else if(gamepad2.right_stick_y > 0.5){
+                robot.outakeArm.sliderIncrement();
+            }
 
+             */
+            /*
             if(gamepad2.x == true){
                 while(gamepad2.x){
                 }
@@ -79,24 +87,42 @@ public class TeleopMode extends LinearOpMode {
                 robot.outakeArm.sliderIncrement();
             }
 
+             */
+
             if(gamepad2.left_stick_y < -0.5){
                 robot.outakeArm.runArmUp();
             }else if(gamepad2.left_stick_y > 0.5){
                 robot.outakeArm.runArmDown();
             }
 
+            /*
+            if(gamepad2.left_trigger ==  0||gamepad2.right_trigger==0){
+                robot.outakeArm.spinnerIntakeSlow();
 
-            if(gamepad2.left_trigger > 0){
+            } else if(gamepad2.left_trigger>0){
                 robot.outakeArm.spinnerIntake();
-            } else if(gamepad2.right_trigger>0){
+            }
+            else if(gamepad2.right_trigger>0){
                 robot.outakeArm.spinnerOutput();
             } else {
                 robot.outakeArm.spinnerStop();
             }
+
+             */
+            if(gamepad2.left_trigger>0){
+                robot.outakeArm.spinnerIntake();
+            }
+            else if(gamepad2.right_trigger>0){
+                robot.outakeArm.spinnerOutput();
+            }
+            else{
+                robot.outakeArm.spinnerStop();
+            }
+
             if(gamepad2.dpad_down==true){
                 //while(gamepad2.dpad_down){ }
                 robot.outakeArm.runToFirstLevel();
-            } else if(gamepad2.dpad_left==true||gamepad2.dpad_right==true){
+            } else if(gamepad2.dpad_left==true){
                 //while(gamepad2.dpad_left||gamepad2.dpad_right){ }
                 robot.outakeArm.runToSecondLevel();
             } else if(gamepad2.dpad_up==true){
@@ -109,7 +135,13 @@ public class TeleopMode extends LinearOpMode {
             } else if(gamepad2.y == true) {
                 //while(gamepad2.y){ }
                 //robot.outakeArm.runArmToPosition(robot.outakeArm.Top);
+                robot.outakeArm.runToGroundForDucks();
+            } else if(gamepad2.dpad_right==true){
+                robot.outakeArm.runToSharedHub();
+            } else if(gamepad2.x==true){
+                robot.outakeArm.runToCap();
             }
+
 
             if(gamepad2.right_bumper==true) {
                 robot.spinner.on(-.5);

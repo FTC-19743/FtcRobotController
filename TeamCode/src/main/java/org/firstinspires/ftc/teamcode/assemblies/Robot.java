@@ -21,7 +21,8 @@ public class Robot {
     public OutakeArm outakeArm;
     public OutakeSlide outakeSlide;
     public CarouselSpinner spinner;
-    public TSEDetector detector;
+    //public TSEDetector detector;
+    public OpenCVDetector detector;
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +33,8 @@ public class Robot {
         outakeArm = new OutakeArm();
         outakeSlide = new OutakeSlide();
         spinner = new CarouselSpinner();
-        detector = new TSEDetector();
+        //detector = new TSEDetector();
+        detector = new OpenCVDetector();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         //These are the parameters that the imu uses in the code to name and keep track of the data
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -82,7 +84,7 @@ public class Robot {
                 drive.spinLeftWithIMUV2(90, .25);
 
                 if (path == 1) {
-                    drive.moveInches(.25,5.7);
+                    drive.moveInches(.25, 5.7);
                 } else if (path == 2) {
                     drive.moveInches(.25, 5);
                 } else {
@@ -97,7 +99,6 @@ public class Robot {
                 if (path == 1) {
                     drive.moveBackInches(.4, 33);
                     outakeArm.runToGround();
-                    drive.moveBackInches(.25,2);
                     //drive.moveBackInches(.4, 35);
                 } else if (path == 2) {
                     drive.moveBackInches(.4, 32);
@@ -125,25 +126,97 @@ public class Robot {
                 spinner.off();
                 drive.motorsOff();
                 double currentIMU = drive.getIMUHeading();
-                double degreesNeeded = currentIMU-startingIMU;
-                if(degreesNeeded<0){
-                    degreesNeeded = degreesNeeded*-1;
-                    drive.spinLeftWithIMUV2(degreesNeeded,.25);
-                }
-                else{
-                    drive.spinRightWithIMUV2(degreesNeeded,.25);
+                double degreesNeeded = currentIMU - startingIMU;
+                if (degreesNeeded < 0) {
+                    degreesNeeded = degreesNeeded * -1;
+                    drive.spinLeftWithIMUV2(degreesNeeded, .25);
+                } else {
+                    drive.spinRightWithIMUV2(degreesNeeded, .25);
                 }
 
                 drive.moveInches(.35, 19.5);
 
             }
         }
-            /*
-            //code for red alliance
-            else {
 
-                if (path != 0) {
-                    outakeArm.spinnerOutput();
+        //code for red alliance
+        else {
+
+            if (path != 0) {
+                double startingIMU = drive.getIMUHeading();
+
+                // outakeArm.spinnerOutput();
+                // teamUtil.pause(100);
+                // outakeArm.spinnerStop();
+
+
+                //teamUtil.pause(500);
+                if (path == 1) {
+                    outakeArm.runToFirstLevel();
+                } else if (path == 2) {
+                    outakeArm.runToSecondLevel();
+                } else {
+                    outakeArm.runToThirdLevel();
+                }
+                drive.moveInches(.3, 39);
+                drive.spinRightWithIMUV2(90, .25);
+
+                if (path == 1) {
+                    drive.moveInches(.25, 5.7);
+                } else if (path == 2) {
+                    drive.moveInches(.25, 5);
+                } else {
+                    drive.moveInches(.25, 6.5);
+                }
+
+                outakeArm.spinnerOutput();
+                teamUtil.pause(1000);
+                outakeArm.spinnerStop();
+
+                //outakeArm.runToTop();
+                if (path == 1) {
+                    drive.moveBackInches(.4, 33);
+                    outakeArm.runToGround();
+                    drive.moveBackInches(.25, 2);
+                    //drive.moveBackInches(.4, 35);
+                } else if (path == 2) {
+                    drive.moveBackInches(.4, 32);
+                    outakeArm.runToGround();
+                    //drive.moveBackInches(.25,3);
+                } else {
+                    drive.moveBackInches(.4, 33.5);
+                    outakeArm.runToGround();
+                    //drive.moveBackInches(.25,2);
+                }
+
+                teamUtil.pause(250);
+                drive.motorsOn(-.25);
+                teamUtil.pause(2000);
+                drive.motorsOff();
+                drive.moveInches(.2, 10);
+                drive.spinLeftWithIMUV2(90, .2);
+                drive.moveBackInches(.35, 32);
+                //Turn towards carousel
+                drive.spinRightWithIMUV2(60,.2);
+                teamUtil.pause(250);
+                drive.moveBackInches(.1, 6);
+                drive.motorsOn(-.02);
+                spinner.on(.40);
+                teamUtil.pause(4500);
+                spinner.off();
+                drive.motorsOff();
+                double currentIMU = drive.getIMUHeading();
+                double degreesNeeded = currentIMU + startingIMU;
+                if (degreesNeeded < 0) {
+                    degreesNeeded = degreesNeeded * -1;
+                    drive.spinLeftWithIMUV2(degreesNeeded, .25);
+                } else {
+                    drive.spinRightWithIMUV2(degreesNeeded, .25);
+                }
+
+                drive.moveInches(.35, 22);
+        /*
+        outakeArm.spinnerOutput();
                     teamUtil.pause(100);
                     outakeArm.spinnerStop();
                     drive.moveInches(.3, 36);
@@ -199,6 +272,8 @@ public class Robot {
                     drive.moveBackInches(.35, 17);
 
                  */
+            }
+        }
     }
 }
 

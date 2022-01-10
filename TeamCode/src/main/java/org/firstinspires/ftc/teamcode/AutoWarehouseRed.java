@@ -65,9 +65,9 @@ public class AutoWarehouseRed extends LinearOpMode {
 
 
         if(lastDetection==1){
+            robot.outakeArm.runToThirdLevel();
             robot.drive.moveInches(.35,17);
             robot.drive.spinLeftWithIMUV2(37,.15);
-            robot.outakeArm.runArmToPosition(robot.outakeArm.Level3);
             teamUtil.pause(1750);
             robot.drive.moveInches(.25,8.75);
             robot.outakeArm.spinnerOutput();
@@ -75,22 +75,25 @@ public class AutoWarehouseRed extends LinearOpMode {
             robot.outakeArm.spinnerStop();
 
 
+
             //robot.outakeArm.runArmToPosition(robot.outakeArm.Top);
             robot.drive.moveBackInches(.25,8);
             robot.drive.spinLeftWithIMUV2(143,.25);
+            robot.outakeArm.runToSecondLevel();
             robot.drive.moveInches(.35,25);
             robot.drive.spinRightWithIMUV2(95,.25);
             robot.drive.moveBackInches(.35,38);
+            robot.outakeArm.runToGround();
 
 
 
 
 
         } else if(lastDetection==2){
+            robot.outakeArm.runToFirstLevel();
             robot.drive.moveInches(.35,17);
             robot.drive.spinLeftWithIMUV2(37,.15);
             robot.drive.moveBackInches(.25,1.5);
-            robot.outakeArm.runArmToPosition(robot.outakeArm.Level1);
             teamUtil.pause(1750);
             robot.drive.moveInches(.25,3.5);
             robot.outakeArm.spinnerOutput();
@@ -106,9 +109,9 @@ public class AutoWarehouseRed extends LinearOpMode {
 
 
         } else{
+            robot.outakeArm.runToSecondLevel();
             robot.drive.moveInches(.35,17);
             robot.drive.spinLeftWithIMUV2(37,.15);
-            robot.outakeArm.runArmToPosition(robot.outakeArm.Level2);
             teamUtil.pause(1750);
             robot.drive.moveInches(.25,5.5);
             robot.outakeArm.spinnerOutput();

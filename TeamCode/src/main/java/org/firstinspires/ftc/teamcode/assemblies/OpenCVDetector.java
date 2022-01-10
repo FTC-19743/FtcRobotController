@@ -42,6 +42,8 @@ public class OpenCVDetector {
 
     public void initialize() {
         teamUtil.log("Initializing OpenCVDetector");
+        hardwareMap = teamUtil.theOpMode.hardwareMap;
+        telemetry = teamUtil.telemetry;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         webcam.setPipeline(TSEPipe);
@@ -79,10 +81,10 @@ public class OpenCVDetector {
         //right is 3
         int threshold;
         if(teamUtil.alliance == teamUtil.Alliance.BLUE) {
-            threshold = 500;
+            threshold = 515;
         }
         else{
-            threshold = 600;
+            threshold = 560;
         }
         int midpoint = TSEPipe.getMidpoint();
         telemetry.addLine("Midpoint: "+midpoint);
