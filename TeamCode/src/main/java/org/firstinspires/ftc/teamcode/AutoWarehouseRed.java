@@ -61,6 +61,8 @@ public class AutoWarehouseRed extends LinearOpMode {
 
 
         waitForStart();
+        double startingIMU = robot.drive.getIMUHeading();
+
 
 
         if (lastDetection == 2) {
@@ -84,6 +86,28 @@ public class AutoWarehouseRed extends LinearOpMode {
         robot.drive.spinRightWithIMUV2(115,.3);
         robot.outakeArm.runToSharedHub();
         robot.drive.moveInches(.45,40);
+
+        //FROM HERE BELOW IS EXPERIMENTAL; PICKING UP FREIGHT CODE
+        double degreesNeeded = startingIMU+45;
+        //double degreesNeededInverted = degreesNeeded*-1;
+        robot.outakeArm.runToGround();
+        robot.drive.spinLeftWithIMUV2(degreesNeeded, .25);
+        robot.outakeArm.spinnerIntake();
+        robot.drive.moveInches(.25,15);
+        robot.outakeArm.spinnerStop();
+        robot.outakeArm.runToThirdLevel();
+        robot.drive.moveBackInches(.25,15);
+        robot.drive.spinRightWithIMUV2(135,.25);
+        robot.drive.moveInches(.45,40);
+        robot.drive.spinRightWithIMUV2(60,.25);
+        robot.drive.moveInches(.4,5);
+        robot.outakeArm.spinnerOutput();
+        teamUtil.pause(1000);
+        robot.outakeArm.spinnerStop();
+        robot.drive.moveBackInches(.35,6);
+        robot.drive.spinRightWithIMUV2(120,.4);
+        robot.drive.moveInches(.45,40);
+        robot.outakeArm.runToGround();
 
 
     }
