@@ -18,15 +18,19 @@ public class OutakeArm {
     public CRServo spinnerServo;
     public Servo outakeSlider;
     public static int Ground = 0;
-    public static int Level1 = 970;
-    public static int Level2 = 2250;
+    public static int Level1 = 1050;
+    public static int Level2 = 2460;
     public static double Level2SliderPosition = .75;
-    public static int Level3 = 3200;
+    public static int Level3 = 3375;
     public static int Level3SliderPosition = 0;
+    public static int SharedHubLevel = 1575;
+    public static int CapLevel = 3890;
+    public static int DuckGroundLevel = 610;
+    public static int TSEIntakeLevel = 730;
     //public static int Top = 10;
     public static int ArmSpeed = 2700; // was 400
     public static int MaxPosition =4000; //max possible position used for TSE
-    public static int StallBuffer = 450; //lift off the stall distance
+    public static int StallBuffer = 600; //lift off the stall distance
     public static int ManualArmIncrement = 50;
     public static int ArmVelocity = 3000;
     //public static int Level1WithTelescope = 970;
@@ -84,8 +88,7 @@ public class OutakeArm {
 
         log("Arm Motor Stalled");
     }
-    public void runArmToPosition(int level){//TODO take method out when no longer referenced
-    }
+
 
     public void runToTop(){
         //runArmToPosition(Top);
@@ -115,15 +118,19 @@ public class OutakeArm {
         outakeSlider.setPosition(1);
     }
 
+
     public void runToSecondLevel(){
         armMotor.setTargetPosition(Level2);
         armMotor.setVelocity(ArmVelocity);
+
         outakeSlider.setPosition(Level2SliderPosition);
     }
 
     public void runToThirdLevel(){
         armMotor.setTargetPosition(Level3);
         armMotor.setVelocity(ArmVelocity);
+
+
         outakeSlider.setPosition(Level3SliderPosition);
     }
 
@@ -133,21 +140,50 @@ public class OutakeArm {
         outakeSlider.setPosition(1);
     }
     public void runToGroundForDucks(){
-        armMotor.setTargetPosition(650);
+        armMotor.setTargetPosition(DuckGroundLevel);
         armMotor.setVelocity(ArmVelocity);
+
         outakeSlider.setPosition(0);
     }
     public void runToSharedHub(){
-        armMotor.setTargetPosition(1690);
+        armMotor.setTargetPosition(SharedHubLevel);
         armMotor.setVelocity(ArmVelocity);
-        outakeSlider.setPosition(0.75);
+
+        outakeSlider.setPosition(0.70);
     }
     public void runToCap(){
-        armMotor.setTargetPosition(3999);
+        armMotor.setTargetPosition(CapLevel);
         armMotor.setVelocity(ArmVelocity);
+
         outakeSlider.setPosition(0);
     }
+    public void runToTSELevel(){
+        armMotor.setTargetPosition(TSEIntakeLevel);
+        armMotor.setVelocity(ArmVelocity);
+        outakeSlider.setPosition(0);
 
+    }
+
+    public void runToFirstLevelAuto(){
+        armMotor.setTargetPosition(Level1);
+        armMotor.setVelocity(ArmVelocity);
+        teamUtil.pause(750);
+        outakeSlider.setPosition(1);
+    }
+
+    public void runToSecondLevelAuto(){
+        armMotor.setTargetPosition(Level2);
+        armMotor.setVelocity(ArmVelocity);
+        teamUtil.pause(750);
+        outakeSlider.setPosition(Level2SliderPosition);
+    }
+
+    public void runToThirdLevelAuto(){
+        armMotor.setTargetPosition(Level3);
+        armMotor.setVelocity(ArmVelocity);
+        teamUtil.pause(750);
+        outakeSlider.setPosition(Level3SliderPosition);
+    }
     public void runArmUp(){
 
         log("running arm up");

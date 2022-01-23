@@ -92,7 +92,7 @@ public class TwoWheelDrive {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    double getIMUHeading() {
+    public double getIMUHeading() {
         Orientation anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         return (anglesCurrent.firstAngle);

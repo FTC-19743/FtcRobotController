@@ -74,11 +74,11 @@ public class Robot {
 
                 //teamUtil.pause(500);
                 if (path == 1) {
-                    outakeArm.runToFirstLevel();
+                    outakeArm.runToFirstLevelAuto();
                 } else if (path == 2) {
-                    outakeArm.runToSecondLevel();
+                    outakeArm.runToSecondLevelAuto();
                 } else {
-                    outakeArm.runToThirdLevel();
+                    outakeArm.runToThirdLevelAuto();
                 }
                 drive.moveInches(.3, 39);
                 drive.spinLeftWithIMUV2(90, .25);
@@ -86,7 +86,7 @@ public class Robot {
                 if (path == 1) {
                     drive.moveInches(.25, 5.7);
                 } else if (path == 2) {
-                    drive.moveInches(.25, 5);
+                    drive.moveInches(.25, 5.75);
                 } else {
                     drive.moveInches(.25, 6.5);
                 }
@@ -119,10 +119,10 @@ public class Robot {
                 drive.moveBackInches(.35, 29);
 
                 teamUtil.pause(250);
-                drive.moveBackInches(.1, 4);
+
                 drive.motorsOn(-.03);
                 spinner.on(.40);
-                teamUtil.pause(4500);
+                teamUtil.pause(5500);
                 spinner.off();
                 drive.motorsOff();
                 double currentIMU = drive.getIMUHeading();
@@ -134,7 +134,7 @@ public class Robot {
                     drive.spinRightWithIMUV2(degreesNeeded, .25);
                 }
 
-                drive.moveInches(.35, 19.5);
+                drive.moveInches(.35, 19);
 
             }
         }
@@ -152,17 +152,17 @@ public class Robot {
 
                 //teamUtil.pause(500);
                 if (path == 1) {
-                    outakeArm.runToFirstLevel();
+                    outakeArm.runToFirstLevelAuto();
                 } else if (path == 2) {
-                    outakeArm.runToSecondLevel();
+                    outakeArm.runToSecondLevelAuto();
                 } else {
-                    outakeArm.runToThirdLevel();
+                    outakeArm.runToThirdLevelAuto();
                 }
                 drive.moveInches(.3, 39);
                 drive.spinRightWithIMUV2(90, .25);
 
                 if (path == 1) {
-                    drive.moveInches(.25, 5.7);
+                    drive.moveInches(.25, 6.25  );
                 } else if (path == 2) {
                     drive.moveInches(.25, 5);
                 } else {
@@ -195,14 +195,14 @@ public class Robot {
                 drive.motorsOff();
                 drive.moveInches(.2, 10);
                 drive.spinLeftWithIMUV2(90, .2);
-                drive.moveBackInches(.35, 32);
+                drive.moveBackInches(.35, 34);
                 //Turn towards carousel
                 drive.spinRightWithIMUV2(60,.2);
+                drive.moveBackInches(.3,2.5);
                 teamUtil.pause(250);
-                drive.moveBackInches(.1, 6);
                 drive.motorsOn(-.02);
                 spinner.on(.40);
-                teamUtil.pause(4500);
+                teamUtil.pause(5500);
                 spinner.off();
                 drive.motorsOff();
                 double currentIMU = drive.getIMUHeading();

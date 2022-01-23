@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.assemblies.TwoWheelDrive;
 
-@Autonomous(name="Autonomous Blue")
+@Autonomous(name="Autonomous Blue Carousel")
 public class AutonomousopModeBlue extends LinearOpMode {
     public static void log(String logString) {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
