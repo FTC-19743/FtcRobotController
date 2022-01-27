@@ -26,7 +26,7 @@ public class AutonomousopModeBlue extends LinearOpMode {
 
 
         robot = new Robot();
-        robot.init();
+        robot.init(true);
         robot.detector.initialize();
         robot.detector.activate();
         int lastDetection = 0;

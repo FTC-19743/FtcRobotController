@@ -26,7 +26,7 @@ public class OutakeSlideTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Robot();
-        robot.init();
+        robot.init(true);
         telemetry.addLine("Ready to start");
         telemetry.update();
 

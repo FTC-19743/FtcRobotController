@@ -30,7 +30,7 @@ public class OutakeArm {
     //public static int Top = 10;
     public static int ArmSpeed = 2700; // was 400
     public static int MaxPosition =4000; //max possible position used for TSE
-    public static int StallBuffer = 600; //lift off the stall distance
+    public static int StallBuffer = 675; //lift off the stall distance
     public static int ManualArmIncrement = 50;
     public static int ArmVelocity = 3000;
     //public static int Level1WithTelescope = 970;
@@ -149,7 +149,7 @@ public class OutakeArm {
         armMotor.setTargetPosition(SharedHubLevel);
         armMotor.setVelocity(ArmVelocity);
 
-        outakeSlider.setPosition(0.70);
+        outakeSlider.setPosition(0.77);
     }
     public void runToCap(){
         armMotor.setTargetPosition(CapLevel);

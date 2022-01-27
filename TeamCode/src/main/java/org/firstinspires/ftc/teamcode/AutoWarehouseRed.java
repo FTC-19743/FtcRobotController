@@ -32,7 +32,7 @@ public class AutoWarehouseRed extends LinearOpMode {
 
 
         robot = new Robot();
-        robot.init();
+        robot.init(true);
         robot.detector.initialize();
         robot.detector.activate();
         int lastDetection = 0;
@@ -77,21 +77,21 @@ public class AutoWarehouseRed extends LinearOpMode {
         }
         robot.drive.moveInches(.25,6);
         robot.drive.spinLeftWithIMUV2(25,.35);
-        robot.drive.moveInches(.25,17);
+        robot.drive.moveInches(.25,18.5);
 
         robot.outakeArm.spinnerOutput();
-        teamUtil.pause(1000);
+        teamUtil.pause(1200);
         robot.outakeArm.spinnerStop();
         robot.drive.moveBackInches(.25,6);
         robot.drive.spinRightWithIMUV2(115,.3);
         robot.outakeArm.runToSharedHub();
-        robot.drive.moveInches(.45,40);
+        robot.drive.moveInches(.45,43);
 
         //FROM HERE BELOW IS EXPERIMENTAL; PICKING UP FREIGHT CODE
         double degreesNeeded = startingIMU+45;
-        //double degreesNeededInverted = degreesNeeded*-1;
+        double degreesNeededInverted = degreesNeeded*-1;
         robot.outakeArm.runToGround();
-        robot.drive.spinLeftWithIMUV2(degreesNeeded, .25);
+        robot.drive.spinRightWithIMUV2(37.5, .25);
         robot.outakeArm.spinnerIntake();
         robot.drive.moveInches(.25,15);
         robot.outakeArm.spinnerStop();
@@ -99,15 +99,16 @@ public class AutoWarehouseRed extends LinearOpMode {
         robot.drive.moveBackInches(.25,15);
         robot.drive.spinRightWithIMUV2(135,.25);
         robot.drive.moveInches(.45,40);
-        robot.drive.spinRightWithIMUV2(60,.25);
-        robot.drive.moveInches(.4,5);
+        robot.drive.spinRightWithIMUV2(65,.25);
+        robot.drive.moveInches(.4,8.5);
         robot.outakeArm.spinnerOutput();
         teamUtil.pause(1000);
         robot.outakeArm.spinnerStop();
         robot.drive.moveBackInches(.35,6);
         robot.drive.spinRightWithIMUV2(120,.4);
-        robot.drive.moveInches(.45,40);
+        robot.drive.moveInches(.45,42);
         robot.outakeArm.runToGround();
+        teamUtil.pause(2000);
 
 
     }

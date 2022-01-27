@@ -45,7 +45,7 @@ public class TeleopMode extends LinearOpMode {
 
 
         robot = new Robot();
-        robot.init();
+        robot.init(false);
         telemetry.addLine("Ready to start");
         telemetry.update();
 
@@ -146,9 +146,9 @@ public class TeleopMode extends LinearOpMode {
 
 
             if(gamepad2.right_bumper==true) {
-                robot.spinner.on(-.5);
+                robot.spinner.on(-.65);
             } else  if(gamepad2.left_bumper==true) {
-                robot.spinner.on(.5);
+                robot.spinner.on(.6);
             } else {
                 robot.spinner.off();
             }

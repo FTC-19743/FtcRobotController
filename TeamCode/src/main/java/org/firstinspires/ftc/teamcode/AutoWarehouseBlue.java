@@ -32,7 +32,7 @@ public class AutoWarehouseBlue extends LinearOpMode {
 
 
         robot = new Robot();
-        robot.init();
+        robot.init(true);
         robot.detector.initialize();
         robot.detector.activate();
         int lastDetection = 0;
@@ -91,8 +91,8 @@ public class AutoWarehouseBlue extends LinearOpMode {
         robot.drive.moveBackInches(.25,15);
         robot.drive.spinLeftWithIMUV2(135,.25);
         robot.drive.moveInches(.45,40);
-        robot.drive.spinLeftWithIMUV2(60,.25);
-        robot.drive.moveInches(.4,5);
+        robot.drive.spinLeftWithIMUV2(65,.25);
+        robot.drive.moveInches(.4,7);
         robot.outakeArm.spinnerOutput();
         teamUtil.pause(1000);
         robot.outakeArm.spinnerStop();
@@ -100,6 +100,7 @@ public class AutoWarehouseBlue extends LinearOpMode {
         robot.drive.spinLeftWithIMUV2(120,.4);
         robot.drive.moveInches(.45,40);
         robot.outakeArm.runToGround();
+        teamUtil.pause(2000);
 
 
 

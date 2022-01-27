@@ -44,7 +44,7 @@ public class Robot {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void init() {
+    public void init(boolean auto) {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         //These are the parameters that the imu uses in the code to name and keep track of the data
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -54,8 +54,12 @@ public class Robot {
         teamUtil.log("Initializing Robot");
         drive.initialize();
         outakeArm.init();
-        outakeArm.resetArm();
+        if(auto == true) {
+            outakeArm.resetArm();
+
+        }
         outakeSlide.init();
+
         //outakeSlide.resetSlider();
         spinner.init();
 
