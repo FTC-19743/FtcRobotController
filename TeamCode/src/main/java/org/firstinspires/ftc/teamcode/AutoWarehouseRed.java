@@ -32,6 +32,7 @@ public class AutoWarehouseRed extends LinearOpMode {
 
 
         robot = new Robot();
+        robot.armsCalibrated =false;
         robot.init(true);
         robot.detector.initialize();
         robot.detector.activate();

@@ -45,7 +45,7 @@ public class TeleopMode extends LinearOpMode {
 
 
         robot = new Robot();
-        robot.init(false);
+        robot.init(! robot.armsCalibrated);
         telemetry.addLine("Ready to start");
         telemetry.update();
 

@@ -16,7 +16,7 @@ public class Robot {
     public BNO055IMU imu;
     HardwareMap hardwareMap;
     Telemetry telemetry;
-
+    public static boolean armsCalibrated = false;
     public TwoWheelDrive drive;
     public OutakeArm outakeArm;
     public OutakeSlide outakeSlide;
@@ -56,7 +56,7 @@ public class Robot {
         outakeArm.init();
         if(auto == true) {
             outakeArm.resetArm();
-
+            armsCalibrated = true;
         }
         outakeSlide.init();
 
