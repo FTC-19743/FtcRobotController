@@ -177,7 +177,7 @@ public class OutakeArm {
         teamUtil.pause(750);
         outakeSlider.setPosition(Level2SliderPosition);
     }
-
+    //auto code
     public void runToThirdLevelAuto(){
         armMotor.setTargetPosition(Level3);
         armMotor.setVelocity(ArmVelocity);
