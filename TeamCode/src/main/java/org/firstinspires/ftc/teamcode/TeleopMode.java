@@ -28,6 +28,7 @@ public class TeleopMode extends LinearOpMode {
         Orientation anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return (anglesCurrent.firstAngle);
     }
+    boolean armIsBack = false;
 
     @Override
     public void runOpMode() {
@@ -66,6 +67,10 @@ public class TeleopMode extends LinearOpMode {
             } else{
                 robot.drive.manualControl(-gamepad1.left_stick_y*2/3, gamepad1.right_stick_x*2/3);
             }
+
+
+
+
             /*
             if(gamepad2.right_stick_y < -0.5){
                 robot.outakeArm.sliderDecrease();
@@ -126,9 +131,12 @@ public class TeleopMode extends LinearOpMode {
                 //while(gamepad2.dpad_left||gamepad2.dpad_right){ }
                 robot.outakeArm.runToSecondLevel();
             } else if(gamepad2.dpad_up==true){
-                //while(gamepad2.dpad_up){ }
                 robot.outakeArm.runToThirdLevel();
-            } else if(gamepad2.a==true){
+
+            }
+                //while(gamepad2.dpad_up){ }
+
+             else if(gamepad2.a==true){
                 //while(gamepad2.a){ }
                 robot.outakeArm.runToGround();
 
@@ -145,6 +153,7 @@ public class TeleopMode extends LinearOpMode {
             }
 
 
+
             if(gamepad2.right_bumper==true) {
                 robot.spinner.on(-.65);
             } else  if(gamepad2.left_bumper==true) {
@@ -152,6 +161,7 @@ public class TeleopMode extends LinearOpMode {
             } else {
                 robot.spinner.off();
             }
+
 
             robot.outakeArm.writeTelemetry();
             //robot.drive.writeTelemetry();
@@ -162,4 +172,5 @@ public class TeleopMode extends LinearOpMode {
 
         }
     }
+
 }
