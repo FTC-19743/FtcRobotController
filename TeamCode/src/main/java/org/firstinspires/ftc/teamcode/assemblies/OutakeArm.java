@@ -24,13 +24,13 @@ public class OutakeArm {
     public static int Level3 = 3375;
     public static int Level3SliderPosition = 0;
     public static int SharedHubLevel = 1575;
-    public static int CapLevel = 8145;
+    public static int CapLevel = 3500;
     public static int DuckGroundLevel = 610;
     public static int TSEIntakeLevel = 760;
-    public static int BackLevel3 = 8145;
+    //public static int BackLevel3 = 8145;
     //public static int Top = 10;
     public static int ArmSpeed = 2700; // was 400
-    public static int MaxPosition =9000; //max possible position used for TSE
+    public static int MaxPosition =4000; //max possible position used for TSE
     public static int StallBuffer = 675; //lift off the stall distance
     public static int ManualArmIncrement = 50;
     public static int ArmVelocity = 3000;
@@ -150,7 +150,7 @@ public class OutakeArm {
         armMotor.setTargetPosition(SharedHubLevel);
         armMotor.setVelocity(ArmVelocity);
 
-        outakeSlider.setPosition(0.77);
+        outakeSlider.setPosition(0.83);
     }
     public void runToCap(){
         armMotor.setTargetPosition(CapLevel);
@@ -185,13 +185,15 @@ public class OutakeArm {
         teamUtil.pause(750);
         outakeSlider.setPosition(Level3SliderPosition);
     }
-
+    /*
     public void runToBackThirdLevel(){
         armMotor.setTargetPosition(BackLevel3);
         armMotor.setVelocity(ArmVelocity);
         teamUtil.pause(750);
         outakeSlider.setPosition(Level3SliderPosition);
     }
+
+     */
     public void runArmUp(){
 
         log("running arm up");

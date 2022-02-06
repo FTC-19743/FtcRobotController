@@ -68,9 +68,9 @@ public class AutoWarehouseBlue extends LinearOpMode {
         else if (lastDetection == 3) {
             robot.outakeArm.runToThirdLevelAuto();
         }
-        robot.drive.moveInches(.25,4);
-        robot.drive.spinRightWithIMUV2(30,.35);
-        robot.drive.moveInches(.25,22);
+        robot.drive.moveInches(.35,4);
+        robot.drive.spinRightWithIMUV2(30,.4);
+        robot.drive.moveInches(.3,22);
 
         robot.outakeArm.spinnerOutput();
         teamUtil.pause(1000);
@@ -98,11 +98,12 @@ public class AutoWarehouseBlue extends LinearOpMode {
         robot.outakeArm.spinnerOutput();
         teamUtil.pause(1000);
         robot.outakeArm.spinnerStop();
-        robot.drive.moveBackInches(.35,6);
-        robot.drive.spinLeftWithIMUV2(120,.4);
-        robot.drive.moveInches(.45,40);
+        robot.drive.moveBackInches(.4,6);
+        robot.drive.spinLeftWithIMUV2(120,.45);
+        robot.outakeArm.runToSharedHub();
+        robot.drive.moveInches(.75,48);
         robot.outakeArm.runToGround();
-        teamUtil.pause(2000);
+        teamUtil.pause(1000);
 
 
 

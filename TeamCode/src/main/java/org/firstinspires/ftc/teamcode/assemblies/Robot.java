@@ -138,7 +138,7 @@ public class Robot {
                     drive.spinRightWithIMUV2(degreesNeeded, .25);
                 }
 
-                drive.moveInches(.35, 19);
+                drive.moveInches(.35, 18);
 
             }
         }
@@ -195,14 +195,14 @@ public class Robot {
 
                 teamUtil.pause(250);
                 drive.motorsOn(-.25);
-                teamUtil.pause(2000);
+                teamUtil.pause(1000);
                 drive.motorsOff();
-                drive.moveInches(.2, 10);
+                drive.moveInches(.2, 7);
                 drive.spinLeftWithIMUV2(90, .2);
                 drive.moveBackInches(.35, 34);
                 //Turn towards carousel
                 drive.spinRightWithIMUV2(60,.2);
-                drive.moveBackInches(.3,2.5);
+                drive.moveBackInches(.3,2.25);
                 teamUtil.pause(250);
                 drive.motorsOn(-.02);
                 spinner.on(.40);
@@ -218,7 +218,7 @@ public class Robot {
                     drive.spinRightWithIMUV2(degreesNeeded, .25);
                 }
 
-                drive.moveInches(.35, 22);
+                drive.moveInches(.35, 21);
         /*
         outakeArm.spinnerOutput();
                     teamUtil.pause(100);
