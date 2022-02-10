@@ -57,6 +57,7 @@ public class AutoWarehouseBlue extends LinearOpMode {
 
         waitForStart();
         double startingIMU = robot.drive.getIMUHeading();
+        long startingTime = System.currentTimeMillis();
 
         if (lastDetection == 1) {
             robot.outakeArm.runToFirstLevelAuto();
@@ -102,8 +103,9 @@ public class AutoWarehouseBlue extends LinearOpMode {
         robot.drive.spinLeftWithIMUV2(120,.45);
         robot.outakeArm.runToSharedHub();
         robot.drive.moveInches(.75,48);
+        long timeLeft = 30000-(System.currentTimeMillis()-startingTime);
         robot.outakeArm.runToGround();
-        teamUtil.pause(1000);
+        teamUtil.pause(timeLeft-1250);
 
 
 
