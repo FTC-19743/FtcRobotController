@@ -58,7 +58,7 @@ public class Robot {
             outakeArm.resetArm();
             armsCalibrated = true;
         }
-        outakeSlide.init();
+        //outakeSlide.init();
 
         //outakeSlide.resetSlider();
         spinner.init();
@@ -66,6 +66,7 @@ public class Robot {
     }
 
     public void doAuto(int path) {
+        //code for blue alliance
         if (teamUtil.alliance == teamUtil.Alliance.BLUE) {
             if (path != 0) {
                 double startingIMU = drive.getIMUHeading();

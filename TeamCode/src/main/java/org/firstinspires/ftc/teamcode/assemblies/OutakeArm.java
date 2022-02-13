@@ -18,20 +18,22 @@ public class OutakeArm {
     public CRServo spinnerServo;
     public Servo outakeSlider;
     public static int Ground = 0;
-    public static int Level1 = 1050;
-    public static int Level2 = 2460;
-    public static double Level2SliderPosition = .75;
-    public static int Level3 = 3375;
-    public static int Level3SliderPosition = 0;
-    public static int SharedHubLevel = 1575;
-    public static int CapLevel = 3500;
+    public static double SliderResetPosition = .51;
+    public static int Level1 = 465;
+    public static int Level2 = 1140;
+    public static double Level1SliderPosition = .51;
+    public static double Level2SliderPosition = .46;
+    public static int Level3 = 1630;
+    public static double Level3SliderPosition = 0.315;
+    public static int SharedHubLevel = 840;
+    public static int CapLevel = 3825;
     public static int DuckGroundLevel = 610;
-    public static int TSEIntakeLevel = 760;
-    //public static int BackLevel3 = 8145;
+    public static int TSEIntakeLevel = 5345;
+    public static int BackLevel3 = 4100;
     //public static int Top = 10;
     public static int ArmSpeed = 2700; // was 400
-    public static int MaxPosition =4000; //max possible position used for TSE
-    public static int StallBuffer = 675; //lift off the stall distance
+    public static int MaxPosition =5345; //max possible position used for TSE
+    public static int StallBuffer = 225; //lift off the stall distance
     public static int ManualArmIncrement = 50;
     public static int ArmVelocity = 3000;
     //public static int Level1WithTelescope = 970;
@@ -66,7 +68,7 @@ public class OutakeArm {
     }
 
     public void resetArm(){
-        outakeSlider.setPosition(1);
+        outakeSlider.setPosition(SliderResetPosition);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         int lastEncoderPosition = armMotor.getCurrentPosition();
         armMotor.setPower(-.2);
@@ -113,10 +115,16 @@ public class OutakeArm {
 
      */
 
+    public void runToBackThirdLevel(){
+        armMotor.setTargetPosition(BackLevel3);
+        armMotor.setVelocity(ArmVelocity);
+        outakeSlider.setPosition(.32);
+    }
+
     public void runToFirstLevel(){
         armMotor.setTargetPosition(Level1);
         armMotor.setVelocity(ArmVelocity);
-        outakeSlider.setPosition(1);
+        outakeSlider.setPosition(.52);
     }
 
 
@@ -138,7 +146,7 @@ public class OutakeArm {
     public void runToGround(){
         armMotor.setTargetPosition(0);
         armMotor.setVelocity(ArmVelocity);
-        outakeSlider.setPosition(1);
+        outakeSlider.setPosition(.51);
     }
     public void runToGroundForDucks(){
         armMotor.setTargetPosition(DuckGroundLevel);
@@ -150,18 +158,18 @@ public class OutakeArm {
         armMotor.setTargetPosition(SharedHubLevel);
         armMotor.setVelocity(ArmVelocity);
 
-        outakeSlider.setPosition(0.83);
+        outakeSlider.setPosition(0.49);
     }
     public void runToCap(){
         armMotor.setTargetPosition(CapLevel);
         armMotor.setVelocity(ArmVelocity);
 
-        outakeSlider.setPosition(0);
+        outakeSlider.setPosition(0.32);
     }
     public void runToTSELevel(){
         armMotor.setTargetPosition(TSEIntakeLevel);
         armMotor.setVelocity(ArmVelocity);
-        outakeSlider.setPosition(0);
+        outakeSlider.setPosition(0.34);
 
     }
 
@@ -237,6 +245,17 @@ public class OutakeArm {
         spinnerServo.setPower(0);
     }
 
+    public void sliderIncrementMini(){
+        log("Slider going out");
+        double neededSliderPosition = (outakeSlider.getPosition() + .01);
+        outakeSlider.setPosition(neededSliderPosition);
+    }
+
+    public void sliderDecreaseMini(){
+        log("Slider going in");
+        double neededSliderPosition = (outakeSlider.getPosition() - .01);
+        outakeSlider.setPosition(neededSliderPosition);
+    }
     public void sliderIncrement(){
         log("Slider going out");
         double neededSliderPosition = (outakeSlider.getPosition() + .05);
@@ -247,6 +266,10 @@ public class OutakeArm {
         log("Slider going in");
         double neededSliderPosition = (outakeSlider.getPosition() - .05);
         outakeSlider.setPosition(neededSliderPosition);
+    }
+
+    public void setPowerToOne(){
+        armMotor.setPower(.5);
     }
 
 
