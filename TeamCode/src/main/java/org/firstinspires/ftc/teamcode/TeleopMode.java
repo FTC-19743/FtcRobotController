@@ -134,6 +134,9 @@ public class TeleopMode extends LinearOpMode {
                 robot.outakeArm.runToThirdLevel();
 
             }
+            if(gamepad2.right_stick_button){
+                robot.outakeArm.runToBackThirdLevel();
+            }
                 //while(gamepad2.dpad_up){ }
 
              else if(gamepad2.a==true){
