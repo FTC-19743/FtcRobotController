@@ -89,9 +89,9 @@ public class Robot {
                 drive.spinLeftWithIMUV2(90, .25);
 
                 if (path == 1) {
-                    drive.moveInches(.25, 5.7);
+                    drive.moveInches(.25, 6.5);
                 } else if (path == 2) {
-                    drive.moveInches(.25, 5.75);
+                    drive.moveInches(.25, 6.25);
                 } else {
                     drive.moveInches(.25, 6.5);
                 }
@@ -169,7 +169,7 @@ public class Robot {
                 if (path == 1) {
                     drive.moveInches(.25, 6.25  );
                 } else if (path == 2) {
-                    drive.moveInches(.25, 5);
+                    drive.moveInches(.25, 6.5);
                 } else {
                     drive.moveInches(.25, 6.5);
                 }
@@ -185,7 +185,7 @@ public class Robot {
                     drive.moveBackInches(.25, 2);
                     //drive.moveBackInches(.4, 35);
                 } else if (path == 2) {
-                    drive.moveBackInches(.4, 32);
+                    drive.moveBackInches(.4, 33);
                     outakeArm.runToGround();
                     //drive.moveBackInches(.25,3);
                 } else {
@@ -203,8 +203,8 @@ public class Robot {
                 drive.moveBackInches(.35, 34);
                 //Turn towards carousel
                 drive.spinRightWithIMUV2(60,.2);
-                drive.moveBackInches(.3,2.25);
-                teamUtil.pause(250);
+                drive.motorsOn(-.2);
+                teamUtil.pause(500);
                 drive.motorsOn(-.02);
                 spinner.on(.40);
                 teamUtil.pause(5500);

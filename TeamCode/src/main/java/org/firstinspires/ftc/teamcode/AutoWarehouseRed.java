@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name="Autonomous Warehouse Red")
 public class AutoWarehouseRed extends LinearOpMode {
     public static void log(String logString) {
-        RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
+        RobotLog.d("19743LOG1:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
 
     Robot robot;
@@ -64,6 +64,9 @@ public class AutoWarehouseRed extends LinearOpMode {
         waitForStart();
         double startingIMU = robot.drive.getIMUHeading();
         long startingTime = System.currentTimeMillis();
+        String startingTimeToLog = String.format("%.2f", robot.drive.getIMUHeading());
+
+        log(startingTimeToLog);
 
 
 
@@ -79,13 +82,13 @@ public class AutoWarehouseRed extends LinearOpMode {
             robot.outakeArm.runToThirdLevelAuto();
         }
         robot.drive.moveInches(.4,6);
-        robot.drive.spinLeftWithIMUV2(25,.4);
+        robot.drive.spinLeftWithIMUV2(32,.4);
         robot.drive.moveInches(.3,18.5);
 
         robot.outakeArm.spinnerOutput();
         teamUtil.pause(1200);
         robot.outakeArm.spinnerStop();
-        robot.drive.moveBackInches(.25,6);
+        robot.drive.moveBackInches(.25,9);
         robot.drive.spinRightWithIMUV2(115,.3);
         robot.outakeArm.runToSharedHub();
         robot.drive.moveInches(.45,43);
@@ -97,19 +100,24 @@ public class AutoWarehouseRed extends LinearOpMode {
         robot.drive.spinRightWithIMUV2(37.5, .25);
         robot.outakeArm.spinnerIntake();
         robot.drive.moveInches(.25,16);
-        robot.outakeArm.spinnerStop();
         robot.outakeArm.runToThirdLevel();
         robot.drive.moveBackInches(.25,15);
+        robot.outakeArm.spinnerStop();
+        double currentImu=robot.drive.getIMUHeading();
+        double degreesNeededForTurn = startingIMU+100;
         robot.drive.spinRightWithIMUV2(135,.25);
-        robot.drive.moveInches(.45,40);
-        robot.drive.spinRightWithIMUV2(65,.25);
-        robot.drive.moveInches(.4,9);
+        String currentIMU = String.format("%.2f", robot.drive.getIMUHeading());
+
+        log(currentIMU);
+        robot.drive.moveInches(.45,46);
+        robot.drive.spinRightWithIMUV2(63,.25);
+        robot.drive.moveInches(.4,8);
         robot.outakeArm.spinnerOutput();
         teamUtil.pause(1000);
         robot.outakeArm.spinnerStop();
         robot.drive.moveBackInches(.4,6);
         robot.drive.spinRightWithIMUV2(120,.45);
-        robot.drive.moveInches(.55,44);
+        robot.drive.moveInches(.55,51);
         long timeLeft = 30000-(System.currentTimeMillis()-startingTime);
         robot.outakeArm.runToGround();
         teamUtil.pause(timeLeft-1250);

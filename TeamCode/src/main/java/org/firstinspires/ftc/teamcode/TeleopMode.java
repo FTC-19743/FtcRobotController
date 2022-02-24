@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -134,7 +135,7 @@ public class TeleopMode extends LinearOpMode {
                 robot.outakeArm.runToThirdLevel();
 
             }
-            if(gamepad2.right_stick_button){
+            if(gamepad2.y){
                 robot.outakeArm.runToBackThirdLevel();
             }
                 //while(gamepad2.dpad_up){ }
@@ -143,7 +144,8 @@ public class TeleopMode extends LinearOpMode {
                 //while(gamepad2.a){ }
                 robot.outakeArm.runToGround();
 
-            } else if(gamepad2.y == true) {
+            } else if(gamepad2.options == true) {
+
                 //while(gamepad2.y){ }
                 //robot.outakeArm.runArmToPosition(robot.outakeArm.Top);
                 robot.outakeArm.runToGroundForDucks();

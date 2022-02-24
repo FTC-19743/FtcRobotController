@@ -19,16 +19,16 @@ public class OutakeArm {
     public Servo outakeSlider;
     public static int Ground = 0;
     public static double SliderResetPosition = .51;
-    public static int Level1 = 465;
-    public static int Level2 = 1140;
+    public static int Level1 = 600;
+    public static int Level2 = 1210;
     public static double Level1SliderPosition = .51;
     public static double Level2SliderPosition = .46;
     public static int Level3 = 1630;
     public static double Level3SliderPosition = 0.315;
     public static int SharedHubLevel = 840;
-    public static int CapLevel = 3825;
-    public static int DuckGroundLevel = 610;
-    public static int TSEIntakeLevel = 5345;
+    public static int CapLevel = 2050;
+    public static int DuckGroundLevel = 280;
+    public static int TSEIntakeLevel = 265;
     public static int BackLevel3 = 4100;
     //public static int Top = 10;
     public static int ArmSpeed = 2700; // was 400
@@ -169,7 +169,7 @@ public class OutakeArm {
     public void runToTSELevel(){
         armMotor.setTargetPosition(TSEIntakeLevel);
         armMotor.setVelocity(ArmVelocity);
-        outakeSlider.setPosition(0.34);
+        outakeSlider.setPosition(0.52);
 
     }
 

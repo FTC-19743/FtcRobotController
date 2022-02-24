@@ -69,14 +69,14 @@ public class AutoWarehouseBlue extends LinearOpMode {
         else if (lastDetection == 3) {
             robot.outakeArm.runToThirdLevelAuto();
         }
-        robot.drive.moveInches(.35,4);
-        robot.drive.spinRightWithIMUV2(30,.4);
-        robot.drive.moveInches(.3,22);
+        robot.drive.moveInches(.35,3.5);
+        robot.drive.spinRightWithIMUV2(35,.4);
+        robot.drive.moveInches(.3,25);
 
         robot.outakeArm.spinnerOutput();
         teamUtil.pause(1000);
         robot.outakeArm.spinnerStop();
-        robot.drive.moveBackInches(.25,6);
+        robot.drive.moveBackInches(.25,9);
         robot.drive.spinLeftWithIMUV2(115,.3);
         robot.outakeArm.runToSharedHub();
         robot.drive.moveInches(.45,40);
@@ -93,16 +93,16 @@ public class AutoWarehouseBlue extends LinearOpMode {
         robot.outakeArm.runToThirdLevel();
         robot.drive.moveBackInches(.25,15);
         robot.drive.spinLeftWithIMUV2(135,.25);
-        robot.drive.moveInches(.45,40);
+        robot.drive.moveInches(.45,44);
         robot.drive.spinLeftWithIMUV2(65,.25);
         robot.drive.moveInches(.4,7);
         robot.outakeArm.spinnerOutput();
         teamUtil.pause(1000);
         robot.outakeArm.spinnerStop();
         robot.drive.moveBackInches(.4,6);
-        robot.drive.spinLeftWithIMUV2(120,.45);
+        robot.drive.spinLeftWithIMUV2(110,.45);
         robot.outakeArm.runToSharedHub();
-        robot.drive.moveInches(.75,48);
+        robot.drive.moveInches(.75,52);
         long timeLeft = 30000-(System.currentTimeMillis()-startingTime);
         robot.outakeArm.runToGround();
         teamUtil.pause(timeLeft-1250);
