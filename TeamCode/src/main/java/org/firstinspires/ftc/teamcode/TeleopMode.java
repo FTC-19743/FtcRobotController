@@ -101,6 +101,11 @@ public class TeleopMode extends LinearOpMode {
                 robot.outakeArm.runArmDown();
             }
 
+            if(gamepad2.right_stick_y < -0.5){
+                robot.outakeSlide.runSliderOut();
+            }else if(gamepad2.right_stick_y > 0.5){
+                robot.outakeSlide.runSliderIn();
+            }
             /*
             if(gamepad2.left_trigger ==  0||gamepad2.right_trigger==0){
                 robot.outakeArm.spinnerIntakeSlow();

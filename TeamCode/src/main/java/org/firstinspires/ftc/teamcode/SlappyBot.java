@@ -83,16 +83,15 @@ public class SlappyBot extends LinearOpMode {
             // Send calculated power to wheels
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
-            /*
             if(gamepad1.left_trigger > 0){
-                slappyArm.setPower(-gamepad1.left_trigger);
+                slappyArm.setPower(-gamepad1.left_trigger/5);
             }else if(gamepad1.right_trigger > 0) {
-                slappyArm.setPower(gamepad1.right_trigger);
+                slappyArm.setPower(gamepad1.right_trigger/5);
             }else{
                 slappyArm.setPower(0);
             }
 
-             */
+
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);

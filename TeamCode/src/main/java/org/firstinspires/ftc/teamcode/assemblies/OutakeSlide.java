@@ -14,6 +14,10 @@ public class OutakeSlide {
     HardwareMap hardwareMap;
     Telemetry telemetry;
     public Servo outakeSlider;
+    public static double MaxSliderPosition = 0.315;
+    public static double MinSliderPosition = .51;
+    public static double SliderIncrements = .005; // might need to be changed
+
 
     //placeholders
     //public static double Level1;
@@ -34,6 +38,20 @@ public class OutakeSlide {
 
     public void writeTelemetry(){
         telemetry.addData("Outake Slider","Slider Position:%f",outakeSlider.getPosition());
+    }
+
+    public void runSliderOut(){
+        double currentPosition = outakeSlider.getPosition();
+        if(currentPosition - SliderIncrements >= MaxSliderPosition){
+            outakeSlider.setPosition(currentPosition-SliderIncrements);
+        }
+    }
+
+    public void runSliderIn(){
+        double currentPosition = outakeSlider.getPosition();
+        if(currentPosition + SliderIncrements <= MaxSliderPosition){
+            outakeSlider.setPosition(currentPosition+SliderIncrements);
+        }
     }
 
     public void resetSlider(){
