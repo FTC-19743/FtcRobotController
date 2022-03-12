@@ -157,7 +157,7 @@ public class TeleopMode extends LinearOpMode {
             } else if(gamepad2.dpad_right==true){
                 robot.outakeArm.runToSharedHub();
             } else if(gamepad2.x==true){
-                robot.outakeArm.runToCap();
+                robot.outakeArm.runToCapV2();
             } else if(gamepad2.b==true){
                 robot.outakeArm.runToTSELevel();
             }

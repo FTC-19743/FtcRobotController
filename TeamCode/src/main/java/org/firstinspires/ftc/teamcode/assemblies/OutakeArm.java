@@ -36,6 +36,7 @@ public class OutakeArm {
     public static int StallBuffer = 225; //lift off the stall distance
     public static int ManualArmIncrement = 50;
     public static int ArmVelocity = 3000;
+    public static int ArmFirstCapVelocity = 1000;
     //public static int Level1WithTelescope = 970;
 
 
@@ -152,7 +153,7 @@ public class OutakeArm {
         armMotor.setTargetPosition(DuckGroundLevel);
         armMotor.setVelocity(ArmVelocity);
 
-        outakeSlider.setPosition(0);
+        outakeSlider.setPosition(.32);
     }
     public void runToSharedHub(){
         armMotor.setTargetPosition(SharedHubLevel);
@@ -165,6 +166,14 @@ public class OutakeArm {
         armMotor.setVelocity(ArmVelocity);
 
         outakeSlider.setPosition(0.32);
+    }
+    public void runToCapV2(){
+        armMotor.setTargetPosition(Level2);
+        armMotor.setVelocity(ArmFirstCapVelocity);
+        teamUtil.pause(500);
+        outakeSlider.setPosition(.32);
+        armMotor.setTargetPosition(CapLevel);
+        armMotor.setVelocity(ArmVelocity);
     }
     public void runToTSELevel(){
         armMotor.setTargetPosition(TSEIntakeLevel);
