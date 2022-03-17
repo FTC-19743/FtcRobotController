@@ -40,19 +40,7 @@ public class OutakeSlide {
         telemetry.addData("Outake Slider","Slider Position:%f",outakeSlider.getPosition());
     }
 
-    public void runSliderOut(){
-        double currentPosition = outakeSlider.getPosition();
-        if(currentPosition - SliderIncrements >= MaxSliderPosition){
-            outakeSlider.setPosition(currentPosition-SliderIncrements);
-        }
-    }
 
-    public void runSliderIn(){
-        double currentPosition = outakeSlider.getPosition();
-        if(currentPosition + SliderIncrements <= MaxSliderPosition){
-            outakeSlider.setPosition(currentPosition+SliderIncrements);
-        }
-    }
 
     public void resetSlider(){
         outakeSlider.setPosition(0);

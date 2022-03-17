@@ -220,6 +220,14 @@ public class Robot {
                 }
 
                 drive.moveInches(.35, 21);
+                //DRAFT DUCK INTAKE CODE
+
+                drive.moveInches(.35,10);
+                drive.spinRightWithIMUV2(135,.25);
+
+
+
+
         /*
         outakeArm.spinnerOutput();
                     teamUtil.pause(100);

@@ -30,7 +30,7 @@ public class AutoWarehouseRed extends LinearOpMode {
 
         teamUtil.telemetry.update();
 
-
+        //TSE Detector and all assemblies are intialized
         robot = new Robot();
         robot.armsCalibrated =false;
         robot.init(true);
@@ -41,6 +41,7 @@ public class AutoWarehouseRed extends LinearOpMode {
         while (!opModeIsActive()) {
             teamUtil.pause(250);
             newDetection = robot.detector.detect();
+            //Decides which level to print based on detection
             int lastDetectionToPrint=1;
             if (newDetection > 0) {
                 lastDetection = newDetection;
@@ -62,15 +63,17 @@ public class AutoWarehouseRed extends LinearOpMode {
 
 
         waitForStart();
+        //takes a starting IMU reading and a starting SystemTime reading
         double startingIMU = robot.drive.getIMUHeading();
         long startingTime = System.currentTimeMillis();
+        //logs time for reference
         String startingTimeToLog = String.format("%.2f", robot.drive.getIMUHeading());
 
         log(startingTimeToLog);
 
 
 
-
+        //raises arm to corresponding level based on detection
         if (lastDetection == 2) {
             robot.outakeArm.runToFirstLevelAuto();
 
@@ -84,18 +87,20 @@ public class AutoWarehouseRed extends LinearOpMode {
         robot.drive.moveInches(.4,6);
         robot.drive.spinLeftWithIMUV2(32,.4);
         robot.drive.moveInches(.3,18.5);
-
+        //drops off pre-loaded freight
         robot.outakeArm.spinnerOutput();
         teamUtil.pause(1200);
         robot.outakeArm.spinnerStop();
         robot.drive.moveBackInches(.25,9);
         robot.drive.spinRightWithIMUV2(115,.3);
+        //runs arm to shared level to be able to make it over barriers
         robot.outakeArm.runToSharedHub();
         robot.drive.moveInches(.45,43);
 
         //FROM HERE BELOW IS EXPERIMENTAL; PICKING UP FREIGHT CODE
         double degreesNeeded = startingIMU+45;
         double degreesNeededInverted = degreesNeeded*-1;
+        //takes in freight from the warehouse
         robot.outakeArm.runToGround();
         robot.drive.spinRightWithIMUV2(37.5, .25);
         robot.outakeArm.spinnerIntake();
@@ -103,8 +108,12 @@ public class AutoWarehouseRed extends LinearOpMode {
         robot.outakeArm.runToThirdLevel();
         robot.drive.moveBackInches(.25,15);
         robot.outakeArm.spinnerStop();
+        /* //experimental IMU code that needs to be further reviewed
         double currentImu=robot.drive.getIMUHeading();
         double degreesNeededForTurn = startingIMU+100;
+
+         */
+        //returns to alliance shipping hub
         robot.drive.spinRightWithIMUV2(135,.25);
         String currentIMU = String.format("%.2f", robot.drive.getIMUHeading());
 
@@ -112,12 +121,14 @@ public class AutoWarehouseRed extends LinearOpMode {
         robot.drive.moveInches(.45,46);
         robot.drive.spinRightWithIMUV2(63,.25);
         robot.drive.moveInches(.4,8);
+        //drops off newly acquired freight
         robot.outakeArm.spinnerOutput();
         teamUtil.pause(1000);
         robot.outakeArm.spinnerStop();
         robot.drive.moveBackInches(.4,6);
         robot.drive.spinRightWithIMUV2(120,.45);
         robot.drive.moveInches(.55,51);
+        //uses starting system time value to identify when to stop robot in case a crash is possible
         long timeLeft = 30000-(System.currentTimeMillis()-startingTime);
         robot.outakeArm.runToGround();
         teamUtil.pause(timeLeft-1250);

@@ -33,7 +33,7 @@ public class AutoWarehouseBlue extends LinearOpMode {
 
         robot = new Robot();
         robot.armsCalibrated =false;
-
+        //TSE Detector and all assemblies are intialized
         robot.init(true);
         robot.detector.initialize();
         robot.detector.activate();
@@ -56,6 +56,7 @@ public class AutoWarehouseBlue extends LinearOpMode {
 
 
         waitForStart();
+        //takes a starting IMU reading and a starting SystemTime reading
         double startingIMU = robot.drive.getIMUHeading();
         long startingTime = System.currentTimeMillis();
 
@@ -83,6 +84,7 @@ public class AutoWarehouseBlue extends LinearOpMode {
 
 
         //FROM HERE BELOW IS EXPERIMENTAL; PICKING UP FREIGHT CODE
+        //uses starting IMU value to figure out where to turn (so that it is oriented towards warehouse)
         double degreesNeeded = startingIMU-45;
         double degreesNeededInverted = degreesNeeded*-1;
         robot.outakeArm.runToGround();
@@ -103,6 +105,7 @@ public class AutoWarehouseBlue extends LinearOpMode {
         robot.drive.spinLeftWithIMUV2(110,.45);
         robot.outakeArm.runToSharedHub();
         robot.drive.moveInches(.75,52);
+        //uses system time to identify whether or not crash is likely
         long timeLeft = 30000-(System.currentTimeMillis()-startingTime);
         robot.outakeArm.runToGround();
         teamUtil.pause(timeLeft-1250);

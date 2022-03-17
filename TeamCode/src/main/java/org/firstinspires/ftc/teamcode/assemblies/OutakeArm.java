@@ -18,14 +18,13 @@ public class OutakeArm {
     public CRServo spinnerServo;
     public Servo outakeSlider;
     public static int Ground = 0;
-    public static double SliderResetPosition = .51;
     public static int Level1 = 600;
     public static int Level2 = 1210;
-    public static double Level1SliderPosition = .51;
-    public static double Level2SliderPosition = .46;
+    public static double Level2SliderPosition = .57;
     public static int Level3 = 1630;
-    public static double Level3SliderPosition = 0.315;
+    public static double Level3SliderPosition = 0.425;
     public static int SharedHubLevel = 840;
+    public static double SharedLevelSliderPosition = .60;
     public static int CapLevel = 2050;
     public static int DuckGroundLevel = 280;
     public static int TSEIntakeLevel = 265;
@@ -37,6 +36,12 @@ public class OutakeArm {
     public static int ManualArmIncrement = 50;
     public static int ArmVelocity = 3000;
     public static int ArmFirstCapVelocity = 1000;
+    public static int ArmSecondCapVelocity = 2000;
+    public static double SliderIncrements = .0005; // might need to be changed
+    public static double SliderExtendedPosition = .43; // position for telescope when fully out
+    public static double SliderRetractedPosition = .64; // position for telescope when fully in
+    public static int BackSharedArmLevel = 5210;
+    public static double BackSharedSliderPosition = .56;
     //public static int Level1WithTelescope = 970;
 
 
@@ -69,7 +74,7 @@ public class OutakeArm {
     }
 
     public void resetArm(){
-        outakeSlider.setPosition(SliderResetPosition);
+        outakeSlider.setPosition(SliderRetractedPosition);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         int lastEncoderPosition = armMotor.getCurrentPosition();
         armMotor.setPower(-.2);
@@ -119,13 +124,13 @@ public class OutakeArm {
     public void runToBackThirdLevel(){
         armMotor.setTargetPosition(BackLevel3);
         armMotor.setVelocity(ArmVelocity);
-        outakeSlider.setPosition(.32);
+        outakeSlider.setPosition(SliderExtendedPosition);
     }
 
     public void runToFirstLevel(){
         armMotor.setTargetPosition(Level1);
         armMotor.setVelocity(ArmVelocity);
-        outakeSlider.setPosition(.52);
+        outakeSlider.setPosition(SliderRetractedPosition);
     }
 
 
@@ -147,38 +152,35 @@ public class OutakeArm {
     public void runToGround(){
         armMotor.setTargetPosition(0);
         armMotor.setVelocity(ArmVelocity);
-        outakeSlider.setPosition(.51);
+        outakeSlider.setPosition(SliderRetractedPosition);
     }
     public void runToGroundForDucks(){
         armMotor.setTargetPosition(DuckGroundLevel);
         armMotor.setVelocity(ArmVelocity);
 
-        outakeSlider.setPosition(.32);
+        outakeSlider.setPosition(SliderExtendedPosition);
     }
     public void runToSharedHub(){
         armMotor.setTargetPosition(SharedHubLevel);
         armMotor.setVelocity(ArmVelocity);
 
-        outakeSlider.setPosition(0.49);
+        outakeSlider.setPosition(SharedLevelSliderPosition);
     }
     public void runToCap(){
         armMotor.setTargetPosition(CapLevel);
         armMotor.setVelocity(ArmVelocity);
 
-        outakeSlider.setPosition(0.32);
+        outakeSlider.setPosition(SliderExtendedPosition);
     }
     public void runToCapV2(){
-        armMotor.setTargetPosition(Level2);
-        armMotor.setVelocity(ArmFirstCapVelocity);
-        teamUtil.pause(500);
-        outakeSlider.setPosition(.32);
+        outakeSlider.setPosition(SliderExtendedPosition);
         armMotor.setTargetPosition(CapLevel);
-        armMotor.setVelocity(ArmVelocity);
+        armMotor.setVelocity(ArmSecondCapVelocity);
     }
     public void runToTSELevel(){
         armMotor.setTargetPosition(TSEIntakeLevel);
         armMotor.setVelocity(ArmVelocity);
-        outakeSlider.setPosition(0.52);
+        outakeSlider.setPosition(SliderRetractedPosition);
 
     }
 
@@ -186,7 +188,7 @@ public class OutakeArm {
         armMotor.setTargetPosition(Level1);
         armMotor.setVelocity(ArmVelocity);
         teamUtil.pause(750);
-        outakeSlider.setPosition(1);
+        outakeSlider.setPosition(SliderRetractedPosition);
     }
 
     public void runToSecondLevelAuto(){
@@ -201,6 +203,12 @@ public class OutakeArm {
         armMotor.setVelocity(ArmVelocity);
         teamUtil.pause(750);
         outakeSlider.setPosition(Level3SliderPosition);
+    }
+
+    public void runToBackShared(){
+        armMotor.setTargetPosition(BackSharedArmLevel);
+        armMotor.setVelocity(ArmVelocity);
+        outakeSlider.setPosition(BackSharedSliderPosition);
     }
     /*
     public void runToBackThirdLevel(){
@@ -279,6 +287,23 @@ public class OutakeArm {
 
     public void setPowerToOne(){
         armMotor.setPower(.5);
+    }
+
+
+
+
+    public void runSliderOut(){
+        double currentPosition = outakeSlider.getPosition();
+        if(currentPosition - SliderIncrements >= SliderExtendedPosition){
+            outakeSlider.setPosition(currentPosition-SliderIncrements);
+        }
+    }
+
+    public void runSliderIn(){
+        double currentPosition = outakeSlider.getPosition();
+        if(currentPosition + SliderIncrements <= SliderRetractedPosition){
+            outakeSlider.setPosition(currentPosition+SliderIncrements);
+        }
     }
 
 

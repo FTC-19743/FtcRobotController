@@ -102,9 +102,9 @@ public class TeleopMode extends LinearOpMode {
             }
 
             if(gamepad2.right_stick_y < -0.5){
-                robot.outakeSlide.runSliderOut();
+                robot.outakeArm.runSliderOut();
             }else if(gamepad2.right_stick_y > 0.5){
-                robot.outakeSlide.runSliderIn();
+                robot.outakeArm.runSliderIn();
             }
             /*
             if(gamepad2.left_trigger ==  0||gamepad2.right_trigger==0){
@@ -160,6 +160,8 @@ public class TeleopMode extends LinearOpMode {
                 robot.outakeArm.runToCapV2();
             } else if(gamepad2.b==true){
                 robot.outakeArm.runToTSELevel();
+            } else if(gamepad2.share==true){
+                 robot.outakeArm.runToBackShared();
             }
 
 
