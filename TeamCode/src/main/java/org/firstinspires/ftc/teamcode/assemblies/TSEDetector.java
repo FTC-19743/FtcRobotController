@@ -73,6 +73,7 @@ public class TSEDetector {
         //middle is 2
         //right is 3
         int threshold = teamUtil.alliance == teamUtil.Alliance.RED ? 150 : 300;
+        int secondThreshold = 950;
         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
         if (updatedRecognitions == null) {
             return 0;
@@ -80,15 +81,19 @@ public class TSEDetector {
         else{
             for (Recognition recognition : updatedRecognitions) {
                 if (recognition.getLabel() == LABELS[0]) {
-                    if (recognition.getLeft() > threshold) {
+                    if (recognition.getLeft() > secondThreshold) {
+                        return 1;
+                    } else if(recognition.getLeft()<secondThreshold&&recognition.getLeft()>threshold) {
                         return 3;
-                    } else {
+                    } else if(recognition.getLeft()<threshold){
                         return 2;
                     }
                 }
             }
-            return 1;
+
+
         }
+        return 1;
     }
 
     private void initVuforia() {
