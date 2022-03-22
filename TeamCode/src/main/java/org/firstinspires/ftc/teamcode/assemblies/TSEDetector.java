@@ -81,12 +81,12 @@ public class TSEDetector {
         else{
             for (Recognition recognition : updatedRecognitions) {
                 if (recognition.getLabel() == LABELS[0]) {
-                    if (recognition.getLeft() > secondThreshold) {
-                        return 1;
-                    } else if(recognition.getLeft()<secondThreshold&&recognition.getLeft()>threshold) {
-                        return 3;
-                    } else if(recognition.getLeft()<threshold){
+                    if(recognition.getLeft()<threshold){
                         return 2;
+                    } else if (recognition.getLeft() > threshold && recognition.getLeft() < secondThreshold) {
+                        return 3;
+                    } else if(recognition.getLeft()>secondThreshold){
+                        return 1;
                     }
                 }
             }
