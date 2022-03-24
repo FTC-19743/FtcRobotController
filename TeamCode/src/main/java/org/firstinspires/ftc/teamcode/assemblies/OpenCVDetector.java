@@ -74,28 +74,68 @@ public class OpenCVDetector {
         webcam.stopStreaming();
     }
 
-    public int detect() {
+    public int warehouseDetect() {
         //will return value based on which level the duck should go on
         //left is 1
         //middle is 2
         //right is 3
-        int threshold;
+        int leftThreshold;
+        int rightThreshold;
+
         if(teamUtil.alliance == teamUtil.Alliance.BLUE) {
-            threshold = 515;
+
+            leftThreshold = 0;
+            rightThreshold = 340;
         }
         else{
-            threshold = 560;
+
+            leftThreshold = 545;
+            rightThreshold = 985;
+
         }
         int midpoint = TSEPipe.getMidpoint();
+        //String midpointToPrint = String.format("%f", TSEPipe.getMidpoint());
+        //log("midpoint:" + midpointToPrint);
         telemetry.addLine("Midpoint: "+midpoint);
-        if(midpoint == 0){
+
+        if(midpoint<=leftThreshold){
             return 1;
         }
-        else if(midpoint >= threshold){
-            return 3;
+        else if(midpoint > leftThreshold && midpoint < rightThreshold){
+            return 2;
         }
         else{
+            return 3;
+        }
+    }
+    public int carouselDetect(){
+
+        int leftThreshold;
+        int rightThreshold;
+
+        if(teamUtil.alliance == teamUtil.Alliance.BLUE) {
+            leftThreshold= 80;
+            rightThreshold = 550;
+
+        }
+        else{
+            leftThreshold=110;
+            rightThreshold = 610;
+
+        }
+        int midpoint = TSEPipe.getMidpoint();
+        // String midpointToPrint = String.format("%f", TSEPipe.getMidpoint());
+        //log("midpoint:" + midpointToPrint);
+        telemetry.addLine("Midpoint: "+midpoint);
+
+        if(midpoint<=leftThreshold){
+            return 1;
+        }
+        else if(midpoint > leftThreshold && midpoint < rightThreshold){
             return 2;
+        }
+        else{
+            return 3;
         }
     }
 

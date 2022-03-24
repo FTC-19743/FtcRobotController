@@ -24,7 +24,7 @@ public class AutoWarehouseBlue extends LinearOpMode {
     @Override
     public void runOpMode() {
         teamUtil.init(this);
-        teamUtil.alliance = teamUtil.Alliance.RED;
+        teamUtil.alliance = teamUtil.Alliance.BLUE;
         teamUtil.telemetry.addLine("Initializing Op Mode...please wait");
 
 
@@ -41,7 +41,7 @@ public class AutoWarehouseBlue extends LinearOpMode {
         int newDetection;
         while (!opModeIsActive()) {
             teamUtil.pause(250);
-            newDetection = robot.detector.detect();
+            newDetection = robot.detector.warehouseDetect();
 
             if (newDetection > 0) {
                 lastDetection = newDetection;

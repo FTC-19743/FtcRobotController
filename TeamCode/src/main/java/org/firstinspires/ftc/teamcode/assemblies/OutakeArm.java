@@ -20,11 +20,11 @@ public class OutakeArm {
     public static int Ground = 0;
     public static int Level1 = 600;
     public static int Level2 = 1210;
-    public static double Level2SliderPosition = .57;
+    public static double Level2SliderPosition = .55;
     public static int Level3 = 1630;
-    public static double Level3SliderPosition = 0.425;
+    public static double Level3SliderPosition = 0.405;
     public static int SharedHubLevel = 840;
-    public static double SharedLevelSliderPosition = .60;
+    public static double SharedLevelSliderPosition = .58;
     public static int CapLevel = 2050;
     public static int DuckGroundLevel = 280;
     public static int TSEIntakeLevel = 265;
@@ -38,10 +38,10 @@ public class OutakeArm {
     public static int ArmFirstCapVelocity = 1000;
     public static int ArmSecondCapVelocity = 2000;
     public static double SliderIncrements = .0005; // might need to be changed
-    public static double SliderExtendedPosition = .43; // position for telescope when fully out
-    public static double SliderRetractedPosition = .64; // position for telescope when fully in
+    public static double SliderExtendedPosition = .42; // position for telescope when fully out
+    public static double SliderRetractedPosition = .63; // position for telescope when fully in
     public static int BackSharedArmLevel = 5210;
-    public static double BackSharedSliderPosition = .56;
+    public static double BackSharedSliderPosition = .54;
     //public static int Level1WithTelescope = 970;
 
 

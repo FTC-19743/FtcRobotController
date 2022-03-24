@@ -34,7 +34,7 @@ public class AutonomousopModeBlue extends LinearOpMode {
         int newDetection;
         while (!opModeIsActive()) {
             teamUtil.pause(250);
-            newDetection = robot.detector.detect();
+            newDetection = robot.detector.carouselDetect();
             if (newDetection > 0) {
                 lastDetection = newDetection;
             }

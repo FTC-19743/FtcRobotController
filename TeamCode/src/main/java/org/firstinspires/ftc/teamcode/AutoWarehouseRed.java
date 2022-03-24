@@ -40,16 +40,16 @@ public class AutoWarehouseRed extends LinearOpMode {
         int newDetection;
         while (!opModeIsActive()) {
             teamUtil.pause(250);
-            newDetection = robot.detector.detect();
+            newDetection = robot.detector.warehouseDetect();
             //Decides which level to print based on detection
             int lastDetectionToPrint=1;
             if (newDetection > 0) {
                 lastDetection = newDetection;
             }
-            if(lastDetection==2){
+            if(lastDetection==1){
                 lastDetectionToPrint=1;
             }
-            else if(lastDetection==3){
+            else if(lastDetection==2){
                 lastDetectionToPrint=2;
             }
             else{
@@ -74,18 +74,18 @@ public class AutoWarehouseRed extends LinearOpMode {
 
 
         //raises arm to corresponding level based on detection
-        if (lastDetection == 2) {
+        if (lastDetection == 1) {
             robot.outakeArm.runToFirstLevelAuto();
 
         }
-        else if (lastDetection == 3) {
+        else if (lastDetection == 2) {
             robot.outakeArm.runToSecondLevelAuto();
         }
-        else if (lastDetection == 1) {
+        else if (lastDetection == 3) {
             robot.outakeArm.runToThirdLevelAuto();
         }
         robot.drive.moveInches(.4,6);
-        robot.drive.spinLeftWithIMUV2(32,.4);
+        robot.drive.spinLeftWithIMUV2(28,.4);
         robot.drive.moveInches(.3,18.5);
         //drops off pre-loaded freight
         robot.outakeArm.spinnerOutput();
@@ -119,7 +119,7 @@ public class AutoWarehouseRed extends LinearOpMode {
 
         log(currentIMU);
         robot.drive.moveInches(.45,46);
-        robot.drive.spinRightWithIMUV2(63,.25);
+        robot.drive.spinRightWithIMUV2(67,.25);
         robot.drive.moveInches(.4,8);
         //drops off newly acquired freight
         robot.outakeArm.spinnerOutput();

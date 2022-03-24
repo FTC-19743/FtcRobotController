@@ -127,7 +127,7 @@ public class Robot {
 
                 drive.motorsOn(-.03);
                 spinner.on(.40);
-                teamUtil.pause(5500);
+                teamUtil.pause(7500);
                 spinner.off();
                 drive.motorsOff();
                 double currentIMU = drive.getIMUHeading();
@@ -219,11 +219,13 @@ public class Robot {
                     drive.spinRightWithIMUV2(degreesNeeded, .25);
                 }
 
-                drive.moveInches(.35, 21);
+                drive.moveInches(.35, 18);
                 //DRAFT DUCK INTAKE CODE
-
+                /*
                 drive.moveInches(.35,10);
                 drive.spinRightWithIMUV2(135,.25);
+
+                 */
 
 
 
