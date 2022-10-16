@@ -79,7 +79,7 @@ public class MecanumTeleopTest extends LinearOpMode {
 
              */
             double y = -gamepad1.left_stick_y; // Remember, this is reversed!
-            double x = gamepad1.left_stick_x; // Counteract imperfect strafing
+            double x = gamepad1.left_stick_x*1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
 
             double botHeading = -imu.getAngularOrientation().firstAngle;
@@ -110,7 +110,11 @@ public class MecanumTeleopTest extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
 
             backRightMotor.setPower(backRightPower);
-
+            if(gamepad1.right_bumper == true){
+                parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+                // Without this, data retrieving from the IMU throws an exception
+                imu.initialize(parameters);
+            }
             //code for different speeds
             /*
             if(gamepad1.right_bumper == true){
