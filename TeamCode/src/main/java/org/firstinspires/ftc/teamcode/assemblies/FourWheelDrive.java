@@ -22,19 +22,45 @@ public class FourWheelDrive {
     HardwareMap hardwareMap;
     Telemetry telemetry;
 
-    private BNO055IMU imu; //This variable is the imu
-    private DcMotorEx frontLeft = null;
-    private DcMotorEx frontRight = null;
-    private DcMotorEx backLeft = null;
-    private DcMotorEx backRight = null;
+    public BNO055IMU imu; //This variable is the imu
+    public DcMotorEx frontLeft = null;
+    public DcMotorEx frontRight = null;
+    public DcMotorEx backLeft = null;
+    public DcMotorEx backRight = null;
 
-    static final double COUNTS_PER_MOTOR_REV = 537.7;    // GoBilda 5202 312 RPM
-    static final double COUNTS_PER_CENTIMETER = 17.923;
-    static final double MIN_START_VELOCITY = 0.5; //tentative value
-    static final double MIN_END_VELOCITY = 0.25; //tentative value
-    static final double MAX_ACCELERATION = 0.5; //tentative value
-    static final double MAX_DECELERATION = -0.5; //tentative value (should be negative)
+    public double COUNTS_PER_MOTOR_REV = 537.7;    // GoBilda 5202 312 RPM
+    public double COUNTS_PER_CENTIMETER = 17.923;
+    public double MIN_START_VELOCITY = 200; //tentative value
+    public double MIN_END_VELOCITY = 100; //tentative value
+    public double MAX_ACCELERATION = 10; //tentative value
+    public double MAX_DECELERATION = -5; //tentative value (should be negative)
 
+    public FourWheelDrive() {
+        teamUtil.log("Constructing Drive");
+        hardwareMap = teamUtil.theOpMode.hardwareMap;
+        telemetry = teamUtil.theOpMode.telemetry;
+    }
+
+    public void initialize() {
+
+
+
+        teamUtil.log("Initializing Drive");
+        // Initialize the hardware variables. Note that the strings used here as parameters
+        // to 'get' must correspond to the names assigned during the robot configuration
+        // step (using the FTC Robot Controller app on the phone).
+        frontLeft = hardwareMap.get(DcMotorEx.class, "flm");
+        frontRight = hardwareMap.get(DcMotorEx.class, "frm");
+        backLeft = hardwareMap.get(DcMotorEx.class, "blm");
+        backRight = hardwareMap.get(DcMotorEx.class, "brm");
+
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
+
+
+    }
+
+    //basic move centimeters without accel and deceleration
     public void moveCM(double speed, double centimeters){
         int newFrontLeftTarget;
         int newFrontRightTarget;
@@ -51,8 +77,6 @@ public class FourWheelDrive {
         frontRight.setTargetPosition(newFrontRightTarget);
         backLeft.setTargetPosition(newBackLeftTarget);
         backRight.setTargetPosition(newBackRightTarget);
-
-
 
         // Turn On RUN_TO_POSITION
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -82,7 +106,6 @@ public class FourWheelDrive {
         backLeft.setPower(0);
         backRight.setPower(0);
 
-
     }
     public void runMotors(double velocity){
         frontLeft.setVelocity(velocity);
@@ -91,12 +114,15 @@ public class FourWheelDrive {
         backRight.setVelocity(velocity);
     }
 
+
+
     public void moveCmWAcceleration(double cruiseVelocity, double centimeters){
         double startEncoderPosition = frontLeft.getCurrentPosition();
 
 
 
         double velocityChangeNeededAccel = cruiseVelocity-MIN_START_VELOCITY;
+        double velocityChangeNeededDecel = cruiseVelocity-MIN_END_VELOCITY;
 
 
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -106,8 +132,7 @@ public class FourWheelDrive {
 
         double totalTics = centimeters*COUNTS_PER_CENTIMETER;
         double ticsDuringAcceleration = velocityChangeNeededAccel/MAX_ACCELERATION;
-        double ticsDuringDeceleration = velocityChangeNeededAccel/MAX_DECELERATION;
-
+        double ticsDuringDeceleration = velocityChangeNeededDecel/MAX_DECELERATION;
         double cruiseTics = totalTics-ticsDuringDeceleration-ticsDuringAcceleration;
 
         while(frontLeft.getCurrentPosition()<startEncoderPosition+ticsDuringAcceleration){
@@ -115,16 +140,17 @@ public class FourWheelDrive {
 
             runMotors(MAX_ACCELERATION*ticsSinceStart+MIN_START_VELOCITY);
         }
+
         while(frontLeft.getCurrentPosition()<cruiseTics+startEncoderPosition){
             runMotors(cruiseVelocity);
         }
 
         double encoderAfterCruise = frontLeft.getCurrentPosition();
 
-        while(frontLeft.getCurrentPosition()<startEncoderPosition+ticsDuringDeceleration){
+        while(frontLeft.getCurrentPosition()<startEncoderPosition+totalTics){
             double ticsSinceCruise = frontLeft.getCurrentPosition()-encoderAfterCruise;
 
-            runMotors(MAX_DECELERATION*ticsSinceCruise+MIN_START_VELOCITY);
+            runMotors(MAX_DECELERATION*ticsSinceCruise+MIN_END_VELOCITY);
         }
         runMotors(0);
 

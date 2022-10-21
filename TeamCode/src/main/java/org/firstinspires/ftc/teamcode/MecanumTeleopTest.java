@@ -5,28 +5,26 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.assemblies.FourWheelDrive;
 import org.firstinspires.ftc.teamcode.assemblies.Robot;
+import org.firstinspires.ftc.teamcode.assemblies.Robot23;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
 
 @TeleOp(name="MecanumTeleopTest", group="Linear Opmode")
 
 public class MecanumTeleopTest extends LinearOpMode {
+    public static void log(String logString) {
+        RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
+    }
+    Robot23 robot;
 
-    DcMotor frontLeftMotor;
-    DcMotor frontRightMotor;
-    DcMotor backLeftMotor;
-    DcMotor backRightMotor;
 
     public void runOpMode() {
         //teamUtil.init(this);
 
-        //These are the parameters that the imu uses in the code to name and keep track of the data
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "flm");
-        frontRightMotor = hardwareMap.get(DcMotor.class, "frm");
-        backLeftMotor = hardwareMap.get(DcMotor.class, "blm");
-        backRightMotor = hardwareMap.get(DcMotor.class, "brm");
 
 
 
@@ -38,24 +36,26 @@ public class MecanumTeleopTest extends LinearOpMode {
         // Without this, data retrieving from the IMU throws an exception
         imu.initialize(parameters);
 
-        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        frontRightMotor.setPower(0);
-        frontLeftMotor.setPower(0);
-        backRightMotor.setPower(0);
-        backLeftMotor.setPower(0);
+
+
 
 
         telemetry.addLine("Ready to start");
         telemetry.update();
 
-
+        robot = new Robot23();
+        robot.initialize();
+        telemetry.addLine("Ready to start");
+        telemetry.update();
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio, but only when
         // at least one is out of the range [-1, 1]
 
-
+        boolean dPadUpWasPressed = false;
+        boolean dPadDownWasPressed = false;
+        boolean dPadLeftWasPressed = false;
+        boolean dPadRightWasPressed = false;
         waitForStart();
         while (opModeIsActive()) {
             /*
@@ -79,7 +79,7 @@ public class MecanumTeleopTest extends LinearOpMode {
 
              */
             double y = -gamepad1.left_stick_y; // Remember, this is reversed!
-            double x = gamepad1.left_stick_x*1.1; // Counteract imperfect strafing
+            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
 
             double botHeading = -imu.getAngularOrientation().firstAngle;
@@ -104,33 +104,116 @@ public class MecanumTeleopTest extends LinearOpMode {
             double frontRightPower = (rotY - rotX - rx) / denominator;
             double backRightPower = (rotY + rotX - rx) / denominator;
 
+            /*
+            robot.drive.frontLeft.setPower(frontLeftPower);
+            robot.drive.backLeft.setPower(backLeftPower);
+            robot.drive.frontRight.setPower(frontRightPower);
+            robot.drive.backRight.setPower(backRightPower);
 
-            frontLeftMotor.setPower(frontLeftPower);
-            backLeftMotor.setPower(backLeftPower);
-            frontRightMotor.setPower(frontRightPower);
+             */
 
-            backRightMotor.setPower(backRightPower);
-            if(gamepad1.right_bumper == true){
+            if (gamepad1.a == true) {
                 parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
                 // Without this, data retrieving from the IMU throws an exception
                 imu.initialize(parameters);
             }
-            //code for different speeds
-            /*
-            if(gamepad1.right_bumper == true){
-                frontLeftMotor.setPower(frontLeftPower);
-                backLeftMotor.setPower(backLeftPower);
-                frontRightMotor.setPower(frontRightPower);
-                backRightMotor.setPower(backRightPower);
-            } else{
-                frontLeftMotor.setPower(frontLeftPower/2);
-                backLeftMotor.setPower(backLeftPower/2);
-                frontRightMotor.setPower(frontRightPower/2);
-                backRightMotor.setPower(backRightPower/2);
+
+            if (gamepad1.dpad_up == true) {
+                if (!dPadUpWasPressed) {
+                    dPadUpWasPressed = true;
+
+                }
+
+            } else {
+                if (dPadUpWasPressed) {
+                    dPadUpWasPressed = false;
+                    teamUtil.log("D-Pad UP Was Bumped");
+                    if (gamepad1.right_bumper == true) {
+                        robot.drive.MAX_ACCELERATION += 10;
+                    } else if (gamepad1.left_bumper == true) {
+                        robot.drive.MAX_ACCELERATION -= 10;
+                    }
+
+                }
             }
 
-             */
+            if (gamepad1.dpad_down == true) {
+                if (!dPadDownWasPressed) {
+                    dPadDownWasPressed = true;
 
+                }
+
+            } else {
+                if (dPadDownWasPressed) {
+                    dPadDownWasPressed = false;
+                    teamUtil.log("D-Pad DOWN Was Bumped");
+                    if (gamepad1.right_bumper == true) {
+                        robot.drive.MAX_DECELERATION += 10;
+                    } else if (gamepad1.left_bumper == true) {
+                        robot.drive.MAX_DECELERATION -= 10;
+                    }
+                }
+            }
+            if (gamepad1.dpad_left == true) {
+                if (!dPadLeftWasPressed) {
+                    dPadLeftWasPressed = true;
+
+                }
+
+            } else {
+                if (dPadLeftWasPressed) {
+                    dPadLeftWasPressed = false;
+                    teamUtil.log("D-Pad LEFT Was Bumped");
+                    if (gamepad1.right_bumper == true) {
+                        robot.drive.MIN_START_VELOCITY += 10;
+                    } else if (gamepad1.left_bumper == true) {
+                        robot.drive.MIN_START_VELOCITY -= 10;
+                    }
+                }
+
+                if (gamepad1.dpad_right == true) {
+                    if (!dPadRightWasPressed) {
+                        dPadRightWasPressed = true;
+
+                    }
+
+                } else {
+                    if (dPadRightWasPressed) {
+                        dPadRightWasPressed = false;
+                        teamUtil.log("D-Pad RIGHT Was Bumped");
+                        if (gamepad1.right_bumper == true) {
+                            robot.drive.MIN_END_VELOCITY += 10;
+                        } else if (gamepad1.left_bumper == true) {
+                            robot.drive.MIN_END_VELOCITY -= 10;
+                        }
+                    }
+                }
+                /*
+                if (gamepad1.y == true) {
+                    robot.drive.runMotors(robot.drive.MIN_START_VELOCITY);
+                    teamUtil.pause(1000);
+                    robot.drive.runMotors(robot.drive.MIN_END_VELOCITY);
+                    teamUtil.pause(1000);
+                    robot.drive.runMotors(0);
+                }
+
+
+                //emergency stop
+                if (gamepad1.b == true) {
+                    robot.drive.runMotors(0);
+                }
+
+                 */
+                String currentAcceleration = String.format("%d", robot.drive.MAX_ACCELERATION);
+                String currentDeceleration = String.format("%d", robot.drive.MAX_DECELERATION);
+                String currentMinStartVelocity = String.format("%d", robot.drive.MIN_START_VELOCITY);
+                String currentMinEndVelocity = String.format("%d", robot.drive.MIN_END_VELOCITY);
+                telemetry.addLine("Current Max Acceleration" + currentAcceleration);
+                telemetry.addLine("Current Max Deceleration" + currentDeceleration);
+                telemetry.addLine("Current Min Start Velocity" + currentMinStartVelocity);
+                telemetry.addLine("Current Min End Velocity" + currentMinEndVelocity);
+                telemetry.update();
+            }
         }
     }
 
