@@ -11,13 +11,25 @@ public class Robot23 {
     HardwareMap hardwareMap;
     Telemetry telemetry;
     public FourWheelDrive drive;
+    public Outake outake;
 
     public Robot23(){
         hardwareMap = teamUtil.theOpMode.hardwareMap;
         drive = new FourWheelDrive();
+        outake = new Outake();
     }
 
     public void initialize(){
         drive.initialize();
+        outake.init();
+    }
+
+    public void calibrate(){
+        outake.calibrate();
+    }
+
+    public void outputTelemetry(){
+        outake.outputTelemetry();
+        drive.outputTelemetry();
     }
 }

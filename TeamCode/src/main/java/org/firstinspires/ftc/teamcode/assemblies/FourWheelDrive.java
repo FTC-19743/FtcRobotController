@@ -60,6 +60,11 @@ public class FourWheelDrive {
 
     }
 
+    public void outputTelemetry(){
+        telemetry.addData("Output  ", "flm:%d frm:%d blm:%d brm:%d",
+                frontLeft.getCurrentPosition(), frontRight.getCurrentPosition(),backLeft.getCurrentPosition(), backRight.getCurrentPosition());
+    }
+
     //basic move centimeters without accel and deceleration
     public void moveCM(double speed, double centimeters){
         int newFrontLeftTarget;
