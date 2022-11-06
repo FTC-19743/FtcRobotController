@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.assemblies.FourWheelDrive;
 import org.firstinspires.ftc.teamcode.assemblies.Outake;
 import org.firstinspires.ftc.teamcode.assemblies.Robot;
 import org.firstinspires.ftc.teamcode.assemblies.Robot23;
+import org.firstinspires.ftc.teamcode.libs.TeamGamepad;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
 
@@ -22,14 +23,14 @@ public class MecanumTeleopTest extends LinearOpMode {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
     Robot23 robot;
-
+    TeamGamepad gamepad;
 
     public void runOpMode() {
         teamUtil.init(this);
 
 
-
-
+        gamepad = new TeamGamepad();
+        gamepad.initilize(true);
         // Retrieve the IMU from the hardware map
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -59,6 +60,7 @@ public class MecanumTeleopTest extends LinearOpMode {
         boolean dPadDownWasPressed = false;
         boolean dPadLeftWasPressed = false;
         boolean dPadRightWasPressed = false;
+        double powerFactor = 1;
 
         robot.drive.frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         robot.drive.frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -67,7 +69,7 @@ public class MecanumTeleopTest extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-
+            gamepad.loop();
             /*
             double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x; //counteract imperfect strafing
@@ -118,15 +120,19 @@ public class MecanumTeleopTest extends LinearOpMode {
             double frontRightPower = (rotY - rotX - rx) / denominator;
             double backRightPower = (rotY + rotX - rx) / denominator;
 
+            if (gamepad1.right_trigger > .8) {
+                powerFactor = 1;
+            }else{
+                powerFactor = .4;
+            }
+                robot.drive.frontLeft.setPower(frontLeftPower*powerFactor);
+                robot.drive.backLeft.setPower(backLeftPower*powerFactor);
+                robot.drive.frontRight.setPower(frontRightPower*powerFactor);
+                robot.drive.backRight.setPower(backRightPower*powerFactor);
 
-            robot.drive.frontLeft.setPower(frontLeftPower);
-            robot.drive.backLeft.setPower(backLeftPower);
-            robot.drive.frontRight.setPower(frontRightPower);
-            robot.drive.backRight.setPower(backRightPower);
 
 
-
-            if (gamepad1.a == true) {
+            if (gamepad1.start == true) {
                 parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
                 // Without this, data retrieving from the IMU throws an exception
                 imu.initialize(parameters);
@@ -141,7 +147,12 @@ public class MecanumTeleopTest extends LinearOpMode {
             else{
                 robot.outake.stop();
             }
-
+            if(gamepad.wasAPressed()){
+                robot.outake.openGrabber();
+            }
+            if(gamepad.wasBPressed()){
+                robot.outake.closeGrabber();
+            }
             /*
             if (gamepad1.dpad_up == true) {
                 if (!dPadUpWasPressed) {

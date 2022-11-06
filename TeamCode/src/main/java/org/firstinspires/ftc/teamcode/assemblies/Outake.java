@@ -16,8 +16,10 @@ public class Outake {
     public Servo grabber;
     public DcMotorEx pulley;
     public boolean pulleyCalibrated;
-    public final int TOP = 10000; //tentative value
-    public final int BOTTOM = 10; //tentative value
+    public final int TOP = 3450;
+    public final int BOTTOM = 10;
+    public final double OPEN = 0.51;
+    public final double GRAB = 0.37;
     public boolean HOLDING = false;
 
     public static void log(String logString) {
@@ -101,5 +103,13 @@ public class Outake {
         HOLDING=false;
         pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pulley.setPower(-.75);
+    }
+
+    public void openGrabber(){
+        grabber.setPosition(OPEN);
+    }
+
+    public void closeGrabber(){
+        grabber.setPosition(GRAB);
     }
 }

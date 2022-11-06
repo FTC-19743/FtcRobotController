@@ -32,4 +32,11 @@ public class Robot23 {
         outake.outputTelemetry();
         drive.outputTelemetry();
     }
+    public void driveInSquare(){
+        //drive.moveCM(.2, 61);
+
+        drive.strafeRight(.2, 61);/*
+        drive.backCM(.2, 5);
+        drive.strafeLeft(.2, 5);*/
+    }
 }

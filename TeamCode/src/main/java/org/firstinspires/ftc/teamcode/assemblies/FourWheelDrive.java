@@ -60,6 +60,96 @@ public class FourWheelDrive {
 
     }
 
+    public void strafeLeft(double speed, double centimeters){
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
+        centimeters *= 1.11;
+        // Determine new target position, and pass to motor controller\
+        newFrontLeftTarget = frontLeft.getCurrentPosition() - (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newFrontRightTarget = frontRight.getCurrentPosition() + (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newBackLeftTarget = backLeft.getCurrentPosition() + (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newBackRightTarget = backRight.getCurrentPosition() - (int) (centimeters * COUNTS_PER_CENTIMETER);
+
+        frontLeft.setTargetPosition(newFrontLeftTarget);
+        frontRight.setTargetPosition(newFrontRightTarget);
+        backLeft.setTargetPosition(newBackLeftTarget);
+        backRight.setTargetPosition(newBackRightTarget);
+
+        // Turn On RUN_TO_POSITION
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontLeft.setPower(Math.abs(speed));
+        frontRight.setPower(Math.abs(speed));
+        backLeft.setPower(Math.abs(speed));
+        backRight.setPower(Math.abs(speed));
+
+        teamUtil.log("Strafing left");
+        long currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy()||backLeft.isBusy()||backRight.isBusy())) {
+
+            teamUtil.log("waiting");
+        }
+
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+    }
+
+    public void strafeRight(double speed, double centimeters){
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
+        centimeters *= 1.11;
+        // Determine new target position, and pass to motor controller\
+        newFrontLeftTarget = frontLeft.getCurrentPosition() + (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newFrontRightTarget = frontRight.getCurrentPosition() - (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newBackLeftTarget = backLeft.getCurrentPosition() - (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newBackRightTarget = backRight.getCurrentPosition() + (int) (centimeters * COUNTS_PER_CENTIMETER);
+
+        frontLeft.setTargetPosition(newFrontLeftTarget);
+        frontRight.setTargetPosition(newFrontRightTarget);
+        backLeft.setTargetPosition(newBackLeftTarget);
+        backRight.setTargetPosition(newBackRightTarget);
+
+        // Turn On RUN_TO_POSITION
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontLeft.setPower(Math.abs(speed));
+        frontRight.setPower(Math.abs(speed));
+        backLeft.setPower(Math.abs(speed));
+        backRight.setPower(Math.abs(speed));
+
+        teamUtil.log("Strafing right");
+        long currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy()||backLeft.isBusy()||backRight.isBusy())) {
+
+            teamUtil.log("waiting");
+        }
+
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+    }
+
     public void outputTelemetry(){
         telemetry.addData("Output  ", "flm:%d frm:%d blm:%d brm:%d",
                 frontLeft.getCurrentPosition(), frontRight.getCurrentPosition(),backLeft.getCurrentPosition(), backRight.getCurrentPosition());
@@ -112,6 +202,11 @@ public class FourWheelDrive {
         backRight.setPower(0);
 
     }
+
+    public void backCM(double speed, double centimeters){
+        moveCM(speed, -centimeters);
+    }
+
     public void runMotors(double velocity){
         frontLeft.setVelocity(velocity);
         frontRight.setVelocity(velocity);
