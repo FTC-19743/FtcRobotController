@@ -27,6 +27,7 @@ public class OpenCVSignalDetector {
     OpenCvWebcam webcam;
     SignalPipeline SignalPipe;
     Telemetry telemetry;
+    static int MIDHEIGHT;
 
     public OpenCVSignalDetector() {
         SignalPipe = new SignalPipeline();
@@ -36,15 +37,16 @@ public class OpenCVSignalDetector {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
 
-    public void writeTelemetry() {
-    }
-
-    public void initialize() {
+    public void initialize(boolean withMonitor) {
         teamUtil.log("Initializing OpenCVDetector");
         hardwareMap = teamUtil.theOpMode.hardwareMap;
         telemetry = teamUtil.telemetry;
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        if (withMonitor) {
+            int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+            webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        } else {
+            webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        }
         webcam.setPipeline(SignalPipe);
         teamUtil.log("Finished Initializing OpenCVDetector");
     }
@@ -54,9 +56,10 @@ public class OpenCVSignalDetector {
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             public void onOpened(){
-                webcam.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+                //webcam.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
                 //webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
-                //webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                MIDHEIGHT = 120;
             }
 
             public void onError ( int errorCode){
@@ -66,80 +69,37 @@ public class OpenCVSignalDetector {
         telemetry.addLine("Waiting for camera");
         telemetry.update();
         teamUtil.pause(2500);
-
     }
 
     public void deactivate() {
         webcam.stopStreaming();
     }
 
-    public int warehouseDetect() {
+    public void writeTelemetry() {
+        telemetry.addData("Signal", this.signalDetect());
+        telemetry.addData("Frame Count", webcam.getFrameCount());
+        telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
+        telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
+        telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
+        telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
+        telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
+        telemetry.update();
+    }
+    public void nextView() {
+        SignalPipe.nextView();
+    }
+    public int signalDetect() {
         //will return value based on which level the duck should go on
-        //left is 1
-        //middle is 2
-        //right is 3
-        int leftThreshold;
-        int rightThreshold;
-
-        if(teamUtil.alliance == teamUtil.Alliance.BLUE) {
-
-            leftThreshold = 0;
-            rightThreshold = 340;
-        }
-        else{
-
-            leftThreshold = 545;
-            rightThreshold = 985;
-
-        }
-        int midpoint = SignalPipe.getMidpoint();
-        //String midpointToPrint = String.format("%f", TSEPipe.getMidpoint());
-        //log("midpoint:" + midpointToPrint);
-        telemetry.addLine("Midpoint: "+midpoint);
-
-        if(midpoint<=leftThreshold){
-            return 1;
-        }
-        else if(midpoint > leftThreshold && midpoint < rightThreshold){
-            return 2;
-        }
-        else{
-            return 3;
-        }
-    }
-    public int carouselDetect(){
-
-        int leftThreshold;
-        int rightThreshold;
-
-        if(teamUtil.alliance == teamUtil.Alliance.BLUE) {
-            leftThreshold= 80;
-            rightThreshold = 550;
-
-        }
-        else{
-            leftThreshold=110;
-            rightThreshold = 610;
-
-        }
-        int midpoint = SignalPipe.getMidpoint();
-        // String midpointToPrint = String.format("%f", TSEPipe.getMidpoint());
-        //log("midpoint:" + midpointToPrint);
-        telemetry.addLine("Midpoint: "+midpoint);
-
-        if(midpoint<=leftThreshold){
-            return 1;
-        }
-        else if(midpoint > leftThreshold && midpoint < rightThreshold){
-            return 2;
-        }
-        else{
-            return 3;
-        }
+        //Yellow is 1
+        //Pink is 2
+        //Green is 3
+        if (SignalPipe.foundColor == SignalPipeline.Color.YELLOW) {return 2;};
+        if (SignalPipe.foundColor == SignalPipeline.Color.GREEN) {return 1;};
+        return(3);
     }
 
-    static class SignalPipeline extends OpenCvPipeline {
 
+    public static class SignalPipeline extends OpenCvPipeline {
 
         Mat HSVMat = new Mat();
 
@@ -147,19 +107,32 @@ public class OpenCVSignalDetector {
         Scalar yellowHighHSV = new Scalar(30, 255, 255); // higher bound HSV for yellow
         Scalar greenLowHSV = new Scalar(40, 100, 100); //
         Scalar greenHighHSV = new Scalar(80, 255, 255); //
-        Scalar pinkLowHSV = new Scalar(170, 100, 100); // 340/2
-        Scalar pinkHighHSV = new Scalar(180, 255, 255); // 360/2
-        Mat thresholdMat = new Mat();
+        Scalar pinkLowHSV = new Scalar(140, 100, 100); //
+        Scalar pinkHighHSV = new Scalar(155, 255, 255); //
+        Mat thresholdMatYellow = new Mat();
+        Mat thresholdMatGreen = new Mat();
+        Mat thresholdMatPink = new Mat();
 
-        Mat edges = new Mat();
+        Mat edgesYellow = new Mat();
+        Mat edgesGreen = new Mat();
+        Mat edgesPink = new Mat();
 
-        List<MatOfPoint> contours = new ArrayList<>();
-        Mat hierarchy = new Mat();
+        List<MatOfPoint> contoursYellow = new ArrayList<>();
+        List<MatOfPoint> contoursGreen = new ArrayList<>();
+        List<MatOfPoint> contoursPink = new ArrayList<>();
 
-        Mat labeled = new Mat();
+        Mat hierarchyYellow = new Mat();
+        Mat hierarchyGreen = new Mat();
+        Mat hierarchyPink = new Mat();
+
+        Mat labeledYellow = new Mat();
+        Mat labeledGreen = new Mat();
+        Mat labeledPink = new Mat();
         Scalar labelColor = new Scalar(0, 0, 255);
 
-        int midpoint = 0; // midpoint of detected TSE (0 if no TSE detected)
+        public boolean foundYellow = false; // Did we find a yellow shape in the last frame?
+        public boolean foundGreen = false; // Did we find a green shape in the last frame?
+        public boolean foundPink = false; // Did we find a pink shape in the last frame?
 
         enum Stage {
             RAW_IMAGE,
@@ -168,6 +141,12 @@ public class OpenCVSignalDetector {
             EDGES,
             LABELED
         }
+        enum Color {
+            YELLOW,
+            GREEN,
+            OTHER
+        }
+        public Color foundColor = Color.OTHER;
 
         private Stage stageToRenderToViewport = Stage.RAW_IMAGE;
         private Stage[] stages = Stage.values();
@@ -192,61 +171,105 @@ public class OpenCVSignalDetector {
                 return input;
             }
 
-            // We'll get a black and white image. The white regions represent the regular stones.
+            // We'll get  black and white images for each color range.
+            // The white regions represent the color we are looking for.
             // inRange(): thresh[i][j] = {255,255,255} if mat[i][i] is within the range
-            //Core.inRange(HSVMat, lowHSV, highHSV, thresholdMat);
+            Core.inRange(HSVMat, yellowLowHSV, yellowHighHSV, thresholdMatYellow);
+            Core.inRange(HSVMat, greenLowHSV, greenHighHSV, thresholdMatGreen);
+           // Core.inRange(HSVMat, pinkLowHSV, pinkHighHSV, thresholdMatPink);
 
             // Use Canny Edge Detection to find edges (might have to tune the thresholds for hysteresis)
-            Imgproc.Canny(thresholdMat, edges, 100, 300);
+            Imgproc.Canny(thresholdMatYellow, edgesYellow, 100, 300);
+            Imgproc.Canny(thresholdMatGreen, edgesGreen, 100, 300);
+           // Imgproc.Canny(thresholdMatPink, edgesPink, 100, 300);
 
             // https://docs.opencv.org/3.4/da/d0c/tutorial_bounding_rects_circles.html
             // Oftentimes the edges are disconnected. findContours connects these edges.
-            contours.clear(); // empty the list from last time
-            Imgproc.findContours(edges, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+            contoursYellow.clear(); // empty the list from last time
+            contoursGreen.clear(); // empty the list from last time
+           // contoursPink.clear(); // empty the list from last time
+            Imgproc.findContours(edgesYellow, contoursYellow, hierarchyYellow, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+            Imgproc.findContours(edgesGreen, contoursGreen, hierarchyGreen, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+           // Imgproc.findContours(edgesPink, contoursPink, hierarchyPink, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
-            input.copyTo(labeled); // make a copy of orignal to add labels to
+            input.copyTo(labeledYellow); // make a copy of original to add labels to
+            input.copyTo(labeledGreen); // make a copy of original to add labels to
+           // input.copyTo(labeledPink); // make a copy of original to add labels to
+            double maxGreenY = 0;
+            double maxYellowY = 0;
 
             // if no contours, we didn't find anything
-            if (contours.isEmpty()) {
-                midpoint = 0;
+            if (!contoursYellow.isEmpty()) {
+                // find the bounding rectangles of those contours, compute midpoint, and prepare labeled mat
+                MatOfPoint2f[] contoursPoly = new MatOfPoint2f[contoursYellow.size()];
+                Rect[] boundRect = new Rect[contoursYellow.size()];
+                for (int i = 0; i < contoursYellow.size(); i++) {
+                    contoursPoly[i] = new MatOfPoint2f();
+                    Imgproc.approxPolyDP(new MatOfPoint2f(contoursYellow.get(i).toArray()), contoursPoly[i], 3, true);
+                    boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
+                    Imgproc.rectangle(labeledYellow, boundRect[i], labelColor, 5);
+                    if (boundRect[i].br().y > maxYellowY) {
+                        maxYellowY = boundRect[i].br().y;
+                    }
+                }
+            }
+            if (!contoursGreen.isEmpty()) {
+                // find the bounding rectangles of those contours, compute midpoint, and prepare labeled mat
+                MatOfPoint2f[] contoursPoly = new MatOfPoint2f[contoursGreen.size()];
+                Rect[] boundRect = new Rect[contoursGreen.size()];
+                for (int i = 0; i < contoursGreen.size(); i++) {
+                    contoursPoly[i] = new MatOfPoint2f();
+                    Imgproc.approxPolyDP(new MatOfPoint2f(contoursGreen.get(i).toArray()), contoursPoly[i], 3, true);
+                    boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
+                    Imgproc.rectangle(labeledGreen, boundRect[i], labelColor, 5);
+                    if (boundRect[i].br().y > maxGreenY) {
+                        maxGreenY = boundRect[i].br().y;
+                    }
+                }
+            }
+            if (maxYellowY > MIDHEIGHT) { // is the lowest yellow object at least partially in the lower half of the screen?
+                foundColor = Color.YELLOW;
+            } else if (maxGreenY > MIDHEIGHT) { // is the lowest green object at least partially in the lower half of the screen?
+                foundColor = Color.GREEN;
             } else {
+                foundColor = Color.OTHER;
+            }
+            teamUtil.log("Lowest Y:" + maxYellowY + " Lowest G:"+ maxGreenY);
+            /*
+            if (contoursPink.isEmpty()) {
+                foundPink = false;
+            } else {
+                foundPink = true;
                 // find the bounding rectangles of those contours, compute midpoint, and prepare labeled mat
                 int farLeft = 5000;
                 int farRight = 0;
-                MatOfPoint2f[] contoursPoly = new MatOfPoint2f[contours.size()];
-                Rect[] boundRect = new Rect[contours.size()];
-                for (int i = 0; i < contours.size(); i++) {
+                MatOfPoint2f[] contoursPoly = new MatOfPoint2f[contoursPink.size()];
+                Rect[] boundRect = new Rect[contoursPink.size()];
+                for (int i = 0; i < contoursPink.size(); i++) {
                     contoursPoly[i] = new MatOfPoint2f();
-                    Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
+                    Imgproc.approxPolyDP(new MatOfPoint2f(contoursPink.get(i).toArray()), contoursPoly[i], 3, true);
                     boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
-                    if (boundRect[i].tl().x < farLeft) {
-                        farLeft = (int) boundRect[i].tl().x;
-                    }
-                    if (boundRect[i].br().x > farRight) {
-                        farRight = (int) boundRect[i].br().x;
-                    }
-                    Imgproc.rectangle(labeled, boundRect[i], labelColor, 5);
-
+                    Imgproc.rectangle(labeledPink, boundRect[i], labelColor, 5);
                 }
-                midpoint = farLeft + (farRight - farLeft) / 2;
             }
 
+             */
 
             switch (stageToRenderToViewport) {
                 case RAW_IMAGE: {
                     return input;
                 }
                 case HSV: {
-                    return HSVMat;
+                    return thresholdMatYellow;
                 }
                 case THRESHOLD: {
-                    return thresholdMat;
+                    return thresholdMatGreen;
                 }
                 case EDGES: {
-                    return edges;
+                    return labeledYellow;
                 }
                 case LABELED: {
-                    return labeled;
+                    return labeledGreen;
                 }
                 default: {
                     return input;
@@ -254,9 +277,6 @@ public class OpenCVSignalDetector {
             }
         }
 
-        public int getMidpoint() {
-            return midpoint;
-        }
     }
 }
 
