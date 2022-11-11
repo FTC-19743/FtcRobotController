@@ -67,6 +67,8 @@ public class MecanumTeleopTest extends LinearOpMode {
         robot.drive.backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         robot.drive.backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
+
+
         waitForStart();
         while (opModeIsActive()) {
             gamepad.loop();
@@ -90,7 +92,6 @@ public class MecanumTeleopTest extends LinearOpMode {
             double backRightPower = (rotY + rotX - rx) / denominator;
 
              */
-
             double y = -gamepad1.left_stick_y; // Remember, this is reversed!
             double x = gamepad1.left_stick_x*1.1 ; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
@@ -120,6 +121,7 @@ public class MecanumTeleopTest extends LinearOpMode {
             double frontRightPower = (rotY - rotX - rx) / denominator;
             double backRightPower = (rotY + rotX - rx) / denominator;
 
+
             if (gamepad1.right_trigger > .8) {
                 powerFactor = 1;
             }else{
@@ -132,25 +134,27 @@ public class MecanumTeleopTest extends LinearOpMode {
 
 
 
-            if (gamepad1.start == true) {
+            if (gamepad1.start==true) {
                 parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
                 // Without this, data retrieving from the IMU throws an exception
                 imu.initialize(parameters);
+
+
             }
 
-            if (gamepad1.dpad_up){
+            if (gamepad2.dpad_up){
                 robot.outake.runPulleyUp();
             }
-            else if(gamepad1.dpad_down){
+            else if(gamepad2.dpad_down){
                 robot.outake.runPulleyDown();
             }
             else{
                 robot.outake.stop();
             }
-            if(gamepad.wasAPressed()){
+            if(gamepad2.left_trigger>0.8){
                 robot.outake.openGrabber();
             }
-            if(gamepad.wasBPressed()){
+            if(gamepad2.right_trigger>0.8){
                 robot.outake.closeGrabber();
             }
             /*

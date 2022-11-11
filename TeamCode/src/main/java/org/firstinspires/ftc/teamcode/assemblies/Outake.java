@@ -16,7 +16,7 @@ public class Outake {
     public Servo grabber;
     public DcMotorEx pulley;
     public boolean pulleyCalibrated;
-    public final int TOP = 3450;
+    public final int TOP = 3575; //tentative value
     public final int BOTTOM = 10;
     public final double OPEN = 0.51;
     public final double GRAB = 0.37;

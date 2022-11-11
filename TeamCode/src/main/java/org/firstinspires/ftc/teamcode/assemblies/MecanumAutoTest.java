@@ -22,6 +22,6 @@ public class MecanumAutoTest extends LinearOpMode {
         robot = new Robot23();
         robot.initialize();
         waitForStart();
-        robot.driveInSquare();
+        robot.drive.strafeRight(.1, 60);
     }
 }
