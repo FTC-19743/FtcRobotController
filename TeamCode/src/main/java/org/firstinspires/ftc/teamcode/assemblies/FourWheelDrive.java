@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public class FourWheelDrive {
+
     HardwareMap hardwareMap;
     Telemetry telemetry;
 
@@ -34,6 +35,9 @@ public class FourWheelDrive {
     public double MIN_END_VELOCITY = 100; //tentative value
     public double MAX_ACCELERATION = 10; //tentative value
     public double MAX_DECELERATION = -5; //tentative value (should be negative)
+
+
+
 
 
 
@@ -61,6 +65,15 @@ public class FourWheelDrive {
 
 
     }
+    /*
+    public void updatePowers(){
+        frontLeftPower = (rotY + rotX + rx) / denominator;
+        backLeftPower = (rotY - rotX + rx) / denominator;
+        frontRightPower = (rotY - rotX - rx) / denominator;
+        backRightPower = (rotY + rotX - rx) / denominator;
+    }
+
+     */
 
     public void strafeLeft(double speed, double centimeters){
         int newFrontLeftTarget;

@@ -41,18 +41,7 @@ public class Auto23 extends LinearOpMode {
             }
         }
         waitForStart();
-        /*
-        if(signalDetector.signalDetect()==1){
-            telemetry.addLine("Green Sensed");
-        }
-        else if(signalDetector.signalDetect()==2){
-            telemetry.addLine("Yellow Sensed");
-        }
-        else{
-            telemetry.addLine("Pink Sensed");
-        }
 
-         */
 
         telemetry.update();
         robot.outake.closeGrabber();

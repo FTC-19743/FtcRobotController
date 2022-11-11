@@ -72,29 +72,11 @@ public class MecanumTeleopTest extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             gamepad.loop();
-            /*
-            double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x; //counteract imperfect strafing
-            double rx = gamepad1.right_stick_x; // Remember, this is reversed!
-
-            // Read inverse IMU heading, as the IMU heading is CW positive
-            //double botHeading = -imu.getAngularOrientation().firstAngle;
-            double botHeading = 1;
-
-            double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-            double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
 
 
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (rotY + rotX + rx) / denominator;
-            double backLeftPower = (rotY - rotX + rx) / denominator;
-            double frontRightPower = (rotY - rotX - rx) / denominator;
-            double backRightPower = (rotY + rotX - rx) / denominator;
-
-             */
-            double y = -gamepad1.left_stick_y; // Remember, this is reversed!
-            double x = gamepad1.left_stick_x*1.1 ; // Counteract imperfect strafing
-            double rx = gamepad1.right_stick_x;
+            double y = -teamUtil.theOpMode.gamepad1.left_stick_y; // Remember, this is reversed!
+            double x = teamUtil.theOpMode.gamepad1.left_stick_x*1.1 ; // Counteract imperfect strafing
+            double rx = teamUtil.theOpMode.gamepad1.right_stick_x;
 
             double botHeading = -imu.getAngularOrientation().firstAngle;
 
@@ -116,6 +98,7 @@ public class MecanumTeleopTest extends LinearOpMode {
              */
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
             double frontLeftPower = (rotY + rotX + rx) / denominator;
             double backLeftPower = (rotY - rotX + rx) / denominator;
             double frontRightPower = (rotY - rotX - rx) / denominator;
@@ -157,107 +140,9 @@ public class MecanumTeleopTest extends LinearOpMode {
             if(gamepad2.right_trigger>0.8){
                 robot.outake.closeGrabber();
             }
-            /*
-            if (gamepad1.dpad_up == true) {
-                if (!dPadUpWasPressed) {
-                    dPadUpWasPressed = true;
 
-                }
-
-            } else {
-                if (dPadUpWasPressed) {
-                    dPadUpWasPressed = false;
-                    teamUtil.log("D-Pad UP Was Bumped");
-                    if (gamepad1.right_bumper == true) {
-                        robot.drive.MAX_ACCELERATION += 10;
-                    } else if (gamepad1.left_bumper == true) {
-                        robot.drive.MAX_ACCELERATION -= 10;
-                    }
-
-                }
-            }
-
-            if (gamepad1.dpad_down == true) {
-                if (!dPadDownWasPressed) {
-                    dPadDownWasPressed = true;
-
-                }
-
-            } else {
-                if (dPadDownWasPressed) {
-                    dPadDownWasPressed = false;
-                    teamUtil.log("D-Pad DOWN Was Bumped");
-                    if (gamepad1.right_bumper == true) {
-                        robot.drive.MAX_DECELERATION += 10;
-                    } else if (gamepad1.left_bumper == true) {
-                        robot.drive.MAX_DECELERATION -= 10;
-                    }
-                }
-            }
-            if (gamepad1.dpad_left == true) {
-                if (!dPadLeftWasPressed) {
-                    dPadLeftWasPressed = true;
-
-                }
-
-            } else {
-                if (dPadLeftWasPressed) {
-                    dPadLeftWasPressed = false;
-                    teamUtil.log("D-Pad LEFT Was Bumped");
-                    if (gamepad1.right_bumper == true) {
-                        robot.drive.MIN_START_VELOCITY += 10;
-                    } else if (gamepad1.left_bumper == true) {
-                        robot.drive.MIN_START_VELOCITY -= 10;
-                    }
-                }
-
-                if (gamepad1.dpad_right == true) {
-                    if (!dPadRightWasPressed) {
-                        dPadRightWasPressed = true;
-
-                    }
-
-                } else {
-                    if (dPadRightWasPressed) {
-                        dPadRightWasPressed = false;
-                        teamUtil.log("D-Pad RIGHT Was Bumped");
-                        if (gamepad1.right_bumper == true) {
-                            robot.drive.MIN_END_VELOCITY += 10;
-                        } else if (gamepad1.left_bumper == true) {
-                            robot.drive.MIN_END_VELOCITY -= 10;
-                        }
-                    }
-                }
-                /*
-                if (gamepad1.y == true) {
-                    robot.drive.runMotors(robot.drive.MIN_START_VELOCITY);
-                    teamUtil.pause(1000);
-                    robot.drive.runMotors(robot.drive.MIN_END_VELOCITY);
-                    teamUtil.pause(1000);
-                    robot.drive.runMotors(0);
-                }
-
-
-                //emergency stop
-                if (gamepad1.b == true) {
-                    robot.drive.runMotors(0);
-                }
-
-             */
-
-            /*
-                String currentAcceleration = String.format("%d", robot.drive.MAX_ACCELERATION);
-                String currentDeceleration = String.format("%d", robot.drive.MAX_DECELERATION);
-                String currentMinStartVelocity = String.format("%d", robot.drive.MIN_START_VELOCITY);
-                String currentMinEndVelocity = String.format("%d", robot.drive.MIN_END_VELOCITY);
-                telemetry.addLine("Current Max Acceleration" + currentAcceleration);
-                telemetry.addLine("Current Max Deceleration" + currentDeceleration);
-                telemetry.addLine("Current Min Start Velocity" + currentMinStartVelocity);
-                telemetry.addLine("Current Min End Velocity" + currentMinEndVelocity);
-
-             */
-                robot.outputTelemetry();
-                telemetry.update();
+            robot.outputTelemetry();
+            telemetry.update();
             }
         }
 
