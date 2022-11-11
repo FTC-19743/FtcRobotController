@@ -103,10 +103,10 @@ public class OpenCVSignalDetector {
 
         Mat HSVMat = new Mat();
 
-        Scalar yellowLowHSV = new Scalar(20, 100, 100); // lower bound HSV for yellow
-        Scalar yellowHighHSV = new Scalar(30, 255, 255); // higher bound HSV for yellow
-        Scalar greenLowHSV = new Scalar(40, 100, 100); //
-        Scalar greenHighHSV = new Scalar(80, 255, 255); //
+        Scalar yellowLowHSV = new Scalar(14, 100, 100); // lower bound HSV for yellow
+        Scalar yellowHighHSV = new Scalar(33, 255, 255); // higher bound HSV for yellow
+        Scalar greenLowHSV = new Scalar(38, 100, 100); // lower bound HSV for green
+        Scalar greenHighHSV = new Scalar(80, 255, 255); // higher bound HSV for green
         Scalar pinkLowHSV = new Scalar(140, 100, 100); //
         Scalar pinkHighHSV = new Scalar(155, 255, 255); //
         Mat thresholdMatYellow = new Mat();
