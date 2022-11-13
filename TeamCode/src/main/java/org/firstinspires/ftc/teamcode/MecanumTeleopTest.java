@@ -8,6 +8,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.assemblies.FourWheelDrive;
 import org.firstinspires.ftc.teamcode.assemblies.Outake;
 import org.firstinspires.ftc.teamcode.assemblies.Robot;
@@ -27,6 +31,7 @@ public class MecanumTeleopTest extends LinearOpMode {
 
     public void runOpMode() {
         teamUtil.init(this);
+
 
 
         gamepad = new TeamGamepad();
@@ -62,10 +67,10 @@ public class MecanumTeleopTest extends LinearOpMode {
         boolean dPadRightWasPressed = false;
         double powerFactor = 1;
 
-        robot.drive.frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        robot.drive.frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        robot.drive.backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        robot.drive.backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        //robot.drive.frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        //robot.drive.frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        // robot.drive.backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        //robot.drive.backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
 
 
@@ -74,12 +79,12 @@ public class MecanumTeleopTest extends LinearOpMode {
             gamepad.loop();
 
 
-            double y = -teamUtil.theOpMode.gamepad1.left_stick_y; // Remember, this is reversed!
-            double x = teamUtil.theOpMode.gamepad1.left_stick_x*1.1 ; // Counteract imperfect strafing
-            double rx = teamUtil.theOpMode.gamepad1.right_stick_x;
-
-            double botHeading = -imu.getAngularOrientation().firstAngle;
-
+            double y = -gamepad1.left_stick_y; // Remember, this is reversed!
+            double x = gamepad1.left_stick_x*1.1 ; // Counteract imperfect strafing
+            double rx = gamepad1.right_stick_x;
+            //Orientation anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
+            double botHeading = -imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle; //removed negative
+            telemetry.addLine("botheading: " + Math.toDegrees(botHeading));
             double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
             double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
 
@@ -87,15 +92,20 @@ public class MecanumTeleopTest extends LinearOpMode {
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio, but only when
             // at least one is out of the range [-1, 1]
-            /*
+
             //working code for robot centric drive
+            /*
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y - x + rx);
-            double backLeftPower = (y + x + rx) ;
-            double frontRightPower = (y - x - rx) ;
-            double backRightPower = (y + x - rx) ;
+            double frontLeftPower = (y + x + rx)/denominator;
+            double backLeftPower = (y - x + rx)/denominator;
+            double frontRightPower = (y - x - rx)/denominator ;
+            double backRightPower = (y + x - rx)/denominator ;
 
              */
+
+
+
+
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
 
@@ -103,6 +113,10 @@ public class MecanumTeleopTest extends LinearOpMode {
             double backLeftPower = (rotY - rotX + rx) / denominator;
             double frontRightPower = (rotY - rotX - rx) / denominator;
             double backRightPower = (rotY + rotX - rx) / denominator;
+
+
+
+
 
 
             if (gamepad1.right_trigger > .8) {
@@ -131,9 +145,31 @@ public class MecanumTeleopTest extends LinearOpMode {
             else if(gamepad2.dpad_down){
                 robot.outake.runPulleyDown();
             }
-            else{
-                robot.outake.stop();
+
+            if(gamepad2.right_bumper){
+                robot.outake.runToCupStack();
             }
+
+            if(gamepad2.options){
+                robot.outake.runToBottom();
+            }
+
+            else if(gamepad2.a){
+                robot.outake.runToGroundJunction();
+            }
+
+            else if(gamepad2.b){
+                robot.outake.runToShort();
+            }
+
+            else if(gamepad2.x){
+                robot.outake.runToMedium();
+            }
+
+            else if(gamepad2.y){
+                robot.outake.runToTall();
+            }
+
             if(gamepad2.left_trigger>0.8){
                 robot.outake.openGrabber();
             }
@@ -143,6 +179,7 @@ public class MecanumTeleopTest extends LinearOpMode {
 
             robot.outputTelemetry();
             telemetry.update();
+
             }
         }
 

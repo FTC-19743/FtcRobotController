@@ -5,12 +5,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.assemblies.OpenCVSignalDetector;
-import org.firstinspires.ftc.teamcode.assemblies.Robot;
 import org.firstinspires.ftc.teamcode.assemblies.Robot23;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
-@Autonomous(name="Auto23")
-public class Auto23 extends LinearOpMode {
+@Autonomous(name="AutoLeft")
+public class AutoLeft extends LinearOpMode {
     public static void log(String logString) {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
@@ -43,6 +42,7 @@ public class Auto23 extends LinearOpMode {
         waitForStart();
 
 
+
         telemetry.update();
         robot.outake.closeGrabber();
         teamUtil.pause(500);
@@ -52,7 +52,7 @@ public class Auto23 extends LinearOpMode {
         telemetry.update();
         robot.outake.pulley.setVelocity(1000);
         robot.drive.strafeLeft(.3, 120);
-        robot.drive.strafeRight(.3, 12);
+        robot.drive.strafeRight(.3, 13);
         robot.drive.moveCM(.3,18);
         robot.outake.openGrabber();
         teamUtil.pause(500);
@@ -71,6 +71,9 @@ public class Auto23 extends LinearOpMode {
         robot.outake.pulley.setTargetPosition(10);
         robot.outake.pulley.setVelocity(1000);
         teamUtil.pause(3000);
+
+
+        robot.drive.spinLeftWithIMU(90,0.25);
 
 
 

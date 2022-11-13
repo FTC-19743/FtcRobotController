@@ -17,10 +17,16 @@ public class Outake {
     public DcMotorEx pulley;
     public boolean pulleyCalibrated;
     public final int TOP = 3575; //tentative value
+    public final int MEDIUM = 2600;
+    public final int SHORT = 1500;
+    public final int GROUND = 125;
     public final int BOTTOM = 10;
+    public final int CUPSTACK = 406;
     public final double OPEN = 0.51;
     public final double GRAB = 0.37;
     public boolean HOLDING = false;
+    public static int ManualArmIncrement = 10;
+    public static int PulleyVelocity = 2500;
 
     public static void log(String logString) {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
@@ -36,9 +42,11 @@ public class Outake {
         grabber = hardwareMap.servo.get("grabber");
         pulley = hardwareMap.get(DcMotorEx.class, "pulley");
 
-        pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pulley.setDirection(DcMotorSimple.Direction.REVERSE);//tentative direction
         pulleyCalibrated = false;
+
+        teamUtil.log("Output Initialized");
     }
 
     public void outputTelemetry(){
@@ -58,13 +66,13 @@ public class Outake {
             if ((pulley.getCurrentPosition() == lastPos)) {
                 pulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 pulley.setPower(0);
-                pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                pulley.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 pulleyCalibrated = true;
                 log("Calibrating Pulley - Finished");
-
+                log("Pulley Calibrated Encoder:" + lastPos );
                 return;
             }
-            log("Pulley Encoder:" + lastPos );
+
 
         } while (true);
     }
@@ -85,6 +93,72 @@ public class Outake {
     }
 
     public void runPulleyUp(){
+
+        log("running arm up");
+
+        int currentPosition= pulley.getCurrentPosition();
+        if(currentPosition+ManualArmIncrement<TOP){
+            pulley.setTargetPosition(currentPosition+ManualArmIncrement);
+        }
+        pulley.setVelocity(500);
+
+
+    }
+    public void runPulleyDown(){
+
+        log("running arm up");
+
+        int currentPosition= pulley.getCurrentPosition();
+        if(currentPosition-ManualArmIncrement>BOTTOM){
+            pulley.setTargetPosition(currentPosition-ManualArmIncrement);
+        }
+        pulley.setVelocity(500);
+
+    }
+
+
+
+
+
+    public void openGrabber(){
+        grabber.setPosition(OPEN);
+    }
+
+    public void closeGrabber(){
+        grabber.setPosition(GRAB);
+    }
+
+    public void runToBottom(){
+        pulley.setTargetPosition(BOTTOM);
+        pulley.setVelocity(PulleyVelocity);
+    }
+
+    public void runToGroundJunction(){
+        pulley.setTargetPosition(GROUND);
+        pulley.setVelocity(PulleyVelocity);
+    }
+
+    public void runToShort(){
+        pulley.setTargetPosition(SHORT);
+        pulley.setVelocity(PulleyVelocity);
+    }
+
+    public void runToMedium(){
+        pulley.setTargetPosition(MEDIUM);
+        pulley.setVelocity(PulleyVelocity);
+    }
+
+    public void runToTall(){
+        pulley.setTargetPosition(TOP);
+        pulley.setVelocity(PulleyVelocity);
+    }
+
+    public void runToCupStack(){
+        pulley.setTargetPosition(CUPSTACK);
+        pulley.setVelocity(PulleyVelocity);
+    }
+
+    public void runPulleyUpv1(){
         if (pulley.getCurrentPosition() >= TOP) {//////////TOP NEEDS A VALUE!!!!
             stop();
             return;
@@ -95,7 +169,7 @@ public class Outake {
 
     }
 
-    public void runPulleyDown(){
+    public void runPulleyDownv1(){
         if (pulley.getCurrentPosition() < BOTTOM) {
             pulley.setVelocity(0);
             return;
@@ -105,11 +179,5 @@ public class Outake {
         pulley.setPower(-.75);
     }
 
-    public void openGrabber(){
-        grabber.setPosition(OPEN);
-    }
 
-    public void closeGrabber(){
-        grabber.setPosition(GRAB);
-    }
 }
