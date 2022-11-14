@@ -54,8 +54,10 @@ public class Outake {
                 grabber.getPosition(), pulley.getCurrentPosition());
     }
 
-    public void calibrate(){//pulley
 
+
+    public void calibrate(){//pulley
+        grabber.setPosition(OPEN);
         pulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulley.setPower(-0.1);
         teamUtil.pause(500);
@@ -117,9 +119,6 @@ public class Outake {
     }
 
 
-
-
-
     public void openGrabber(){
         grabber.setPosition(OPEN);
     }
@@ -127,6 +126,9 @@ public class Outake {
     public void closeGrabber(){
         grabber.setPosition(GRAB);
     }
+
+
+
 
     public void runToBottom(){
         pulley.setTargetPosition(BOTTOM);

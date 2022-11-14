@@ -30,6 +30,7 @@ public class MecanumTeleopTest extends LinearOpMode {
     TeamGamepad gamepad;
 
     public void runOpMode() {
+
         teamUtil.init(this);
 
 
@@ -79,6 +80,18 @@ public class MecanumTeleopTest extends LinearOpMode {
             gamepad.loop();
 
 
+
+
+
+
+
+            //declaration of power and denominator variables for math
+            double frontLeftPower;
+            double frontRightPower;
+            double backLeftPower;
+            double backRightPower;
+            double denominator;
+
             double y = -gamepad1.left_stick_y; // Remember, this is reversed!
             double x = gamepad1.left_stick_x*1.1 ; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
@@ -93,28 +106,26 @@ public class MecanumTeleopTest extends LinearOpMode {
             // This ensures all the powers maintain the same ratio, but only when
             // at least one is out of the range [-1, 1]
 
+
+
             //working code for robot centric drive
-            /*
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx)/denominator;
-            double backLeftPower = (y - x + rx)/denominator;
-            double frontRightPower = (y - x - rx)/denominator ;
-            double backRightPower = (y + x - rx)/denominator ;
+            if(gamepad1.left_trigger>0.8) {
+                //working robot centric
+                denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+                frontLeftPower = (y + x + rx) / denominator;
+                backLeftPower = (y - x + rx) / denominator;
+                frontRightPower = (y - x - rx) / denominator;
+                backRightPower = (y + x - rx) / denominator;
+            }
+            else{
+                //working field centric
+                denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
 
-             */
-
-
-
-
-
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-
-            double frontLeftPower = (rotY + rotX + rx) / denominator;
-            double backLeftPower = (rotY - rotX + rx) / denominator;
-            double frontRightPower = (rotY - rotX - rx) / denominator;
-            double backRightPower = (rotY + rotX - rx) / denominator;
-
-
+                frontLeftPower = (rotY + rotX + rx) / denominator;
+                backLeftPower = (rotY - rotX + rx) / denominator;
+                frontRightPower = (rotY - rotX - rx) / denominator;
+                backRightPower = (rotY + rotX - rx) / denominator;
+            }
 
 
 
@@ -122,7 +133,7 @@ public class MecanumTeleopTest extends LinearOpMode {
             if (gamepad1.right_trigger > .8) {
                 powerFactor = 1;
             }else{
-                powerFactor = .4;
+                powerFactor = .6;
             }
                 robot.drive.frontLeft.setPower(frontLeftPower*powerFactor);
                 robot.drive.backLeft.setPower(backLeftPower*powerFactor);
@@ -146,7 +157,7 @@ public class MecanumTeleopTest extends LinearOpMode {
                 robot.outake.runPulleyDown();
             }
 
-            if(gamepad2.right_bumper){
+            if(gamepad2.left_bumper){
                 robot.outake.runToCupStack();
             }
 
@@ -170,11 +181,11 @@ public class MecanumTeleopTest extends LinearOpMode {
                 robot.outake.runToTall();
             }
 
-            if(gamepad2.left_trigger>0.8){
-                robot.outake.openGrabber();
-            }
             if(gamepad2.right_trigger>0.8){
                 robot.outake.closeGrabber();
+            }
+            if(gamepad2.left_trigger>0.8){
+                robot.outake.openGrabber();
             }
 
             robot.outputTelemetry();
