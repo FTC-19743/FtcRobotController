@@ -40,8 +40,8 @@ public class AutoLeft extends LinearOpMode {
             }
         }
         waitForStart();
-
-
+        robot.drive.strafeRightToLine();
+    /*
 
         telemetry.update();
         robot.outake.closeGrabber();
@@ -51,12 +51,23 @@ public class AutoLeft extends LinearOpMode {
         robot.outake.outputTelemetry();
         telemetry.update();
         robot.outake.pulley.setVelocity(1000);
-        robot.drive.strafeLeft(.3, 120);
-        robot.drive.strafeRight(.3, 13);
+        robot.drive.strafeLeft(.3, 145);
+        robot.drive.strafeRight(.3, 38);
         robot.drive.moveCM(.3,18);
         robot.outake.openGrabber();
         teamUtil.pause(500);
         robot.drive.backCM(.3,16);
+        robot.drive.strafeLeft(.3,25);
+        robot.drive.spinRightWithIMU(180,0.25);
+        robot.drive.moveCM(0.25,20);
+
+     */
+
+
+
+
+        /*
+
         robot.drive.strafeRight(.3,30);
 
         if(signalDetector.signalDetect()==1){
@@ -74,6 +85,8 @@ public class AutoLeft extends LinearOpMode {
 
 
         robot.drive.spinLeftWithIMU(90,0.25);
+
+         */
 
 
 

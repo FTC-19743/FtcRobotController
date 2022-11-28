@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.assemblies;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -29,6 +30,7 @@ public class FourWheelDrive {
     public DcMotorEx frontRight = null;
     public DcMotorEx backLeft = null;
     public DcMotorEx backRight = null;
+    public bottomColorSensor colorSensor;
 
     public double COUNTS_PER_MOTOR_REV = 537.7;    // GoBilda 5202 312 RPM
     public double COUNTS_PER_CENTIMETER = 17.923;
@@ -59,7 +61,8 @@ public class FourWheelDrive {
         frontRight = hardwareMap.get(DcMotorEx.class, "frm");
         backLeft = hardwareMap.get(DcMotorEx.class, "blm");
         backRight = hardwareMap.get(DcMotorEx.class, "brm");
-
+        colorSensor = new bottomColorSensor(hardwareMap.get(ColorSensor.class, "bottomColor"));
+        colorSensor.calibrate();
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 
@@ -70,6 +73,8 @@ public class FourWheelDrive {
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         imu.initialize(parameters);
         teamUtil.log("Initializing Drive - FINISHED");
+
+
 
 
     }
@@ -483,6 +488,36 @@ public class FourWheelDrive {
 
 
 
+
+
+    }
+
+    public void strafeRightToLine(){
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setPower(0.1);
+        backLeft.setPower(-0.1);
+        backRight.setPower(0.1);
+        frontRight.setPower(-0.1);
+        while(!colorSensor.isOnTape()){
+            log("Not On Line");
+        }
+        log("On Line");
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+        frontRight.setPower(0);
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition());
+        frontRight.setTargetPosition(frontRight.getCurrentPosition());
+        backRight.setTargetPosition(backRight.getCurrentPosition());
+        backLeft.setTargetPosition(backLeft.getCurrentPosition());
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
     }
