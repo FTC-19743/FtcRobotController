@@ -36,7 +36,7 @@ public class teamUtil {
     public static boolean keepGoing(long timeOutTime) {
         String s=Long.toString(System.currentTimeMillis());
 
-        log(s);
+        //log(s);
         return ((inInitialization || theOpMode.opModeIsActive()) && (System.currentTimeMillis() < timeOutTime));
     }
 }

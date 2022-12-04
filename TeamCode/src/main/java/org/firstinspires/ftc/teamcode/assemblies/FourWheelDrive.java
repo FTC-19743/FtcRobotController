@@ -23,6 +23,7 @@ public class FourWheelDrive {
 
     HardwareMap hardwareMap;
     Telemetry telemetry;
+    public bottomColorSensor colorSensor;
 
 
     public BNO055IMU imu; //This variable is the imu
@@ -30,7 +31,7 @@ public class FourWheelDrive {
     public DcMotorEx frontRight = null;
     public DcMotorEx backLeft = null;
     public DcMotorEx backRight = null;
-    public bottomColorSensor colorSensor;
+
 
     public double COUNTS_PER_MOTOR_REV = 537.7;    // GoBilda 5202 312 RPM
     public double COUNTS_PER_CENTIMETER = 17.923;
@@ -44,6 +45,7 @@ public class FourWheelDrive {
         teamUtil.log("Constructing Drive");
         hardwareMap = teamUtil.theOpMode.hardwareMap;
         telemetry = teamUtil.theOpMode.telemetry;
+        colorSensor = new bottomColorSensor(hardwareMap.get(ColorSensor.class, "bottomColor"));
     }
 
     public static void log(String logString) {
@@ -61,8 +63,8 @@ public class FourWheelDrive {
         frontRight = hardwareMap.get(DcMotorEx.class, "frm");
         backLeft = hardwareMap.get(DcMotorEx.class, "blm");
         backRight = hardwareMap.get(DcMotorEx.class, "brm");
-        colorSensor = new bottomColorSensor(hardwareMap.get(ColorSensor.class, "bottomColor"));
-        colorSensor.calibrate();
+
+        // colorSensor.calibrate();
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 
@@ -78,7 +80,10 @@ public class FourWheelDrive {
 
 
     }
-
+    public void calibrate(){
+        colorSensor.calibrate();
+        teamUtil.log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" + colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
+    }
     public double getIMUHeading() {
         Orientation anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -126,7 +131,7 @@ public class FourWheelDrive {
         long currentTime = System.currentTimeMillis() + 5000;
         while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
 
-            teamUtil.log("waiting");
+            //teamUtil.log("waiting");
         }
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -171,7 +176,7 @@ public class FourWheelDrive {
         long currentTime = System.currentTimeMillis() + 5000;
         while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
 
-            teamUtil.log("waiting");
+            //teamUtil.log("waiting");
         }
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -187,6 +192,10 @@ public class FourWheelDrive {
     public void outputTelemetry() {
         telemetry.addData("Output  ", "flm:%d frm:%d blm:%d brm:%d heading:%f",
                 frontLeft.getCurrentPosition(), frontRight.getCurrentPosition(), backLeft.getCurrentPosition(), backRight.getCurrentPosition(), getIMUHeading());
+
+        telemetry.addData("Is On Line", "%b", colorSensor.isOnTape());
+        telemetry.addData("Red Value ", colorSensor.redValue());
+        telemetry.addData("Blue Value ", colorSensor.blueValue());
     }
 
     //basic move centimeters without accel and deceleration
@@ -223,7 +232,7 @@ public class FourWheelDrive {
         long currentTime = System.currentTimeMillis() + 5000;
         while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
 
-            teamUtil.log("waiting");
+            //teamUtil.log("waiting");
         }
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -311,7 +320,7 @@ public class FourWheelDrive {
                 frontRight.setPower(-1 * speed);
                 backRight.setPower(-1 * speed);
                 String currentIMUToPrint = String.format("%.2f", currentIMU);
-                log(currentIMUToPrint);
+               // log(currentIMUToPrint);
             }
             frontLeft.setPower(0);
             backLeft.setPower(0);
@@ -348,7 +357,7 @@ public class FourWheelDrive {
                 frontRight.setPower(-1 * speed);
                 backRight.setPower(-1 * speed);
                 String currentIMUToPrint = String.format("%.2f", initialIMU);
-                log(currentIMUToPrint);
+                //log(currentIMUToPrint);
                 currentIMU = getIMUHeading();
 
             }
@@ -372,7 +381,7 @@ public class FourWheelDrive {
                 frontRight.setPower(-1 * speed);
                 backRight.setPower(-1 * speed);
                 String currentIMUToPrint = String.format("%.2f", currentIMU);
-                log(currentIMUToPrint);
+                //log(currentIMUToPrint);
                 currentIMU = getIMUHeading();
             }
             frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -410,7 +419,7 @@ public class FourWheelDrive {
                 frontRight.setPower(speed);
                 backRight.setPower(speed);
                 String currentIMUToPrint = String.format("%.2f", initialIMU);
-                log(currentIMUToPrint);
+                //log(currentIMUToPrint);
             }
             frontLeft.setPower(0);
             backLeft.setPower(0);
@@ -446,7 +455,7 @@ public class FourWheelDrive {
                 frontRight.setPower(speed);
                 backRight.setPower(speed);
                 String currentIMUToPrint = String.format("%.2f", initialIMU);
-                log(currentIMUToPrint);
+                //log(currentIMUToPrint);
                 currentIMU=getIMUHeading();
 
             }
@@ -470,7 +479,7 @@ public class FourWheelDrive {
                 frontRight.setPower(speed);
                 backRight.setPower(speed);
                 String currentIMUToPrint = String.format("%.2f", initialIMU);
-                log(currentIMUToPrint);
+               // log(currentIMUToPrint);
                 currentIMU=getIMUHeading();
             }
             frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -493,6 +502,11 @@ public class FourWheelDrive {
     }
 
     public void strafeRightToLine(){
+        log("Strafing Right To Line");
+        log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" + colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
+        log("On Blue " +colorSensor.onBlue()+ " On Red " + colorSensor.onRed());
+
+
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -503,8 +517,13 @@ public class FourWheelDrive {
         frontRight.setPower(-0.1);
         while(!colorSensor.isOnTape()){
             log("Not On Line");
+            //log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" +colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
+            //log("On Blue " +colorSensor.onBlue()+ " On Red " +colorSensor.onRed());
+
         }
         log("On Line");
+        log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" + colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
+        log("On Blue " +colorSensor.onBlue()+ " On Red " + colorSensor.onRed());
         frontLeft.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
@@ -518,6 +537,8 @@ public class FourWheelDrive {
         frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        log("Done Strafing Right To Line");
+
 
 
     }

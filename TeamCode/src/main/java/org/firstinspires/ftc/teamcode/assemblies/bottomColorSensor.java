@@ -5,6 +5,8 @@ public class bottomColorSensor {
     private ColorSensor colorSensor;
     private int matValueRed;
     private int matValueBlue;
+    public int BLUE_THRESHOLD = 0;
+    public int RED_THRESHOLD = 0;
     double WHITE_THRESHOLD = 500;
 
     public enum TapeColor {RED, BLUE, WHITE, NONE}
@@ -18,8 +20,16 @@ public class bottomColorSensor {
     }
 
     public void calibrate() {//Call this when the light sensor is over empty mat
+        for(int i=0;i<10; i++){
+            colorSensor.red();
+            colorSensor.blue();
+        }
         matValueBlue=colorSensor.blue();
         matValueRed=colorSensor.red();
+        BLUE_THRESHOLD = (int) (matValueBlue*1.5);
+        RED_THRESHOLD = (int) (matValueRed*1.5);
+
+
     }
 
     public TapeColor getColor() {
@@ -35,14 +45,14 @@ public class bottomColorSensor {
     }
 
     public boolean isOnTape(){
-        return onBlue() || onRed() || onWhite();
+        return onBlue() || onRed();
 
     }
     public boolean onBlue() {
-        return colorSensor.blue() > matValueBlue * 1.5;
+        return colorSensor.blue() > BLUE_THRESHOLD;
     }
     public boolean onRed() {
-        return colorSensor.red() > matValueBlue * 1.5;
+        return colorSensor.red() > RED_THRESHOLD;
     }
     public boolean onWhite() {
         return colorSensor.alpha() > WHITE_THRESHOLD;

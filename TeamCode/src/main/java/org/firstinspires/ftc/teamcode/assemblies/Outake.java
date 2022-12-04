@@ -15,15 +15,19 @@ public class Outake {
     Telemetry telemetry;
     public Servo grabber;
     public DcMotorEx pulley;
+    public Servo joint;
     public boolean pulleyCalibrated;
-    public final int TOP = 3575; //tentative value
-    public final int MEDIUM = 2600;
-    public final int SHORT = 1500;
+    public final int TOP = 2750; //tentative value
+    public final int MEDIUM = 1770;
+    public final int SHORT = 650;
     public final int GROUND = 125;
     public final int BOTTOM = 10;
-    public final int CUPSTACK = 406;
+    public final int CUPSTACK = 487;
     public final double OPEN = 0.51;
     public final double GRAB = 0.37;
+    public final double FULLY_OPEN = .65;
+    public final double JOINTUP = 0.26; // tentative values
+    public final double JOINTDOWN = 0.46; //tentative values
     public boolean HOLDING = false;
     public static int ManualArmIncrement = 10;
     public static int PulleyVelocity = 2500;
@@ -41,6 +45,7 @@ public class Outake {
     public void init(){
         grabber = hardwareMap.servo.get("grabber");
         pulley = hardwareMap.get(DcMotorEx.class, "pulley");
+        joint = hardwareMap.servo.get("joint");
 
         //pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pulley.setDirection(DcMotorSimple.Direction.REVERSE);//tentative direction
@@ -50,14 +55,15 @@ public class Outake {
     }
 
     public void outputTelemetry(){
-        telemetry.addData("Output  ", "grabber:%f pulley:%d",
-                grabber.getPosition(), pulley.getCurrentPosition());
+        telemetry.addData("Output  ", "grabber:%f joint:%f  pulley:%d",
+                grabber.getPosition(), joint.getPosition(),  pulley.getCurrentPosition());
     }
 
 
 
     public void calibrate(){//pulley
         grabber.setPosition(OPEN);
+        joint.setPosition(JOINTDOWN);
         pulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulley.setPower(-0.1);
         teamUtil.pause(500);
@@ -127,37 +133,47 @@ public class Outake {
         grabber.setPosition(GRAB);
     }
 
+    public void jointUp() {joint.setPosition(JOINTUP);}
+
+    public void jointDown() {joint.setPosition(JOINTDOWN);}
+
 
 
 
     public void runToBottom(){
         pulley.setTargetPosition(BOTTOM);
         pulley.setVelocity(PulleyVelocity);
+        joint.setPosition(JOINTDOWN);
     }
 
     public void runToGroundJunction(){
         pulley.setTargetPosition(GROUND);
         pulley.setVelocity(PulleyVelocity);
+        joint.setPosition(JOINTDOWN);
     }
 
     public void runToShort(){
         pulley.setTargetPosition(SHORT);
         pulley.setVelocity(PulleyVelocity);
+        joint.setPosition(JOINTUP);
     }
 
     public void runToMedium(){
         pulley.setTargetPosition(MEDIUM);
         pulley.setVelocity(PulleyVelocity);
+        joint.setPosition(JOINTUP);
     }
 
     public void runToTall(){
         pulley.setTargetPosition(TOP);
         pulley.setVelocity(PulleyVelocity);
+        joint.setPosition(JOINTUP);
     }
 
     public void runToCupStack(){
         pulley.setTargetPosition(CUPSTACK);
         pulley.setVelocity(PulleyVelocity);
+        joint.setPosition(JOINTDOWN);
     }
 
     public void runPulleyUpv1(){

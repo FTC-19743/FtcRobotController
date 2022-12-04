@@ -13,15 +13,12 @@ public class Robot23 {
     Telemetry telemetry;
     public FourWheelDrive drive;
     public Outake outake;
-    public bottomColorSensor colorSensor;
-    public ColorSensor ftcColorSensor;
 
     public Robot23(){
         telemetry = teamUtil.theOpMode.telemetry;
         hardwareMap = teamUtil.theOpMode.hardwareMap;
         drive = new FourWheelDrive();
         outake = new Outake();
-        colorSensor = new bottomColorSensor(hardwareMap.get(ColorSensor.class, "bottomColor"));
 
 
     }
@@ -34,14 +31,12 @@ public class Robot23 {
 
     public void calibrate(){
         outake.calibrate();
-        colorSensor.calibrate();
-
+        drive.calibrate();
     }
 
     public void outputTelemetry(){
         outake.outputTelemetry();
         drive.outputTelemetry();
-        telemetry.addData("Is On Line", "%b", colorSensor.isOnTape());
     }
     public void driveInSquare(){
         //drive.moveCM(.2, 61);

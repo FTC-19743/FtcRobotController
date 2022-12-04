@@ -159,15 +159,23 @@ public class TeleOp23 extends LinearOpMode {
                 robot.outake.runPulleyDown();
             }
 
+            if (gamepad2.dpad_left){
+                robot.outake.jointDown();
+            }
+
+            if (gamepad2.dpad_right){
+                robot.outake.jointUp();
+            }
+
             if(gamepad2.left_bumper){
                 robot.outake.runToCupStack();
             }
 
-            if(gamepad2.options){
+            if(gamepad2.a){
                 robot.outake.runToBottom();
             }
 
-            else if(gamepad2.a){
+            else if(gamepad2.options){
                 robot.outake.runToGroundJunction();
             }
 
