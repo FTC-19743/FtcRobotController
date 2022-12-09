@@ -17,12 +17,16 @@ public class Outake {
     public DcMotorEx pulley;
     public Servo joint;
     public boolean pulleyCalibrated;
+    public final int MAX = 3000;
     public final int TOP = 2750; //tentative value
     public final int MEDIUM = 1770;
     public final int SHORT = 650;
+    public final int ABOVE_STACK = 1000;
     public final int GROUND = 125;
     public final int BOTTOM = 10;
-    public final int CUPSTACK = 487;
+    public final int CUPSTACK = 580;
+    public int[] CUP_HEIGHTS = {580, 415, 260, 140, 10};
+
     public final double OPEN = 0.51;
     public final double GRAB = 0.37;
     public final double FULLY_OPEN = .65;
@@ -105,7 +109,7 @@ public class Outake {
         log("running arm up");
 
         int currentPosition= pulley.getCurrentPosition();
-        if(currentPosition+ManualArmIncrement<TOP){
+        if(currentPosition+ManualArmIncrement<MAX){
             pulley.setTargetPosition(currentPosition+ManualArmIncrement);
         }
         pulley.setVelocity(500);
@@ -133,7 +137,11 @@ public class Outake {
         grabber.setPosition(GRAB);
     }
 
-    public void jointUp() {joint.setPosition(JOINTUP);}
+    public void jointUp() {
+        joint.setPosition(.28);
+        teamUtil.pause(250);
+        joint.setPosition(JOINTUP);
+    }
 
     public void jointDown() {joint.setPosition(JOINTDOWN);}
 

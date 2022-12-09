@@ -542,5 +542,45 @@ public class FourWheelDrive {
 
 
     }
+    public void strafeLeftToLine(){
+        log("Strafing Left To Line");
+        log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" + colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
+        log("On Blue " +colorSensor.onBlue()+ " On Red " + colorSensor.onRed());
 
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setPower(-0.1);
+        backLeft.setPower(0.1);
+        backRight.setPower(-0.1);
+        frontRight.setPower(0.1);
+        while(!colorSensor.isOnTape()){
+            log("Not On Line");
+            //log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" +colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
+            //log("On Blue " +colorSensor.onBlue()+ " On Red " +colorSensor.onRed());
+
+        }
+        log("On Line");
+        log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" + colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
+        log("On Blue " +colorSensor.onBlue()+ " On Red " + colorSensor.onRed());
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+        frontRight.setPower(0);
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition());
+        frontRight.setTargetPosition(frontRight.getCurrentPosition());
+        backRight.setTargetPosition(backRight.getCurrentPosition());
+        backLeft.setTargetPosition(backLeft.getCurrentPosition());
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        log("Done Strafing Right To Line");
+
+
+
+    }
 }

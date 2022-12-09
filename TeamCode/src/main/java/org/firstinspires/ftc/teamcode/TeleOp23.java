@@ -27,7 +27,8 @@ public class TeleOp23 extends LinearOpMode {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
     Robot23 robot;
-    TeamGamepad gamepad;
+    TeamGamepad driverGamepad;
+    TeamGamepad armsGamepad;
 
     public void runOpMode() {
 
@@ -35,8 +36,11 @@ public class TeleOp23 extends LinearOpMode {
 
 
 
-        gamepad = new TeamGamepad();
-        gamepad.initilize(true);
+        driverGamepad = new TeamGamepad();
+        driverGamepad.initilize(true);
+        armsGamepad = new TeamGamepad();
+        armsGamepad.initilize(false);
+        int cupLevel = 1; // 0 is highest 4 is lowest
         // Retrieve the IMU from the hardware map
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -77,7 +81,8 @@ public class TeleOp23 extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            gamepad.loop();
+            driverGamepad.loop();
+            armsGamepad.loop();
 
 
 
@@ -102,7 +107,7 @@ public class TeleOp23 extends LinearOpMode {
             telemetry.addLine("botheading: " + Math.toDegrees(botHeading));
             double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
             double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
-
+            telemetry.addLine("current cup level "+ String.valueOf(cupLevel));
 
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio, but only when
@@ -111,7 +116,7 @@ public class TeleOp23 extends LinearOpMode {
 
 
             //working code for robot centric drive
-            if(gamepad1.left_trigger>0.8) {
+            if(gamepad1.left_bumper) {
                 //working robot centric
                 denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
                 frontLeftPower = (y + x + rx) / denominator;
@@ -134,8 +139,11 @@ public class TeleOp23 extends LinearOpMode {
 
             if (gamepad1.right_trigger > .8) {
                 powerFactor = 1;
-            }else{
-                powerFactor = .6;
+            }else if(gamepad1.left_trigger>.8){
+                powerFactor=0.25;
+            }
+            else{
+                powerFactor = .5;
             }
             robot.drive.frontLeft.setPower(frontLeftPower*powerFactor);
             robot.drive.backLeft.setPower(backLeftPower*powerFactor);
@@ -167,9 +175,7 @@ public class TeleOp23 extends LinearOpMode {
                 robot.outake.jointUp();
             }
 
-            if(gamepad2.left_bumper){
-                robot.outake.runToCupStack();
-            }
+
 
             if(gamepad2.a){
                 robot.outake.runToBottom();
@@ -198,6 +204,25 @@ public class TeleOp23 extends LinearOpMode {
             if(gamepad2.left_trigger>0.8){
                 robot.outake.openGrabber();
 
+            }
+            if(armsGamepad.wasRightBumperPressed()){
+                if(cupLevel == 4){
+                    cupLevel = 0;
+                }
+                else{
+                    cupLevel ++;
+                }
+            }
+            if(gamepad2.start){
+                cupLevel = 0;
+
+            }
+
+            if(gamepad2.left_bumper){
+
+                robot.outake.pulley.setTargetPosition(robot.outake.CUP_HEIGHTS[cupLevel]);
+                robot.outake.pulley.setVelocity(robot.outake.PulleyVelocity);
+                robot.outake.joint.setPosition(robot.outake.JOINTDOWN);
             }
 
             robot.outputTelemetry();

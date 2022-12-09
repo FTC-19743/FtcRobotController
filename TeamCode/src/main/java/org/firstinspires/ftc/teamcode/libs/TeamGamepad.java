@@ -10,28 +10,31 @@ public class TeamGamepad {
 
     boolean aWasPressed = false;
     boolean aWasPressedLastTime = false;
-    boolean aBumpToDo = true;
+    boolean aBumpToDo = false;
     boolean bWasPressed = false;
     boolean bWasPressedLastTime = false;
-    boolean bBumpToDo = true;
+    boolean bBumpToDo = false;
     boolean xWasPressed = false;
     boolean xWasPressedLastTime = false;
-    boolean xBumpToDo = true;
+    boolean xBumpToDo = false;
     boolean yWasPressed = false;
     boolean yWasPressedLastTime = false;
-    boolean yBumpToDo = true;
+    boolean yBumpToDo = false;
     boolean upWasPressed = false;
     boolean upWasPressedLastTime = false;
-    boolean upBumpToDo = true;
+    boolean upBumpToDo = false;
     boolean downWasPressed = false;
     boolean downWasPressedLastTime = false;
-    boolean downBumpToDo = true;
+    boolean downBumpToDo = false;
     boolean rightWasPressed = false;
     boolean rightWasPressedLastTime = false;
-    boolean rightBumpToDo = true;
+    boolean rightBumpToDo = false;
     boolean leftWasPressed = false;
     boolean leftWasPressedLastTime = false;
-    boolean leftBumpToDo = true;
+    boolean leftBumpToDo = false;
+    boolean rightBumperWasPressed = false;
+    boolean rightBumperWasPressedLastTime = false;
+    boolean rightBumperBumpToDo = false;
 
     public TeamGamepad(){
 
@@ -50,6 +53,7 @@ public class TeamGamepad {
         bWasPressedLastTime = bWasPressed;
         bWasPressed = gamepad.b;
         xWasPressedLastTime = xWasPressed;
+
         xWasPressed = gamepad.x;
         yWasPressedLastTime = yWasPressed;
         yWasPressed = gamepad.y;
@@ -61,6 +65,8 @@ public class TeamGamepad {
         leftWasPressed = gamepad.dpad_left;
         rightWasPressedLastTime = rightWasPressed;
         rightWasPressed = gamepad.dpad_right;
+        rightBumperWasPressedLastTime = rightBumperWasPressed;
+        rightBumperWasPressed = gamepad.right_bumper;
         if (aWasPressed == false && aWasPressedLastTime == true) {
             aBumpToDo = true;
         }
@@ -84,6 +90,9 @@ public class TeamGamepad {
         }
         if (rightWasPressed == false && rightWasPressedLastTime == true) {
             rightBumpToDo = true;
+        }
+        if (rightBumperWasPressed == false && rightBumperWasPressedLastTime == true) {
+            rightBumperBumpToDo = true;
         }
     }
     public boolean wasAPressed(){
@@ -138,6 +147,13 @@ public class TeamGamepad {
     public boolean wasLeftPressed(){
         if(leftBumpToDo) {
             leftBumpToDo = false;
+            return true;
+        }
+        return false;
+    }
+    public boolean wasRightBumperPressed(){
+        if(rightBumperBumpToDo) {
+            rightBumperBumpToDo = false;
             return true;
         }
         return false;

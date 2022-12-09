@@ -23,6 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  *
  */
 
+@Disabled
 @TeleOp(name="SlappyBot", group="Linear Opmode")
 public class SlappyBot extends LinearOpMode {
 

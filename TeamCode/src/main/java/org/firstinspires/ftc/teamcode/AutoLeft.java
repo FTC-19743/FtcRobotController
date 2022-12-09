@@ -29,15 +29,13 @@ public class AutoLeft extends LinearOpMode {
         signalDetector.activate();
 
 
-
         telemetry.addLine("Waiting for start");
         telemetry.update();
         long now = System.currentTimeMillis();
-        while (!opModeIsActive())
-        {
+        while (!opModeIsActive()) {
             signalDetector.writeTelemetry();
             sleep(100); // save cpu for OpenCV
-            if (System.currentTimeMillis() > now+2000) {
+            if (System.currentTimeMillis() > now + 2000) {
                 signalDetector.nextView();
                 now = System.currentTimeMillis();
             }
@@ -56,21 +54,21 @@ public class AutoLeft extends LinearOpMode {
         robot.outake.outputTelemetry();
         telemetry.update();
         robot.outake.pulley.setVelocity(1000);
-        robot.drive.strafeLeft(.3, 145);
-        robot.drive.strafeRight(.3, 38);
+        robot.drive.strafeLeft(.6, 145);
+        robot.drive.strafeRight(.6, 38);
         robot.drive.moveCM(.3,14);
         robot.outake.openGrabber();
-        teamUtil.pause(500);
-        robot.drive.backCM(.3,16);
-        robot.drive.strafeLeft(.3,25);
-        robot.drive.spinRightWithIMU(180,0.25);
-        robot.drive.moveCM(0.25,35);
+        teamUtil.pause(250);
+        robot.drive.backCM(.4,16);
+        robot.drive.strafeLeft(.6,25);
+        robot.drive.spinRightWithIMU(180,0.5);
+        robot.drive.moveCM(0.4,35);
 
         robot.drive.strafeRightToLine();
 
         robot.outake.runToShort();
         robot.outake.grabber.setPosition(robot.outake.FULLY_OPEN);
-        robot.drive.moveCM(.3, 18);
+        robot.drive.moveCM(.3, 20);
         robot.drive.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.drive.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.drive.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -84,20 +82,29 @@ public class AutoLeft extends LinearOpMode {
         robot.drive.frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.drive.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.drive.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.drive.backCM(.3, 8);
+        robot.drive.backCM(.3, 7);
         robot.outake.runToCupStack();
+        teamUtil.pause(500);
         robot.outake.grabber.setPosition(robot.outake.GRAB);
         teamUtil.pause(500);
-        robot.outake.pulley.setTargetPosition(robot.outake.MEDIUM);
-        teamUtil.pause(1000);
-        robot.drive.backCM(.3, 30);
         robot.outake.runToShort();
-        robot.drive.spinLeftWithIMU(95,.3);
+        teamUtil.pause(250);
+        robot.drive.backCM(.3, 30);
+        robot.drive.spinLeftWithIMU(95, .4);
         robot.drive.moveCM(.3, 12);
         robot.outake.grabber.setPosition(robot.outake.OPEN);
-        teamUtil.pause(500);
-        robot.drive.backCM(.3,12);
-
+        teamUtil.pause(250);
+        robot.drive.backCM(.3, 12);
+        int detection = signalDetector.signalDetect();
+        robot.drive.spinRightWithIMU(180, .5);
+        if(detection == 1){
+            robot.drive.strafeLeft(.5, 25);
+        }else if(detection == 2){
+            robot.drive.strafeRight(.5, 29);
+        }else{
+            robot.drive.strafeRight(.5, 90);
+        }
+    }
 
 
 
@@ -130,6 +137,4 @@ public class AutoLeft extends LinearOpMode {
 
 
 
-
-    }
 }

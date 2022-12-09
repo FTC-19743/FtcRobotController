@@ -23,6 +23,7 @@ public class teamUtil {
     public static void pause(long sleepTime) {
         long wakeupTime= System.currentTimeMillis()+sleepTime;
         while(System.currentTimeMillis()< wakeupTime){
+            theOpMode.idle();
         }
     }
 

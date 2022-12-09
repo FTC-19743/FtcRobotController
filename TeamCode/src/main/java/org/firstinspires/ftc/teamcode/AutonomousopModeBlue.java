@@ -2,13 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.teamcode.assemblies.Robot;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.assemblies.TwoWheelDrive;
-
+@Disabled
 @Autonomous(name="Autonomous Blue Carousel")
 public class AutonomousopModeBlue extends LinearOpMode {
     public static void log(String logString) {

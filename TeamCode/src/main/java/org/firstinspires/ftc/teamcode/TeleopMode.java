@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.assemblies.Robot;
 import org.firstinspires.ftc.teamcode.assemblies.TwoWheelDrive;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
+@Disabled
 @TeleOp(name="TeleopMode", group="Linear Opmode")
 public class TeleopMode extends LinearOpMode {
     public BNO055IMU imu;
