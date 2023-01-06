@@ -50,10 +50,10 @@ public class AutoLeft extends LinearOpMode {
         robot.outake.closeGrabber();
         teamUtil.pause(500);
         robot.outake.runToMedium();
-        robot.outake.pulley.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //robot.outake.pulley.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.outake.outputTelemetry();
         telemetry.update();
-        robot.outake.pulley.setVelocity(1000);
+        //robot.outake.pulley.setVelocity(1000);
         robot.drive.strafeLeft(.6, 145);
         robot.drive.strafeRight(.6, 38);
         robot.drive.moveCM(.3,14);

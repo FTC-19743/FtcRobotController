@@ -44,11 +44,11 @@ public class AutoRight extends LinearOpMode {
         telemetry.update();
         robot.outake.closeGrabber();
         teamUtil.pause(500);
-        robot.outake.pulley.setTargetPosition(2625);
-        robot.outake.pulley.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //robot.outake.pulley.setTargetPosition(2625);
+        //robot.outake.pulley.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.outake.outputTelemetry();
         telemetry.update();
-        robot.outake.pulley.setVelocity(1000);
+        //robot.outake.pulley.setVelocity(1000);
         robot.drive.strafeRight(.3, 120);
         robot.drive.strafeLeft(.3, 13);
         robot.drive.moveCM(.3, 9);
@@ -64,8 +64,8 @@ public class AutoRight extends LinearOpMode {
             robot.drive.backCM(.3, 60);
         }
 
-        robot.outake.pulley.setTargetPosition(10);
-        robot.outake.pulley.setVelocity(1000);
+        //robot.outake.pulley.setTargetPosition(10);
+        //robot.outake.pulley.setVelocity(1000);
         teamUtil.pause(3000);
 
 

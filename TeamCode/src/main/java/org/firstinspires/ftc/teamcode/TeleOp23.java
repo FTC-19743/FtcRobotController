@@ -59,7 +59,7 @@ public class TeleOp23 extends LinearOpMode {
 
         robot = new Robot23();
         robot.initialize();
-        robot.calibrate();
+        //robot.calibrate();
         telemetry.addLine("Ready to start");
         telemetry.update();
         // Denominator is the largest motor power (absolute value) or 1
@@ -152,13 +152,7 @@ public class TeleOp23 extends LinearOpMode {
 
 
 
-            if (gamepad1.start==true) {
-                parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-                // Without this, data retrieving from the IMU throws an exception
-                imu.initialize(parameters);
 
-
-            }
 
             if (gamepad2.dpad_up){
                 robot.outake.runPulleyUp();
@@ -175,8 +169,31 @@ public class TeleOp23 extends LinearOpMode {
                 robot.outake.jointUp();
             }
 
+            if (gamepad2.y){
+                robot.outake.turnRotatorLeft();
+            }
+
+            if (gamepad2.a){
+                robot.outake.turnRotatorRight();
+            }
+
+            if (gamepad2.x){
+                robot.outake.manualGrabberOpen();
+            }
+            if (gamepad2.b){
+                robot.outake.manualGrabberClose();
+            }
 
 
+            if (gamepad1.start==true) {
+                parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+                // Without this, data retrieving from the IMU throws an exception
+                imu.initialize(parameters);
+
+
+
+            }
+/*
             if(gamepad2.a){
                 robot.outake.runToBottom();
             }
@@ -224,6 +241,10 @@ public class TeleOp23 extends LinearOpMode {
                 robot.outake.pulley.setVelocity(robot.outake.PulleyVelocity);
                 robot.outake.joint.setPosition(robot.outake.JOINTDOWN);
             }
+
+
+                 */
+
 
             robot.outputTelemetry();
             telemetry.update();
