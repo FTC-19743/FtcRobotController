@@ -24,15 +24,19 @@ public class Outake {
     public final int MAX = 3000;
     public final int TOP = 2750; //tentative value
     public final int MEDIUM = 1770;
-    public final int SHORT = 650;
+    public final int SHORT = 535;
+    public final int ARM_SHORT = 600;
     public final int ABOVE_STACK = 1000;
     public final int GROUND = 125;
     public final int BOTTOM = 10;
     public final int CUPSTACK = 580;
+    public final double RIGHT_MOTOR_RATIO = 1.383766234;
     public int[] CUP_HEIGHTS = {580, 415, 260, 140, 10};
 
-    public final double OPEN = 0.51;
-    public final double GRAB = 0.37;
+    public final double OPEN = 0.55;
+    public final double GRAB = 0.34;
+    public final double ROTATOR_FLAT = 0.87;
+    public final double ROTATOR_FLIPPED = 0.21;
     public final double FULLY_OPEN = .65;
     // final double JOINTUP = 0.26; // tentative values
     //public final double JOINTDOWN = 0.46; //tentative values
@@ -63,10 +67,14 @@ public class Outake {
         //pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pulleyLeft.setDirection(DcMotorSimple.Direction.REVERSE);//tentative direction
         pulleyCalibrated = false;
+        pulleyLeft.setTargetPosition(pulleyLeft.getCurrentPosition());
+        pulleyRight.setTargetPosition(pulleyRight.getCurrentPosition());
+        joint.setTargetPosition(joint.getCurrentPosition());
         pulleyLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         pulleyRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         joint.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
+        openGrabber();
+        turnRotatorFlat();
         teamUtil.log("Output Initialized");
     }
 
@@ -79,7 +87,6 @@ public class Outake {
 
     public void calibrate(){//pulley
         //grabber.setPosition(OPEN);
-        //joint.setPosition(JOINTDOWN);
         pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulleyLeft.setPower(-0.1);
@@ -103,15 +110,21 @@ public class Outake {
                     if ((pulleyLeft.getCurrentPosition() == lastLeftPos)&& (pulleyRight.getCurrentPosition()==lastRightPos)) {
                         pulleyLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                         pulleyRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        joint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
                         pulleyLeft.setPower(0);
                         pulleyRight.setPower(0);
+                        pulleyRight.setTargetPosition(0);
+                        pulleyLeft.setTargetPosition(0);
+                        joint.setTargetPosition(0);
                         pulleyLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         pulleyRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        joint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         pulleyCalibrated = true;
                         log("Calibrating Pulley - Finished");
-
+                        return;
                     }
-                    return;
+
                 } while (true);
             }
             log("Pulley Left Calibrated Encoder:" + lastLeftPos );
@@ -142,23 +155,31 @@ public class Outake {
 
         log("running arm up");
 
-        int currentPosition= pulleyLeft.getCurrentPosition();
-        if(currentPosition+ManualArmIncrement<MAX){
-            pulleyLeft.setTargetPosition(currentPosition+ManualArmIncrement);
+        int currentPositionLeft= pulleyLeft.getCurrentPosition();
+        int currentPositionRight= pulleyRight.getCurrentPosition();
+        if(currentPositionLeft+ManualArmIncrement<MAX &&currentPositionRight+ManualArmIncrement<MAX){
+            //pulleyLeft.setTargetPosition(currentPositionLeft+ManualArmIncrement);
+            pulleyRight.setTargetPosition(currentPositionRight+ManualArmIncrement);
         }
-        pulleyLeft.setVelocity(500);
+        //pulleyLeft.setVelocity(500);
+        pulleyLeft.setPower(0);
+        pulleyRight.setVelocity(500);
+
 
 
     }
     public void runPulleyDown(){
 
         log("running arm up");
-
-        int currentPosition= pulleyLeft.getCurrentPosition();
-        if(currentPosition-ManualArmIncrement>BOTTOM){
-            pulleyLeft.setTargetPosition(currentPosition-ManualArmIncrement);
+        int currentPositionLeft= pulleyLeft.getCurrentPosition();
+        int currentPositionRight= pulleyRight.getCurrentPosition();
+        if(currentPositionLeft-ManualArmIncrement>BOTTOM &&currentPositionRight-ManualArmIncrement>BOTTOM){
+            //pulleyLeft.setTargetPosition(currentPositionLeft-ManualArmIncrement);
+            pulleyRight.setTargetPosition(currentPositionRight-ManualArmIncrement);
         }
-        pulleyLeft.setVelocity(500);
+        //pulleyLeft.setVelocity(500);
+        pulleyLeft.setPower(0);
+        pulleyRight.setVelocity(500);
 
     }
 
@@ -175,26 +196,29 @@ public class Outake {
         log("running arm up");
 
         int currentJointPosition = joint.getCurrentPosition();
-        if(currentJointPosition+ManualArmIncrement<JOINT_MAX){
+        if(currentJointPosition+ManualJointIncrement<JOINT_MAX){
             joint.setTargetPosition(currentJointPosition+ManualJointIncrement);
         }
         joint.setVelocity(100);
     }
 
     public void jointDown() {
-        log("running arm up");
+        log("running arm down");
 
         int currentJointPosition = joint.getCurrentPosition();
-        if(currentJointPosition-ManualArmIncrement>JOINT_BOTTOM){
+        if(currentJointPosition-ManualJointIncrement>JOINT_BOTTOM){
             joint.setTargetPosition(currentJointPosition-ManualJointIncrement);
         }
         joint.setVelocity(100);
     }
 
-    public void turnRotatorRight(){
-        log("Turning Rotator Right");
-        double currentRotatorPosition = rotator.getPosition();
-        rotator.setPosition(currentRotatorPosition+ManualRotatorIncrement);
+    public void turnRotatorFlat(){
+        rotator.setPosition(ROTATOR_FLAT);
+
+    }
+
+    public void turnRotatorFlipped(){
+        rotator.setPosition(ROTATOR_FLIPPED);
 
     }
 

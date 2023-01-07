@@ -59,7 +59,7 @@ public class TeleOp23 extends LinearOpMode {
 
         robot = new Robot23();
         robot.initialize();
-        //robot.calibrate();
+        robot.calibrate();
         telemetry.addLine("Ready to start");
         telemetry.update();
         // Denominator is the largest motor power (absolute value) or 1
@@ -170,18 +170,18 @@ public class TeleOp23 extends LinearOpMode {
             }
 
             if (gamepad2.y){
-                robot.outake.turnRotatorLeft();
+                robot.outake.turnRotatorFlat();
             }
 
             if (gamepad2.a){
-                robot.outake.turnRotatorRight();
+                robot.outake.turnRotatorFlipped();
             }
 
             if (gamepad2.x){
-                robot.outake.manualGrabberOpen();
+                robot.outake.openGrabber();
             }
             if (gamepad2.b){
-                robot.outake.manualGrabberClose();
+                robot.outake.closeGrabber();
             }
 
 
