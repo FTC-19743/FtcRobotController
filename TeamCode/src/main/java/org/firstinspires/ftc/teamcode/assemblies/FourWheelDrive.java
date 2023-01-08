@@ -27,6 +27,8 @@ public class FourWheelDrive {
 
 
     public BNO055IMU imu; //This variable is the imu
+    public static double HEADING_OFFSET; // offset between IMU heading and field
+
     public DcMotorEx frontLeft = null;
     public DcMotorEx frontRight = null;
     public DcMotorEx backLeft = null;
@@ -87,9 +89,41 @@ public class FourWheelDrive {
     }
     public double getIMUHeading() {
         Orientation anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
         return (anglesCurrent.firstAngle);
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // return our current heading as a 0 to 360 range.
+    public double getHeading() {
+        return adjustAngle(getIMUHeading() - HEADING_OFFSET);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Make the current heading 0.
+    public void resetHeading() {
+        HEADING_OFFSET = getIMUHeading();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Make the current heading to specified number
+    public void setHeading(int heading){
+        HEADING_OFFSET = getIMUHeading()-heading;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // adjust the given angle to be in the range 0-360.
+    public double adjustAngle(double angle) {
+        //assuming imu runs from [0, 360] and angle is added/subtracted, adjust it to expected reading
+        while (angle >= 360) {
+            angle -= 360;
+        }
+        while (angle < 0) {
+            angle += 360;
+        }
+        return angle;
+    }
+
     /*
     public void updatePowers(){
         frontLeftPower = (rotY + rotX + rx) / denominator;
@@ -191,8 +225,8 @@ public class FourWheelDrive {
     }
 
     public void outputTelemetry() {
-        telemetry.addData("Output  ", "flm:%d frm:%d blm:%d brm:%d heading:%f",
-                frontLeft.getCurrentPosition(), frontRight.getCurrentPosition(), backLeft.getCurrentPosition(), backRight.getCurrentPosition(), getIMUHeading());
+        telemetry.addData("Output  ", "flm:%d frm:%d blm:%d brm:%d heading:%f nh: %f",
+                frontLeft.getCurrentPosition(), frontRight.getCurrentPosition(), backLeft.getCurrentPosition(), backRight.getCurrentPosition(), getIMUHeading(), getHeading());
 
         telemetry.addData("Is On Line", "%b", colorSensor.isOnTape());
         telemetry.addData("Red Value ", colorSensor.redValue());

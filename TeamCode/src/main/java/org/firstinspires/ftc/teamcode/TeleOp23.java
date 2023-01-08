@@ -30,6 +30,7 @@ public class TeleOp23 extends LinearOpMode {
     TeamGamepad driverGamepad;
     TeamGamepad armsGamepad;
 
+
     public void runOpMode() {
 
         teamUtil.init(this);
@@ -40,7 +41,7 @@ public class TeleOp23 extends LinearOpMode {
         driverGamepad.initilize(true);
         armsGamepad = new TeamGamepad();
         armsGamepad.initilize(false);
-        int cupLevel = 1; // 0 is highest 4 is lowest
+
         // Retrieve the IMU from the hardware map
         BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -62,6 +63,7 @@ public class TeleOp23 extends LinearOpMode {
         robot.calibrate();
         telemetry.addLine("Ready to start");
         telemetry.update();
+        robot.outake.cupLevel = 0; // 0 is highest 4 is lowest
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio, but only when
         // at least one is out of the range [-1, 1]
@@ -80,6 +82,7 @@ public class TeleOp23 extends LinearOpMode {
 
 
         waitForStart();
+        robot.drive.resetHeading();
         while (opModeIsActive()) {
             driverGamepad.loop();
             armsGamepad.loop();
@@ -101,13 +104,14 @@ public class TeleOp23 extends LinearOpMode {
 
             double y = -gamepad1.left_stick_y; // Remember, this is reversed!
             double x = gamepad1.left_stick_x*1.1 ; // Counteract imperfect strafing
-            double rx = gamepad1.right_stick_x;
+            double rx = -gamepad1.right_stick_x;
             //Orientation anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
-            double botHeading = -imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle; //removed negative
+            double botHeading = -Math.toRadians((robot.drive.getHeading()-180)); //
+            //double botHeading = -imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle; //removed negative
             telemetry.addLine("botheading: " + Math.toDegrees(botHeading));
             double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
             double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
-            telemetry.addLine("current cup level "+ String.valueOf(cupLevel));
+            //telemetry.addLine("current cup level "+ String.valueOf(cupLevel));
 
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio, but only when
@@ -145,10 +149,10 @@ public class TeleOp23 extends LinearOpMode {
             else{
                 powerFactor = .5;
             }
-            robot.drive.frontLeft.setPower(frontLeftPower*powerFactor);
-            robot.drive.backLeft.setPower(backLeftPower*powerFactor);
-            robot.drive.frontRight.setPower(frontRightPower*powerFactor);
-            robot.drive.backRight.setPower(backRightPower*powerFactor);
+            robot.drive.frontLeft.setPower(-frontLeftPower*powerFactor);
+            robot.drive.backLeft.setPower(-backLeftPower*powerFactor);
+            robot.drive.frontRight.setPower(-frontRightPower*powerFactor);
+            robot.drive.backRight.setPower(-backRightPower*powerFactor);
 
 
 
@@ -169,20 +173,31 @@ public class TeleOp23 extends LinearOpMode {
                 robot.outake.jointUp();
             }
 
-            if (gamepad2.y){
-                robot.outake.turnRotatorFlat();
-            }
-
             if (gamepad2.a){
-                robot.outake.turnRotatorFlipped();
+                robot.outake.runToLevelNoWait(1);
             }
 
-            if (gamepad2.x){
+            if (gamepad2.b){
+                robot.outake.runToLevelNoWait(2);
+            }
+
+
+
+            if (gamepad2.y){
+                robot.outake.runToLevelNoWait(3);
+            }
+
+
+            if (gamepad2.left_trigger>0.8){
                 robot.outake.openGrabber();
             }
-            if (gamepad2.b){
+            if (gamepad2.left_bumper){
                 robot.outake.closeGrabber();
             }
+            if(gamepad2.right_trigger>0.8){
+                robot.outake.runToBottomNoWait(false);
+            }
+
 
 
             if (gamepad1.start==true) {
@@ -192,6 +207,9 @@ public class TeleOp23 extends LinearOpMode {
 
 
 
+            }
+            if (gamepad1.right_stick_button && gamepad1.left_stick_button) {
+                robot.drive.resetHeading();
             }
 /*
             if(gamepad2.a){
@@ -222,28 +240,25 @@ public class TeleOp23 extends LinearOpMode {
                 robot.outake.openGrabber();
 
             }
-            if(armsGamepad.wasRightBumperPressed()){
-                if(cupLevel == 4){
-                    cupLevel = 0;
-                }
-                else{
-                    cupLevel ++;
-                }
-            }
-            if(gamepad2.start){
-                cupLevel = 0;
+
+ */
+
+
+
+
+            if(armsGamepad.wasXPressed()){
+
+
+                robot.outake.runToBottomNoWait(true);
+                robot.outake.changeCupLevel();
 
             }
-
-            if(gamepad2.left_bumper){
-
-                robot.outake.pulley.setTargetPosition(robot.outake.CUP_HEIGHTS[cupLevel]);
-                robot.outake.pulley.setVelocity(robot.outake.PulleyVelocity);
-                robot.outake.joint.setPosition(robot.outake.JOINTDOWN);
+            if (gamepad2.options){
+                robot.outake.cupLevel = 0;
             }
 
 
-                 */
+
 
 
             robot.outputTelemetry();

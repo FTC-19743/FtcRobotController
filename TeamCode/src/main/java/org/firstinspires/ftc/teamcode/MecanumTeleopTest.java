@@ -164,7 +164,7 @@ public class MecanumTeleopTest extends LinearOpMode {
             }
 
             if(gamepad2.options){
-                robot.outake.runToBottom();
+                robot.outake.runToBottom(false);
             }
 
             else if(gamepad2.a){

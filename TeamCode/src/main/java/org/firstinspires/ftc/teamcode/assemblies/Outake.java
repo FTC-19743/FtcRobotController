@@ -21,31 +21,34 @@ public class Outake {
     public boolean pulleyCalibrated;
     public final int JOINT_BOTTOM = 0; //tentative value
     public final int JOINT_MAX = 10000; //tentativevalue
-    public final int MAX = 3000;
-    public final int TOP = 2750; //tentative value
-    public final int MEDIUM = 1770;
-    public final int SHORT = 535;
-    public final int ARM_SHORT = 600;
+    public final int MAX = 2480;
+    public final int TOP = 2000; //tentative value
+    public final int MEDIUM = 1300;
+    public final int SHORT = 520;
+    public final int FLIPPED_JOINT = 600;
     public final int ABOVE_STACK = 1000;
-    public final int GROUND = 125;
+    public final int GROUND = 80;
     public final int BOTTOM = 10;
-    public final int CUPSTACK = 580;
+    public final int CUPSTACK = 440;
     public final double RIGHT_MOTOR_RATIO = 1.383766234;
-    public int[] CUP_HEIGHTS = {580, 415, 260, 140, 10};
+    public int[] CUP_HEIGHTS = {440, 345, 245, 130, 10};
 
     public final double OPEN = 0.55;
     public final double GRAB = 0.34;
     public final double ROTATOR_FLAT = 0.87;
     public final double ROTATOR_FLIPPED = 0.21;
+    public final double ROTATOR_SIDEWAYS = 0.54;
     public final double FULLY_OPEN = .65;
+    public int cupLevel = 0; // 0 is highest 4 is lowest
     // final double JOINTUP = 0.26; // tentative values
     //public final double JOINTDOWN = 0.46; //tentative values
     public boolean HOLDING = false;
-    public static int ManualArmIncrement = 10;
+    public static int ManualArmIncrement = 20;
     public static int ManualJointIncrement =10; //tentative value
     public static double ManualRotatorIncrement = 0.05;
     public static double ManualGrabberIncrement = 0.05;
     public static int PulleyVelocity = 2500;
+    public boolean Moving = false;
 
     public static void log(String logString) {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
@@ -158,11 +161,10 @@ public class Outake {
         int currentPositionLeft= pulleyLeft.getCurrentPosition();
         int currentPositionRight= pulleyRight.getCurrentPosition();
         if(currentPositionLeft+ManualArmIncrement<MAX &&currentPositionRight+ManualArmIncrement<MAX){
-            //pulleyLeft.setTargetPosition(currentPositionLeft+ManualArmIncrement);
+            pulleyLeft.setTargetPosition(currentPositionLeft+ManualArmIncrement);
             pulleyRight.setTargetPosition(currentPositionRight+ManualArmIncrement);
         }
-        //pulleyLeft.setVelocity(500);
-        pulleyLeft.setPower(0);
+        pulleyLeft.setVelocity(500);
         pulleyRight.setVelocity(500);
 
 
@@ -174,11 +176,10 @@ public class Outake {
         int currentPositionLeft= pulleyLeft.getCurrentPosition();
         int currentPositionRight= pulleyRight.getCurrentPosition();
         if(currentPositionLeft-ManualArmIncrement>BOTTOM &&currentPositionRight-ManualArmIncrement>BOTTOM){
-            //pulleyLeft.setTargetPosition(currentPositionLeft-ManualArmIncrement);
+            pulleyLeft.setTargetPosition(currentPositionLeft-ManualArmIncrement);
             pulleyRight.setTargetPosition(currentPositionRight-ManualArmIncrement);
         }
-        //pulleyLeft.setVelocity(500);
-        pulleyLeft.setPower(0);
+        pulleyLeft.setVelocity(500);
         pulleyRight.setVelocity(500);
 
     }
@@ -241,10 +242,53 @@ public class Outake {
     }
 
 
-    public void runToBottom(){
-        pulleyLeft.setTargetPosition(BOTTOM);
-        pulleyLeft.setVelocity(PulleyVelocity);
-        //joint.setPosition(JOINTDOWN);
+    public void runToBottom(boolean cupstack){
+        if(cupstack){
+            if(joint.getCurrentPosition()>200){
+                grabber.setPosition(GRAB);
+            }
+
+            rotator.setPosition(ROTATOR_FLAT);
+            pulleyRight.setTargetPosition(CUP_HEIGHTS[cupLevel]);
+            pulleyLeft.setTargetPosition(CUP_HEIGHTS[cupLevel]);
+            pulleyLeft.setVelocity(PulleyVelocity);
+            pulleyRight.setVelocity(PulleyVelocity);
+
+            joint.setTargetPosition(JOINT_BOTTOM);
+            joint.setVelocity(1000);
+            teamUtil.pause(500);
+            grabber.setPosition(OPEN);
+        }
+        else{
+            grabber.setPosition(GRAB);
+            rotator.setPosition(ROTATOR_FLAT);
+            pulleyLeft.setTargetPosition(BOTTOM);
+            pulleyRight.setTargetPosition(BOTTOM);
+            //pulleyLeft.setVelocity(PulleyVelocity);
+            //pulleyRight.setVelocity(PulleyVelocity);
+            joint.setTargetPosition(JOINT_BOTTOM);
+            teamUtil.pause(500);
+            grabber.setPosition(OPEN);
+        }
+
+
+        Moving = false;
+    }
+    //thread for runToBottom
+    public void runToBottomNoWait(boolean cupstack) {
+        if(Moving){
+            teamUtil.log("Lift Attempted to run other movement while moving");
+            return;
+        }
+        Moving = true;
+        teamUtil.log("Launching Thread to Move to bottom");
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runToBottom(cupstack);
+            }
+        });
+        thread.start();
     }
 
     public void runToGroundJunction(){
@@ -271,10 +315,71 @@ public class Outake {
         //joint.setPosition(JOINTUP);
     }
 
+    public void runToLevel(int level){
+        if(level==1){
+            pulleyLeft.setTargetPosition(SHORT);
+            pulleyRight.setTargetPosition(SHORT);
+
+        }
+        if(level==2){
+            pulleyLeft.setTargetPosition(MEDIUM);
+            pulleyRight.setTargetPosition(MEDIUM);
+        }
+        if(level==3){
+            pulleyLeft.setTargetPosition(TOP);
+            pulleyRight.setTargetPosition(TOP);
+        }
+
+
+
+
+        pulleyLeft.setVelocity(PulleyVelocity);
+        pulleyRight.setVelocity(PulleyVelocity);
+
+        teamUtil.pause(250);
+        rotator.setPosition(ROTATOR_FLIPPED);
+        joint.setTargetPosition(FLIPPED_JOINT);
+        joint.setVelocity(1000);
+
+        Moving = false;
+
+
+
+
+
+
+    }
+    public void runToLevelNoWait(int level) {
+        if(Moving){
+            teamUtil.log("Lift Attempted to run other movement while moving");
+            return;
+        }
+        Moving = true;
+        teamUtil.log("Launching Thread to Move to level");
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runToLevel(level);
+            }
+        });
+        thread.start();
+    }
+
+
+
     public void runToCupStack(){
         pulleyLeft.setTargetPosition(CUPSTACK);
         pulleyLeft.setVelocity(PulleyVelocity);
         //joint.setPosition(JOINTDOWN);
+    }
+
+    public void changeCupLevel(){
+        if(cupLevel == 4){
+            cupLevel = 0;
+        }
+        else{
+            cupLevel ++;
+        }
     }
 /*
     public void runPulleyUpv1(){
