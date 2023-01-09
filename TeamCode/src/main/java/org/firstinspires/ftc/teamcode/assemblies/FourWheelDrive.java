@@ -71,6 +71,11 @@ public class FourWheelDrive {
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        //frontLeft.setTargetPositionTolerance(20);
+       // frontRight.setTargetPositionTolerance(20);
+       // backLeft.setTargetPositionTolerance(20);
+        //backRight.setTargetPositionTolerance(20);
+
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         //These are the parameters that the imu uses in the code to name and keep track of the data
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -223,6 +228,188 @@ public class FourWheelDrive {
         backLeft.setPower(0);
         backRight.setPower(0);
     }
+    public void newStrafeRight(double speed, double centimeters){
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
+
+        // Determine new target position, and pass to motor controller\
+        newFrontLeftTarget = frontLeft.getCurrentPosition() + (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newFrontRightTarget = frontRight.getCurrentPosition() - (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newBackLeftTarget = backLeft.getCurrentPosition() - (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newBackRightTarget = backRight.getCurrentPosition() + (int) (centimeters * COUNTS_PER_CENTIMETER);
+
+        frontLeft.setTargetPosition((int)(newFrontLeftTarget*.1));
+        frontRight.setTargetPosition((int)(newFrontRightTarget*.1));
+        backLeft.setTargetPosition((int)(newBackLeftTarget*.1));
+        backRight.setTargetPosition((int)(newBackRightTarget*.1));
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setPower(Math.abs(speed*.4));
+        frontRight.setPower(Math.abs(speed)*.4);
+        backLeft.setPower(Math.abs(speed)*.4);
+        backRight.setPower(Math.abs(speed)*.4);
+        long currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
+
+            //teamUtil.log("waiting");
+        }
+        frontLeft.setTargetPosition((int)(newFrontLeftTarget*.3));
+        frontRight.setTargetPosition((int)(newFrontRightTarget*.3));
+        backLeft.setTargetPosition((int)(newBackLeftTarget*.3));
+        backRight.setTargetPosition((int)(newBackRightTarget*.3));
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setPower(Math.abs(speed*.7));
+        frontRight.setPower(Math.abs(speed)*.7);
+        backLeft.setPower(Math.abs(speed)*.7);
+        backRight.setPower(Math.abs(speed)*.7);
+        currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
+
+            //teamUtil.log("waiting");
+        }
+        frontLeft.setTargetPosition((int)(newFrontLeftTarget*.7));
+        frontRight.setTargetPosition((int)(newFrontRightTarget*.7));
+        backLeft.setTargetPosition((int)(newBackLeftTarget*.7));
+        backRight.setTargetPosition((int)(newBackRightTarget*.7));
+
+        // Turn On RUN_TO_POSITION
+
+
+        // start motion.
+        frontLeft.setPower(Math.abs(speed));
+        frontRight.setPower(Math.abs(speed));
+        backLeft.setPower(Math.abs(speed));
+        backRight.setPower(Math.abs(speed));
+        teamUtil.log("Moving Forward");
+        currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
+
+            //teamUtil.log("waiting");
+        }
+        frontLeft.setTargetPosition((int)(newFrontLeftTarget));
+        frontRight.setTargetPosition((int)(newFrontRightTarget));
+        backLeft.setTargetPosition((int)(newBackLeftTarget));
+        backRight.setTargetPosition((int)(newBackRightTarget));
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setPower(Math.abs(speed*.4));
+        frontRight.setPower(Math.abs(speed)*.4);
+        backLeft.setPower(Math.abs(speed)*.4);
+        backRight.setPower(Math.abs(speed)*.4);
+        currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
+
+            //teamUtil.log("waiting");
+        }
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+    }
+    public void newStrafeLeft(double speed, double centimeters){
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
+
+        // Determine new target position, and pass to motor controller\
+        newFrontLeftTarget = frontLeft.getCurrentPosition() - (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newFrontRightTarget = frontRight.getCurrentPosition() + (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newBackLeftTarget = backLeft.getCurrentPosition() + (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newBackRightTarget = backRight.getCurrentPosition() - (int) (centimeters * COUNTS_PER_CENTIMETER);
+
+        frontLeft.setTargetPosition((int)(newFrontLeftTarget*.1));
+        frontRight.setTargetPosition((int)(newFrontRightTarget*.1));
+        backLeft.setTargetPosition((int)(newBackLeftTarget*.1));
+        backRight.setTargetPosition((int)(newBackRightTarget*.1));
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setPower(Math.abs(speed*.4));
+        frontRight.setPower(Math.abs(speed)*.4);
+        backLeft.setPower(Math.abs(speed)*.4);
+        backRight.setPower(Math.abs(speed)*.4);
+        long currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
+
+            //teamUtil.log("waiting");
+        }
+        frontLeft.setTargetPosition((int)(newFrontLeftTarget*.3));
+        frontRight.setTargetPosition((int)(newFrontRightTarget*.3));
+        backLeft.setTargetPosition((int)(newBackLeftTarget*.3));
+        backRight.setTargetPosition((int)(newBackRightTarget*.3));
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setPower(Math.abs(speed*.7));
+        frontRight.setPower(Math.abs(speed)*.7);
+        backLeft.setPower(Math.abs(speed)*.7);
+        backRight.setPower(Math.abs(speed)*.7);
+        currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
+
+            //teamUtil.log("waiting");
+        }
+        frontLeft.setTargetPosition((int)(newFrontLeftTarget*.7));
+        frontRight.setTargetPosition((int)(newFrontRightTarget*.7));
+        backLeft.setTargetPosition((int)(newBackLeftTarget*.7));
+        backRight.setTargetPosition((int)(newBackRightTarget*.7));
+
+        // Turn On RUN_TO_POSITION
+
+
+        // start motion.
+        frontLeft.setPower(Math.abs(speed));
+        frontRight.setPower(Math.abs(speed));
+        backLeft.setPower(Math.abs(speed));
+        backRight.setPower(Math.abs(speed));
+        teamUtil.log("Moving Forward");
+        currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
+
+            //teamUtil.log("waiting");
+        }
+        frontLeft.setTargetPosition((int)(newFrontLeftTarget));
+        frontRight.setTargetPosition((int)(newFrontRightTarget));
+        backLeft.setTargetPosition((int)(newBackLeftTarget));
+        backRight.setTargetPosition((int)(newBackRightTarget));
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setPower(Math.abs(speed*.4));
+        frontRight.setPower(Math.abs(speed)*.4);
+        backLeft.setPower(Math.abs(speed)*.4);
+        backRight.setPower(Math.abs(speed)*.4);
+        currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
+
+            //teamUtil.log("waiting");
+        }
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+    }
 
     public void outputTelemetry() {
         telemetry.addData("Output  ", "flm:%d frm:%d blm:%d brm:%d heading:%f nh: %f",
@@ -231,9 +418,103 @@ public class FourWheelDrive {
         telemetry.addData("Is On Line", "%b", colorSensor.isOnTape());
         telemetry.addData("Red Value ", colorSensor.redValue());
         telemetry.addData("Blue Value ", colorSensor.blueValue());
+        telemetry.addLine("Target Position Tolerance" + frontLeft.getTargetPositionTolerance());
+
     }
 
     //basic move centimeters without accel and deceleration
+    public void newMoveCM(double speed, double centimeters) {
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
+
+        // Determine new target position, and pass to motor controller\
+        newFrontLeftTarget = frontLeft.getCurrentPosition() + (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newFrontRightTarget = frontRight.getCurrentPosition() + (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newBackLeftTarget = backLeft.getCurrentPosition() + (int) (centimeters * COUNTS_PER_CENTIMETER);
+        newBackRightTarget = backRight.getCurrentPosition() + (int) (centimeters * COUNTS_PER_CENTIMETER);
+
+        frontLeft.setTargetPosition((int)(newFrontLeftTarget*.1));
+        frontRight.setTargetPosition((int)(newFrontRightTarget*.1));
+        backLeft.setTargetPosition((int)(newBackLeftTarget*.1));
+        backRight.setTargetPosition((int)(newBackRightTarget*.1));
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setPower(Math.abs(speed*.4));
+        frontRight.setPower(Math.abs(speed)*.4);
+        backLeft.setPower(Math.abs(speed)*.4);
+        backRight.setPower(Math.abs(speed)*.4);
+        long currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
+
+            //teamUtil.log("waiting");
+        }
+        frontLeft.setTargetPosition((int)(newFrontLeftTarget*.3));
+        frontRight.setTargetPosition((int)(newFrontRightTarget*.3));
+        backLeft.setTargetPosition((int)(newBackLeftTarget*.3));
+        backRight.setTargetPosition((int)(newBackRightTarget*.3));
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setPower(Math.abs(speed*.7));
+        frontRight.setPower(Math.abs(speed)*.7);
+        backLeft.setPower(Math.abs(speed)*.7);
+        backRight.setPower(Math.abs(speed)*.7);
+        currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
+
+            //teamUtil.log("waiting");
+        }
+        frontLeft.setTargetPosition((int)(newFrontLeftTarget*.7));
+        frontRight.setTargetPosition((int)(newFrontRightTarget*.7));
+        backLeft.setTargetPosition((int)(newBackLeftTarget*.7));
+        backRight.setTargetPosition((int)(newBackRightTarget*.7));
+
+        // Turn On RUN_TO_POSITION
+
+
+        // start motion.
+        frontLeft.setPower(Math.abs(speed));
+        frontRight.setPower(Math.abs(speed));
+        backLeft.setPower(Math.abs(speed));
+        backRight.setPower(Math.abs(speed));
+        teamUtil.log("Moving Forward");
+        currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
+
+            //teamUtil.log("waiting");
+        }
+        frontLeft.setTargetPosition((int)(newFrontLeftTarget));
+        frontRight.setTargetPosition((int)(newFrontRightTarget));
+        backLeft.setTargetPosition((int)(newBackLeftTarget));
+        backRight.setTargetPosition((int)(newBackRightTarget));
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setPower(Math.abs(speed*.4));
+        frontRight.setPower(Math.abs(speed)*.4);
+        backLeft.setPower(Math.abs(speed)*.4);
+        backRight.setPower(Math.abs(speed)*.4);
+        currentTime = System.currentTimeMillis() + 5000;
+        while (teamUtil.keepGoing(currentTime) && (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy())) {
+
+            //teamUtil.log("waiting");
+        }
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+
+    }
     public void moveCM(double speed, double centimeters) {
         int newFrontLeftTarget;
         int newFrontRightTarget;
@@ -618,4 +899,167 @@ public class FourWheelDrive {
 
 
     }
+    public void relativeSpinRight(double degrees, double topSpeed){
+        setHeading(0);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while(getHeading()<degrees*.1){
+            frontLeft.setPower(-.4*topSpeed);
+            backLeft.setPower(-.4*topSpeed);
+            frontRight.setPower(.4*topSpeed);
+            backRight.setPower(.4*topSpeed);
+        }
+        while(getHeading()<degrees*.2){
+            frontLeft.setPower(-.7*topSpeed);
+            backLeft.setPower(-.7*topSpeed);
+            frontRight.setPower(.7*topSpeed);
+            backRight.setPower(.7*topSpeed);
+        }
+        while(getHeading()<degrees*.8){
+            frontLeft.setPower(-topSpeed);
+            backLeft.setPower(-topSpeed);
+            frontRight.setPower(topSpeed);
+            backRight.setPower(topSpeed);
+        }
+        while(getHeading()<degrees*.9){
+            frontLeft.setPower(-.6*topSpeed);
+            backLeft.setPower(-.6*topSpeed);
+            frontRight.setPower(.6*topSpeed);
+            backRight.setPower(.6*topSpeed);
+        }
+        while(getHeading()<degrees){
+            frontLeft.setPower(-.2*topSpeed);
+            backLeft.setPower(-.2*topSpeed);
+            frontRight.setPower(.2*topSpeed);
+            backRight.setPower(.2*topSpeed);
+        }
+        frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
+    }
+
+    public void setAllMotorsToSpeed(double speed){
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setPower(speed);
+        backLeft.setPower(speed);
+        frontRight.setPower(speed);
+        backRight.setPower(speed);
+    }
+
+    public void relativeSpinLeft(double degrees, double topSpeed){
+        setHeading(0);
+
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while(getHeading()<360-degrees*.1){
+            frontLeft.setPower(.2*topSpeed);
+            backLeft.setPower(.2*topSpeed);
+            frontRight.setPower(-.2*topSpeed);
+            backRight.setPower(-.2*topSpeed);
+        }
+        while(getHeading()<360-degrees*.2){
+            frontLeft.setPower(.6*topSpeed);
+            backLeft.setPower(.6*topSpeed);
+            frontRight.setPower(-.6*topSpeed);
+            backRight.setPower(-.6*topSpeed);
+        }
+        while(getHeading()<360-degrees*.7){
+            frontLeft.setPower(topSpeed);
+            backLeft.setPower(topSpeed);
+            frontRight.setPower(-topSpeed);
+            backRight.setPower(-topSpeed);
+        }
+        while(getHeading()<360-degrees*.9){
+            frontLeft.setPower(.6*topSpeed);
+            backLeft.setPower(.6*topSpeed);
+            frontRight.setPower(-.6*topSpeed);
+            backRight.setPower(-.6*topSpeed);
+        }
+        while(getHeading()<360-degrees){
+            frontLeft.setPower(.2*topSpeed);
+            backLeft.setPower(.2*topSpeed);
+            frontRight.setPower(-.2*topSpeed);
+            backRight.setPower(-.2*topSpeed);
+        }
+        frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
+    }
+
+    public void spinRightToHeading(int wantedIMU, double speed){
+        log("Spin Right To Heading Called");
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setPower(speed);
+        backLeft.setPower(speed);
+        frontRight.setPower(-speed);
+        backRight.setPower(-speed);
+        while(getHeading()>(wantedIMU+30)){
+
+        }
+        frontLeft.setPower(0.15);
+        backLeft.setPower(0.15);
+        frontRight.setPower(-0.15);
+        backRight.setPower(-0.15);
+        while(getHeading()>(wantedIMU+3)){
+        }
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
+
+
+
+    }
+
+
+
+    public void spinLeftToHeading(int wantedIMU, double speed){
+        log("Spin Left To Heading Called");
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setPower(-speed);
+        backLeft.setPower(-speed);
+        frontRight.setPower(speed);
+        backRight.setPower(speed);
+        while(getHeading()<(wantedIMU-30)){
+        }
+        frontLeft.setPower(-0.15);
+        backLeft.setPower(-0.15);
+        frontRight.setPower(0.15);
+        backRight.setPower(0.15);
+        while(getHeading()<(wantedIMU-3)){
+        }
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
+
+
+
+    }
+
+
+
 }

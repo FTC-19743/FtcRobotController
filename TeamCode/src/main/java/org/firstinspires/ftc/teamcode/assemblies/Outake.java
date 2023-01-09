@@ -244,9 +244,7 @@ public class Outake {
 
     public void runToBottom(boolean cupstack){
         if(cupstack){
-            if(joint.getCurrentPosition()>200){
-                grabber.setPosition(GRAB);
-            }
+
 
             rotator.setPosition(ROTATOR_FLAT);
             pulleyRight.setTargetPosition(CUP_HEIGHTS[cupLevel]);
@@ -256,7 +254,14 @@ public class Outake {
 
             joint.setTargetPosition(JOINT_BOTTOM);
             joint.setVelocity(1000);
-            teamUtil.pause(500);
+            if(joint.getCurrentPosition()>200){
+                grabber.setPosition(GRAB);
+                teamUtil.pause(500);
+            }else{
+                teamUtil.pause(100);
+            }
+
+
             grabber.setPosition(OPEN);
         }
         else{
@@ -335,6 +340,7 @@ public class Outake {
 
         pulleyLeft.setVelocity(PulleyVelocity);
         pulleyRight.setVelocity(PulleyVelocity);
+        grabber.setPosition(GRAB);
 
         teamUtil.pause(250);
         rotator.setPosition(ROTATOR_FLIPPED);

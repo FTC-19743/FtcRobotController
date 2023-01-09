@@ -82,7 +82,7 @@ public class TeleOp23 extends LinearOpMode {
 
 
         waitForStart();
-        robot.drive.resetHeading();
+        robot.drive.setHeading(90);
         while (opModeIsActive()) {
             driverGamepad.loop();
             armsGamepad.loop();
@@ -105,6 +105,9 @@ public class TeleOp23 extends LinearOpMode {
             double y = -gamepad1.left_stick_y; // Remember, this is reversed!
             double x = gamepad1.left_stick_x*1.1 ; // Counteract imperfect strafing
             double rx = -gamepad1.right_stick_x;
+            if(Math.abs(rx)<0.15){
+                rx=0;
+            }
             //Orientation anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             double botHeading = -Math.toRadians((robot.drive.getHeading()-180)); //
             //double botHeading = -imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle; //removed negative
@@ -156,7 +159,9 @@ public class TeleOp23 extends LinearOpMode {
 
 
 
-
+            if(driverGamepad.wasAPressed()){
+                robot.drive.spinLeftToHeading(90,0.6);
+            }
 
             if (gamepad2.dpad_up){
                 robot.outake.runPulleyUp();

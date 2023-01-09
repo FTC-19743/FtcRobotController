@@ -5,8 +5,8 @@ public class bottomColorSensor {
     private ColorSensor colorSensor;
     private int matValueRed;
     private int matValueBlue;
-    public int BLUE_THRESHOLD = 0;
-    public int RED_THRESHOLD = 0;
+    public int BLUE_THRESHOLD = 190;
+    public int RED_THRESHOLD = 140;
     double WHITE_THRESHOLD = 500;
 
     public enum TapeColor {RED, BLUE, WHITE, NONE}
