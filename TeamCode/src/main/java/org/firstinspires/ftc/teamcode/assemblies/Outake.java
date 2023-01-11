@@ -261,7 +261,7 @@ public class Outake {
                 teamUtil.pause(100);
             }
 
-
+            changeCupLevel();
             grabber.setPosition(OPEN);
         }
         else{

@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.assemblies;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.assemblies.Robot;
 import org.firstinspires.ftc.teamcode.assemblies.Robot23;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
-
+@Disabled
 @Autonomous(name="MecanumAutoTest")
 public class MecanumAutoTest extends LinearOpMode {
     public static void log(String logString) {

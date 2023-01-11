@@ -1,14 +1,16 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.assemblies.OpenCVSignalDetector;
 import org.firstinspires.ftc.teamcode.assemblies.Robot23;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
-@Autonomous(name="AutoLeft")
-public class AutoLeft extends LinearOpMode {
+
+@Disabled
+@Autonomous(name="AutoLeftOldWhyAreYouLookingAtThis")
+public class AutoLeft2Cone extends LinearOpMode {
     public static void log(String logString) {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
@@ -23,11 +25,10 @@ public class AutoLeft extends LinearOpMode {
         robot.initialize();
         robot.calibrate();
         robot.outake.closeGrabber();
-        int defaultThreshold = robot.drive.backLeft.getTargetPositionTolerance();
+
         signalDetector = new OpenCVSignalDetector();
         signalDetector.initialize(true);
         signalDetector.activate();
-        teamUtil.LEFT = true;
 
 
 
@@ -64,4 +65,8 @@ public class AutoLeft extends LinearOpMode {
 
 
     }
+
+
+
+
 }

@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.libs.TeamGamepad;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
 
-@TeleOp(name="TeleOp23", group="Linear Opmode")
+@TeleOp(name="!TeleOp23", group="Linear Opmode")
 
 public class TeleOp23 extends LinearOpMode {
     public static void log(String logString) {
@@ -63,7 +63,6 @@ public class TeleOp23 extends LinearOpMode {
         robot.calibrate();
         telemetry.addLine("Ready to start");
         telemetry.update();
-        robot.outake.cupLevel = 0; // 0 is highest 4 is lowest
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio, but only when
         // at least one is out of the range [-1, 1]
@@ -82,7 +81,11 @@ public class TeleOp23 extends LinearOpMode {
 
 
         waitForStart();
-        robot.drive.setHeading(90);
+        if(teamUtil.LEFT) {
+            robot.drive.setHeading(90);
+        }else{
+            robot.drive.setHeading(270);
+        }
         while (opModeIsActive()) {
             driverGamepad.loop();
             armsGamepad.loop();
@@ -255,7 +258,6 @@ public class TeleOp23 extends LinearOpMode {
 
 
                 robot.outake.runToBottomNoWait(true);
-                robot.outake.changeCupLevel();
 
             }
             if (gamepad2.options){

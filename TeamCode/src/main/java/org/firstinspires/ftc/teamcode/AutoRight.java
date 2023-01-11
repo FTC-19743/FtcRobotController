@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.assemblies.OpenCVSignalDetector;
@@ -23,12 +22,18 @@ public class AutoRight extends LinearOpMode {
         robot = new Robot23();
         robot.initialize();
         robot.calibrate();
+        robot.outake.closeGrabber();
+        int defaultThreshold = robot.drive.backLeft.getTargetPositionTolerance();
         signalDetector = new OpenCVSignalDetector();
         signalDetector.initialize(true);
         signalDetector.activate();
+        teamUtil.LEFT = false;
+
+
 
         telemetry.addLine("Waiting for start");
         telemetry.update();
+
         long now = System.currentTimeMillis();
         while (!opModeIsActive()) {
             signalDetector.writeTelemetry();
@@ -38,37 +43,22 @@ public class AutoRight extends LinearOpMode {
                 now = System.currentTimeMillis();
             }
         }
+        signalDetector.deactivate();
+
+
+
         waitForStart();
+        robot.auto(false, signalDetector.signalDetect());
 
 
-        telemetry.update();
-        robot.outake.closeGrabber();
-        teamUtil.pause(500);
-        //robot.outake.pulley.setTargetPosition(2625);
-        //robot.outake.pulley.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.outake.outputTelemetry();
-        telemetry.update();
-        //robot.outake.pulley.setVelocity(1000);
-        robot.drive.strafeRight(.3, 120);
-        robot.drive.strafeLeft(.3, 13);
-        robot.drive.moveCM(.3, 9);
-        robot.outake.openGrabber();
-        teamUtil.pause(500);
-        robot.drive.backCM(.3, 7);
-        robot.drive.strafeLeft(.3, 30);
-
-        if (signalDetector.signalDetect() == 1) {
-            robot.drive.moveCM(.3, 60);
-        } else if (signalDetector.signalDetect() == 2) {
-        } else {
-            robot.drive.backCM(.3, 60);
-        }
-
-        //robot.outake.pulley.setTargetPosition(10);
-        //robot.outake.pulley.setVelocity(1000);
-        teamUtil.pause(3000);
 
 
-        robot.drive.spinRightWithIMU(90, 0.25);
+
+
+
+
+
+
+
     }
 }

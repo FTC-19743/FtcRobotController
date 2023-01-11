@@ -9,6 +9,7 @@ public class teamUtil {
     public static LinearOpMode theOpMode;
     public static boolean inInitialization = true;
     public static Telemetry telemetry;
+    public static boolean LEFT;
     public enum Alliance {RED, BLUE}
 
     public static Alliance alliance = Alliance.RED;

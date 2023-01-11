@@ -1,15 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.assemblies.OpenCVSignalDetector;
 import org.firstinspires.ftc.teamcode.assemblies.Robot23;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
-
-@Autonomous(name="AutoLeftNew")
-public class AutoLeftNew extends LinearOpMode {
+@Disabled
+@Autonomous(name="AutoRightOld")
+public class AutoRight2Cone extends LinearOpMode {
     public static void log(String logString) {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
@@ -53,10 +53,10 @@ public class AutoLeftNew extends LinearOpMode {
 
         robot.outake.runToLevelNoWait(3);
 
-        robot.drive.strafeRight(.6,142);
+        robot.drive.strafeLeft(.6,142);
 
 
-        robot.drive.spinLeftToHeading(220,.6);
+        robot.drive.spinRightToHeading(130,.6);
 
         robot.drive.backCM(.6,12);
 
@@ -64,9 +64,9 @@ public class AutoLeftNew extends LinearOpMode {
         teamUtil.pause(500);
         robot.drive.moveCM(.6,17);
         robot.outake.runToBottomNoWait(true);
-        robot.drive.spinRightToHeading(180,.6);
+        robot.drive.spinLeftToHeading(180,.6);
         robot.drive.moveCM(.6,50);
-        robot.drive.strafeLeftToLine();
+        robot.drive.strafeLeftToLine(100, 0.1);
         robot.drive.setAllMotorsToSpeed(0.3);
         teamUtil.pause(1000);
         robot.drive.setAllMotorsToSpeed(0);
@@ -75,7 +75,7 @@ public class AutoLeftNew extends LinearOpMode {
         teamUtil.pause(500);
         robot.outake.runToLevelNoWait(3);
         robot.drive.backCM(.3,70);
-        robot.drive.spinLeftToHeading(225,.6);
+        robot.drive.spinRightToHeading(125,.6);
         robot.drive.backCM(.6,13);
 
         robot.outake.openGrabber();
@@ -84,16 +84,16 @@ public class AutoLeftNew extends LinearOpMode {
         robot.drive.moveCM(.6,15);
         robot.outake.runToBottomNoWait(true);
 
-        robot.drive.spinRightToHeading(180,.6);
+        robot.drive.spinLeftToHeading(180,.6);
 
 
         int detection = signalDetector.signalDetect();
         if(detection == 1){
-            robot.drive.moveCM(.6,60);
+            robot.drive.backCM(.6,60);
         }else if(detection == 2){
 
         }else{
-            robot.drive.backCM(.6,60);
+            robot.drive.moveCM(.6,60);
         }
 
         if(robot.drive.getHeading()>90){

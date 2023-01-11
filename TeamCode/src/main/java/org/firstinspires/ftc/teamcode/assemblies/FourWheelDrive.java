@@ -817,7 +817,7 @@ public class FourWheelDrive {
 
     }
 
-    public void strafeRightToLine(){
+    public void strafeRightToLine(int maxEncoderTicks, double speed){
         log("Strafing Right To Line");
         log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" + colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
         log("On Blue " +colorSensor.onBlue()+ " On Red " + colorSensor.onRed());
@@ -827,12 +827,13 @@ public class FourWheelDrive {
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontLeft.setPower(0.1);
-        backLeft.setPower(-0.1);
-        backRight.setPower(0.1);
-        frontRight.setPower(-0.1);
-        while(!colorSensor.isOnTape()){
-            log("Not On Line");
+        frontLeft.setPower(speed);
+        backLeft.setPower(-speed);
+        backRight.setPower(speed);
+        frontRight.setPower(-speed);
+        int ticks = frontLeft.getCurrentPosition();
+        while((!colorSensor.isOnTape())&&Math.abs(frontLeft.getCurrentPosition()-ticks) < maxEncoderTicks){
+            //log("Not On Line");
             //log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" +colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
             //log("On Blue " +colorSensor.onBlue()+ " On Red " +colorSensor.onRed());
 
@@ -858,7 +859,7 @@ public class FourWheelDrive {
 
 
     }
-    public void strafeLeftToLine(){
+    public void strafeLeftToLine(int maxEncoderTicks, double speed){
         log("Strafing Left To Line");
         log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" + colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
         log("On Blue " +colorSensor.onBlue()+ " On Red " + colorSensor.onRed());
@@ -868,11 +869,12 @@ public class FourWheelDrive {
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontLeft.setPower(-0.1);
-        backLeft.setPower(0.1);
-        backRight.setPower(-0.1);
-        frontRight.setPower(0.1);
-        while(!colorSensor.isOnTape()){
+        frontLeft.setPower(-speed);
+        backLeft.setPower(speed);
+        backRight.setPower(-speed);
+        frontRight.setPower(speed);
+        int ticks = frontLeft.getCurrentPosition();
+        while(!colorSensor.isOnTape() &&Math.abs(frontLeft.getCurrentPosition()-ticks) < maxEncoderTicks){
             log("Not On Line");
             //log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" +colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
             //log("On Blue " +colorSensor.onBlue()+ " On Red " +colorSensor.onRed());
