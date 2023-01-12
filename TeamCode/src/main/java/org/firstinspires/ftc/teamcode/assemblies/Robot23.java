@@ -63,8 +63,11 @@ public class Robot23 {
         drive.frontRight.setTargetPositionTolerance(20);
         drive.backLeft.setTargetPositionTolerance(20);
         drive.backRight.setTargetPositionTolerance(20);
-        drive.backCM(.6,12);
-
+        if(left) {
+            drive.backCM(.6, 12);
+        }else{
+            drive.backCM(.6, 9);
+        }
 
         outake.pulleyLeft.setTargetPosition(outake.pulleyLeft.getCurrentPosition()-100);
         outake.pulleyRight.setTargetPosition(outake.pulleyRight.getCurrentPosition()-100);
@@ -81,13 +84,13 @@ public class Robot23 {
             if(left) {
                 drive.moveCM(.6, 17);
             }else{
-                drive.moveCM(.6, 15);
+                drive.moveCM(.6, 10);
             }
             drive.frontLeft.setTargetPositionTolerance(defaultThreshold);
             drive.frontRight.setTargetPositionTolerance(defaultThreshold);
             drive.backLeft.setTargetPositionTolerance(defaultThreshold);
             drive.backRight.setTargetPositionTolerance(defaultThreshold);
-            outake.runToBottomNoWait(true);
+            outake.runToBottomNoWait(true, false);
             if(left) {
                 drive.spinRightToHeading(180, .6);
             }else{
@@ -97,7 +100,11 @@ public class Robot23 {
             drive.frontRight.setTargetPositionTolerance(20);
             drive.backLeft.setTargetPositionTolerance(20);
             drive.backRight.setTargetPositionTolerance(20);
-            drive.moveCM(.6, 50);
+            if(left) {
+                drive.moveCM(.6, 50);
+            }else{
+                drive.moveCM(.6, 52);
+            }
             drive.frontLeft.setTargetPositionTolerance(defaultThreshold);
             drive.frontRight.setTargetPositionTolerance(defaultThreshold);
             drive.backLeft.setTargetPositionTolerance(defaultThreshold);
@@ -118,7 +125,7 @@ public class Robot23 {
             if(left) {
                 drive.spinLeftToHeading(230, .6);
             }else{
-                drive.spinRightToHeading(130, .6);
+                drive.spinRightToHeading(127, .6);
             }
             drive.frontLeft.setTargetPositionTolerance(20);
             drive.frontRight.setTargetPositionTolerance(20);
@@ -140,10 +147,10 @@ public class Robot23 {
         drive.backLeft.setTargetPositionTolerance(20);
         drive.backRight.setTargetPositionTolerance(20);
         drive.moveCM(.6,15);
-        outake.runToBottomNoWait(true);
+        outake.runToBottomNoWait(true, false);
 
 
-        if(drive.getHeading()>90){
+        if(left){
             drive.spinRightToHeading(180,0.6);
         }
         else{

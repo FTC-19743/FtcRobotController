@@ -63,7 +63,7 @@ public class AutoRight2Cone extends LinearOpMode {
         robot.outake.openGrabber();
         teamUtil.pause(500);
         robot.drive.moveCM(.6,17);
-        robot.outake.runToBottomNoWait(true);
+        robot.outake.runToBottomNoWait(true,false);
         robot.drive.spinLeftToHeading(180,.6);
         robot.drive.moveCM(.6,50);
         robot.drive.strafeLeftToLine(100, 0.1);
@@ -82,7 +82,7 @@ public class AutoRight2Cone extends LinearOpMode {
         teamUtil.pause(500);
 
         robot.drive.moveCM(.6,15);
-        robot.outake.runToBottomNoWait(true);
+        robot.outake.runToBottomNoWait(true,false);
 
         robot.drive.spinLeftToHeading(180,.6);
 

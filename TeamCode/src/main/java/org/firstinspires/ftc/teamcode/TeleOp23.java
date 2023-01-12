@@ -3,24 +3,14 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.assemblies.FourWheelDrive;
-import org.firstinspires.ftc.teamcode.assemblies.Outake;
-import org.firstinspires.ftc.teamcode.assemblies.Robot;
 import org.firstinspires.ftc.teamcode.assemblies.Robot23;
 import org.firstinspires.ftc.teamcode.libs.TeamGamepad;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
 
 
-@TeleOp(name="!TeleOp23", group="Linear Opmode")
+@TeleOp(name="TeleOp23", group="Linear Opmode")
 
 public class TeleOp23 extends LinearOpMode {
     public static void log(String logString) {
@@ -72,6 +62,7 @@ public class TeleOp23 extends LinearOpMode {
         boolean dPadLeftWasPressed = false;
         boolean dPadRightWasPressed = false;
         double powerFactor = 1;
+        robot.outake.cupLevel = 2;
 
         //robot.drive.frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         //robot.drive.frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -169,6 +160,9 @@ public class TeleOp23 extends LinearOpMode {
             if (gamepad2.dpad_up){
                 robot.outake.runPulleyUp();
             }
+            if(gamepad2.dpad_right){
+                robot.outake.runToBottom(false,true);
+            }
             else if(gamepad2.dpad_down){
                 robot.outake.runPulleyDown();
             }
@@ -195,15 +189,15 @@ public class TeleOp23 extends LinearOpMode {
                 robot.outake.runToLevelNoWait(3);
             }
 
-
-            if (gamepad2.left_trigger>0.8){
-                robot.outake.openGrabber();
-            }
-            if (gamepad2.left_bumper){
-                robot.outake.closeGrabber();
+            if(armsGamepad.wasLeftTriggerPressed()) {
+                if (robot.outake.grabber.getPosition() >= robot.outake.GRAB - 0.01 && robot.outake.grabber.getPosition() <= robot.outake.GRAB + 0.01) {
+                    robot.outake.openGrabber();
+                } else {
+                    robot.outake.closeGrabber();
+                }
             }
             if(gamepad2.right_trigger>0.8){
-                robot.outake.runToBottomNoWait(false);
+                robot.outake.runToBottomNoWait(false,false);
             }
 
 
@@ -254,10 +248,10 @@ public class TeleOp23 extends LinearOpMode {
 
 
 
-            if(armsGamepad.wasXPressed()){
+            if(armsGamepad.wasRightBumperPressed()){
 
 
-                robot.outake.runToBottomNoWait(true);
+                robot.outake.runToBottomNoWait(true,false);
 
             }
             if (gamepad2.options){

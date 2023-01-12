@@ -29,6 +29,7 @@ public class Outake {
     public final int ABOVE_STACK = 1000;
     public final int GROUND = 80;
     public final int BOTTOM = 10;
+    public static int BEACON = 100;
     public final int CUPSTACK = 440;
     public final double RIGHT_MOTOR_RATIO = 1.383766234;
     public int[] CUP_HEIGHTS = {440, 345, 245, 130, 10};
@@ -242,7 +243,7 @@ public class Outake {
     }
 
 
-    public void runToBottom(boolean cupstack){
+    public void runToBottom(boolean cupstack, boolean beacon){
         if(cupstack){
 
 
@@ -264,6 +265,22 @@ public class Outake {
             changeCupLevel();
             grabber.setPosition(OPEN);
         }
+        else if(beacon){
+            rotator.setPosition(ROTATOR_FLAT);
+            pulleyRight.setTargetPosition(BEACON);
+            pulleyLeft.setTargetPosition(BEACON);
+            pulleyLeft.setVelocity(PulleyVelocity);
+            pulleyRight.setVelocity(PulleyVelocity);
+
+            joint.setTargetPosition(JOINT_BOTTOM);
+            joint.setVelocity(1000);
+            if(joint.getCurrentPosition()>200){
+                grabber.setPosition(GRAB);
+                teamUtil.pause(500);
+            }else{
+                teamUtil.pause(100);
+            }
+        }
         else{
             grabber.setPosition(GRAB);
             rotator.setPosition(ROTATOR_FLAT);
@@ -280,7 +297,7 @@ public class Outake {
         Moving = false;
     }
     //thread for runToBottom
-    public void runToBottomNoWait(boolean cupstack) {
+    public void runToBottomNoWait(boolean cupstack, boolean beacon) {
         if(Moving){
             teamUtil.log("Lift Attempted to run other movement while moving");
             return;
@@ -290,7 +307,7 @@ public class Outake {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                runToBottom(cupstack);
+                runToBottom(cupstack,beacon);
             }
         });
         thread.start();
