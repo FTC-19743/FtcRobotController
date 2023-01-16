@@ -22,6 +22,7 @@ public class AutoLeft extends LinearOpMode {
         robot = new Robot23();
         robot.initialize();
         robot.calibrate();
+        robot.drive.initializePIDFCoefficients();
         robot.outake.closeGrabber();
         int defaultThreshold = robot.drive.backLeft.getTargetPositionTolerance();
         signalDetector = new OpenCVSignalDetector();
@@ -49,6 +50,7 @@ public class AutoLeft extends LinearOpMode {
 
 
         waitForStart();
+
         robot.auto(true, signalDetector.signalDetect());
 
 

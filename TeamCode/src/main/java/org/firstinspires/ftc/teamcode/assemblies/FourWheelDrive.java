@@ -6,11 +6,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.MotorControlAlgorithm;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -41,6 +42,7 @@ public class FourWheelDrive {
     public double MIN_END_VELOCITY = 100; //tentative value
     public double MAX_ACCELERATION = 10; //tentative value
     public double MAX_DECELERATION = -5; //tentative value (should be negative)
+    public PIDFCoefficients pidNew = new PIDFCoefficients(5,0.121,0,12.136, MotorControlAlgorithm.PIDF);
 
 
     public FourWheelDrive() {
@@ -70,6 +72,7 @@ public class FourWheelDrive {
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        setTargetPositionToleranceAllMotors(10);
 
         //frontLeft.setTargetPositionTolerance(20);
        // frontRight.setTargetPositionTolerance(20);
@@ -87,6 +90,12 @@ public class FourWheelDrive {
 
 
 
+    }
+
+    public void initializePIDFCoefficients(){
+        setNewPIDCoefficients();
+        PIDFCoefficients frontLeftPID = frontLeft.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
+        log("Front Left PID" + frontLeftPID);
     }
     public void calibrate(){
         colorSensor.calibrate();
@@ -139,6 +148,23 @@ public class FourWheelDrive {
 
      */
 
+    public void setTargetPositionToleranceAllMotors(int tolerance){
+        frontRight.setTargetPositionTolerance(tolerance);
+        frontLeft.setTargetPositionTolerance(tolerance);
+        backLeft.setTargetPositionTolerance(tolerance);
+        backRight.setTargetPositionTolerance(tolerance);
+    }
+    public void setNewPIDCoefficients(){
+        frontLeft.setPositionPIDFCoefficients(pidNew.p);
+        frontRight.setPositionPIDFCoefficients(pidNew.p);
+        backLeft.setPositionPIDFCoefficients(pidNew.p);
+        backRight.setPositionPIDFCoefficients(pidNew.p);
+
+    }
+
+    public void logPIDCoefficients(){
+
+    }
     public void strafeLeft(double speed, double centimeters) {
         int newFrontLeftTarget;
         int newFrontRightTarget;
@@ -1007,16 +1033,20 @@ public class FourWheelDrive {
 
     public void spinRightToHeading(int wantedIMU, double speed){
         log("Spin Right To Heading Called");
+        log("Heading At Start" + getHeading());
+        log("Desired Heading" + wantedIMU);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontLeft.setPower(speed);
-        backLeft.setPower(speed);
-        frontRight.setPower(-speed);
-        backRight.setPower(-speed);
-        while(getHeading()>(wantedIMU+30)){
+        if(getHeading()>(wantedIMU+30)){
+            frontLeft.setPower(speed);
+            backLeft.setPower(speed);
+            frontRight.setPower(-speed);
+            backRight.setPower(-speed);
+            while(getHeading()>(wantedIMU+30)){
 
+            }
         }
         frontLeft.setPower(0.15);
         backLeft.setPower(0.15);
@@ -1041,11 +1071,13 @@ public class FourWheelDrive {
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontLeft.setPower(-speed);
-        backLeft.setPower(-speed);
-        frontRight.setPower(speed);
-        backRight.setPower(speed);
-        while(getHeading()<(wantedIMU-30)){
+        if(getHeading()<(wantedIMU-30)){
+            frontLeft.setPower(-speed);
+            backLeft.setPower(-speed);
+            frontRight.setPower(speed);
+            backRight.setPower(speed);
+            while(getHeading()<(wantedIMU-30)){
+            }
         }
         frontLeft.setPower(-0.15);
         backLeft.setPower(-0.15);
@@ -1059,6 +1091,44 @@ public class FourWheelDrive {
         backRight.setPower(0);
 
 
+
+    }
+
+    public void spinLeftToHeadingNoAccel(int wantedIMU, double speed){
+        log("Spin Left To Heading No AccelCalled");
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setPower(-speed);
+        backLeft.setPower(-speed);
+        frontRight.setPower(speed);
+        backRight.setPower(speed);
+        while(getHeading()<wantedIMU-10){
+        }
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
+
+    }
+
+    public void spinRightToHeadingNoAccel(int wantedIMU, double speed){
+        log("Spin Left To Heading No AccelCalled");
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setPower(speed);
+        backLeft.setPower(speed);
+        frontRight.setPower(-speed);
+        backRight.setPower(-speed);
+        while(getHeading()>wantedIMU+10){
+        }
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
 
     }
 
