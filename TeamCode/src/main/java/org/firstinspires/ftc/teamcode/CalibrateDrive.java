@@ -64,13 +64,13 @@ public class CalibrateDrive extends LinearOpMode {
 
             }
             if(driverGamepad.wasXPressed()){
-                robot.drive.strafeLeft(0.6,50);
+                robot.drive.strafeLeft(0.6,140);
 
             }
 
             if(driverGamepad.wasBPressed()){
 
-                robot.drive.strafeRight(0.6,50);
+                robot.drive.strafeRight(0.6,140);
             }
 
             if(driverGamepad.wasLeftPressed()){
