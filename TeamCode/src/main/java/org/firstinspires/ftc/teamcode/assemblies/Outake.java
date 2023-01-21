@@ -49,6 +49,7 @@ public class Outake {
     public static double ManualRotatorIncrement = 0.05;
     public static double ManualGrabberIncrement = 0.05;
     public static int PulleyVelocity = 2500;
+    public static int SlowPulleyVelocity = 2000;
     public boolean Moving = false;
 
     public static void log(String logString) {
@@ -250,8 +251,8 @@ public class Outake {
             rotator.setPosition(ROTATOR_FLAT);
             pulleyRight.setTargetPosition(CUP_HEIGHTS[cupLevel]);
             pulleyLeft.setTargetPosition(CUP_HEIGHTS[cupLevel]);
-            pulleyLeft.setVelocity(PulleyVelocity);
-            pulleyRight.setVelocity(PulleyVelocity);
+            pulleyLeft.setVelocity(SlowPulleyVelocity);
+            pulleyRight.setVelocity(SlowPulleyVelocity);
 
             joint.setTargetPosition(JOINT_BOTTOM);
             joint.setVelocity(1000);
@@ -269,8 +270,8 @@ public class Outake {
             rotator.setPosition(ROTATOR_FLAT);
             pulleyRight.setTargetPosition(BEACON);
             pulleyLeft.setTargetPosition(BEACON);
-            pulleyLeft.setVelocity(PulleyVelocity);
-            pulleyRight.setVelocity(PulleyVelocity);
+            pulleyLeft.setVelocity(SlowPulleyVelocity);
+            pulleyRight.setVelocity(SlowPulleyVelocity);
 
             joint.setTargetPosition(JOINT_BOTTOM);
             joint.setVelocity(1000);
@@ -286,8 +287,8 @@ public class Outake {
             rotator.setPosition(ROTATOR_FLAT);
             pulleyLeft.setTargetPosition(BOTTOM);
             pulleyRight.setTargetPosition(BOTTOM);
-            //pulleyLeft.setVelocity(PulleyVelocity);
-            //pulleyRight.setVelocity(PulleyVelocity);
+            pulleyLeft.setVelocity(SlowPulleyVelocity);
+            pulleyRight.setVelocity(SlowPulleyVelocity);
             joint.setTargetPosition(JOINT_BOTTOM);
             teamUtil.pause(500);
             grabber.setPosition(OPEN);
