@@ -49,7 +49,7 @@ public class AutoRight extends LinearOpMode {
 
 
         waitForStart();
-        robot.auto(false, signalDetector.signalDetect());
+        robot.autoV5(false, signalDetector.signalDetect());
 
 
 

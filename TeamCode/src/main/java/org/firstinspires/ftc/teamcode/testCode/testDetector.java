@@ -17,7 +17,7 @@ public class testDetector extends LinearOpMode {
     public void runOpMode() {
         teamUtil.init(this);
         signalDetector = new OpenCVSignalDetector();
-        signalDetector.initialize(true);
+        signalDetector.initialize(true,true);
         signalDetector.activate();
 
         telemetry.addLine("Waiting for start");
