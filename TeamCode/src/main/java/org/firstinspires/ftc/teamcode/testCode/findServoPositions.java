@@ -48,6 +48,15 @@ public class findServoPositions extends LinearOpMode {
                 servo.setPosition(currentPosition);
 
             }
+            if (gamepad.wasXPressed() ){
+                servo.setPosition(0.38);
+            }
+            if (gamepad.wasYPressed() ){
+                servo.setPosition(0.543);
+            }
+            if (gamepad.wasBPressed() ){
+                servo.setPosition(.71);
+            }
             telemetry.addData("position: ", servo.getPosition());
             telemetry.update();
         }

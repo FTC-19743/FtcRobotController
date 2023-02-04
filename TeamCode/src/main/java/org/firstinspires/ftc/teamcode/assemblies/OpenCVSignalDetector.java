@@ -37,15 +37,22 @@ public class OpenCVSignalDetector {
         RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
 
-    public void initialize(boolean withMonitor) {
+    public void initialize(boolean withMonitor, boolean usingLeftCam){
         teamUtil.log("Initializing OpenCVDetector");
+        String camSide;
+        if(usingLeftCam){
+            camSide = "Webcam Left";
+        }
+        else{
+            camSide = "Webcam Right";
+        }
         hardwareMap = teamUtil.theOpMode.hardwareMap;
         telemetry = teamUtil.telemetry;
         if (withMonitor) {
             int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-            webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+            webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, camSide), cameraMonitorViewId);
         } else {
-            webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
+            webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, camSide));
         }
         webcam.setPipeline(SignalPipe);
         teamUtil.log("Finished Initializing OpenCVDetector");

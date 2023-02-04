@@ -26,7 +26,7 @@ public class AutoRight extends LinearOpMode {
         robot.outake.closeGrabber();
         int defaultThreshold = robot.drive.backLeft.getTargetPositionTolerance();
         signalDetector = new OpenCVSignalDetector();
-        signalDetector.initialize(true);
+        signalDetector.initialize(true, true);
         signalDetector.activate();
         teamUtil.LEFT = false;
 
