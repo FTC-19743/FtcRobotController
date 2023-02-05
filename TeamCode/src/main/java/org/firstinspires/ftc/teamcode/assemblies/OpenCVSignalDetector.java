@@ -12,6 +12,7 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -39,6 +40,7 @@ public class OpenCVSignalDetector {
 
     public void initialize(boolean withMonitor, boolean usingLeftCam){
         teamUtil.log("Initializing OpenCVDetector");
+        SignalPipe.usingLeftCam = usingLeftCam;
         String camSide;
         if(usingLeftCam){
             camSide = "Webcam Left";
@@ -84,6 +86,8 @@ public class OpenCVSignalDetector {
 
     public void writeTelemetry() {
         telemetry.addData("Signal", this.signalDetect());
+        telemetry.addData("Largest green area", SignalPipe.getLargestGreenArea());
+        telemetry.addData("Largest yellow area", SignalPipe.getLargestYellowArea());
         telemetry.addData("Frame Count", webcam.getFrameCount());
         telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
         telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
@@ -108,17 +112,26 @@ public class OpenCVSignalDetector {
 
     public static class SignalPipeline extends OpenCvPipeline {
 
+        boolean usingLeftCam;
+        int yellowAreaThreshold = 100;
+        int greenAreaThreshold = 100;
         Mat HSVMat = new Mat();
 
+
         Scalar yellowLowHSV = new Scalar(14, 100, 100); // lower bound HSV for yellow
-        Scalar yellowHighHSV = new Scalar(33, 255, 255); // higher bound HSV for yellow
+        Scalar yellowHighHSVLeft = new Scalar(45, 255, 255); // higher bound HSV for yellow ol di 33
+        Scalar yellowHighHSVRight = new Scalar(33, 255, 255); // higher bound HSV for yellow ol di 33
+
         Scalar greenLowHSV = new Scalar(38, 100, 100); // lower bound HSV for green
-        Scalar greenHighHSV = new Scalar(80, 255, 255); // higher bound HSV for green
+        Scalar greenHighHSVLeft = new Scalar(80, 255, 255); // higher bound HSV for  old was 80
+        Scalar greenHighHSVRight = new Scalar(92, 255, 255); // higher bound HSV for  old was 80
         Scalar pinkLowHSV = new Scalar(140, 100, 100); //
         Scalar pinkHighHSV = new Scalar(155, 255, 255); //
         Mat thresholdMatYellow = new Mat();
         Mat thresholdMatGreen = new Mat();
         Mat thresholdMatPink = new Mat();
+        Mat bluredMat = new Mat();
+        Size blurFactor = new Size(5,5);
 
         Mat edgesYellow = new Mat();
         Mat edgesGreen = new Mat();
@@ -136,6 +149,14 @@ public class OpenCVSignalDetector {
         Mat labeledGreen = new Mat();
         Mat labeledPink = new Mat();
         Scalar labelColor = new Scalar(0, 0, 255);
+
+
+        int areaDetectionThreshold = 100;
+        int largestGreenArea;
+        int largestYellowArea;
+        int lastLargestGreenArea;
+        int lastLargestYellowArea;
+
 
         public boolean foundYellow = false; // Did we find a yellow shape in the last frame?
         public boolean foundGreen = false; // Did we find a green shape in the last frame?
@@ -158,6 +179,14 @@ public class OpenCVSignalDetector {
         private Stage stageToRenderToViewport = Stage.RAW_IMAGE;
         private Stage[] stages = Stage.values();
 
+        public int getLargestYellowArea(){
+            return (int) lastLargestYellowArea;
+        }
+
+        public int getLargestGreenArea(){
+            return (int) lastLargestGreenArea;
+        }
+
         public void nextView() {
 
             int currentStageNum = stageToRenderToViewport.ordinal();
@@ -177,12 +206,19 @@ public class OpenCVSignalDetector {
             if (HSVMat.empty()) {
                 return input;
             }
-
+            largestYellowArea = 0;
+            largestGreenArea = 0;
+            //Imgproc.blur(HSVMat, bluredMat, blurFactor); // get rid of noise
             // We'll get  black and white images for each color range.
             // The white regions represent the color we are looking for.
             // inRange(): thresh[i][j] = {255,255,255} if mat[i][i] is within the range
-            Core.inRange(HSVMat, yellowLowHSV, yellowHighHSV, thresholdMatYellow);
-            Core.inRange(HSVMat, greenLowHSV, greenHighHSV, thresholdMatGreen);
+            if(usingLeftCam){
+                Core.inRange(HSVMat, yellowLowHSV, yellowHighHSVRight, thresholdMatYellow);
+                Core.inRange(HSVMat, greenLowHSV, greenHighHSVRight, thresholdMatGreen);
+            }else {
+                Core.inRange(HSVMat, yellowLowHSV, yellowHighHSVLeft, thresholdMatYellow);
+                Core.inRange(HSVMat, greenLowHSV, greenHighHSVLeft, thresholdMatGreen);
+            }
            // Core.inRange(HSVMat, pinkLowHSV, pinkHighHSV, thresholdMatPink);
 
             // Use Canny Edge Detection to find edges (might have to tune the thresholds for hysteresis)
@@ -218,6 +254,12 @@ public class OpenCVSignalDetector {
                     if (boundRect[i].br().y > maxYellowY) {
                         maxYellowY = boundRect[i].br().y;
                     }
+                    if(boundRect[i].br().y > MIDHEIGHT) {
+                        double area = (boundRect[i].br().y - boundRect[i].tl().y) * (boundRect[i].br().x - boundRect[i].tl().x);
+                        if (area > largestYellowArea) {
+                            largestYellowArea = (int) area;
+                        }
+                    }
                 }
             }
             if (!contoursGreen.isEmpty()) {
@@ -232,16 +274,34 @@ public class OpenCVSignalDetector {
                     if (boundRect[i].br().y > maxGreenY) {
                         maxGreenY = boundRect[i].br().y;
                     }
+                    if(boundRect[i].br().y > MIDHEIGHT) {
+                        double area = (boundRect[i].br().y - boundRect[i].tl().y) * (boundRect[i].br().x - boundRect[i].tl().x);
+                        if (area > largestGreenArea) {
+                            largestGreenArea = (int) area;
+                        }
+                    }
                 }
             }
-            if (maxYellowY > MIDHEIGHT) { // is the lowest yellow object at least partially in the lower half of the screen?
-                foundColor = Color.YELLOW;
-            } else if (maxGreenY > MIDHEIGHT) { // is the lowest green object at least partially in the lower half of the screen?
-                foundColor = Color.GREEN;
-            } else {
-                foundColor = Color.OTHER;
+            if(!usingLeftCam) {
+                if (maxYellowY > MIDHEIGHT) { // is the lowest yellow object at least partially in the lower half of the screen?
+                    foundColor = Color.YELLOW;
+                } else if (maxGreenY > MIDHEIGHT) { // is the lowest green object at least partially in the lower half of the screen?
+                    foundColor = Color.GREEN;
+                } else {
+                    foundColor = Color.OTHER;
+                }
+            }else{
+                if(largestGreenArea > greenAreaThreshold){
+                    foundColor = Color.GREEN;
+                }else if (largestYellowArea > yellowAreaThreshold){
+                    foundColor = Color.YELLOW;
+                }else{
+                    foundColor = Color.OTHER;
+                }
             }
             teamUtil.log("Lowest Y:" + maxYellowY + " Lowest G:"+ maxGreenY);
+            lastLargestGreenArea = largestGreenArea;
+            lastLargestYellowArea = largestYellowArea;
             /*
             if (contoursPink.isEmpty()) {
                 foundPink = false;
@@ -268,12 +328,13 @@ public class OpenCVSignalDetector {
                 }
                 case HSV: {
                     return thresholdMatYellow;
+                    //return bluredMat;
                 }
                 case THRESHOLD: {
-                    return thresholdMatGreen;
+                    return HSVMat;
                 }
                 case EDGES: {
-                    return labeledYellow;
+                    return thresholdMatGreen;
                 }
                 case LABELED: {
                     return labeledGreen;
