@@ -22,9 +22,9 @@ public class Outake {
     public final int JOINT_BOTTOM = 0; //tentative value
     public final int JOINT_MAX = 10000; //tentativevalue
     public final int MAX = 2480;
-    public final int TOP = 1950; //tentative value
-    public final int MEDIUM = 1300;
-    public final int SHORT = 520;
+    public final int TOP = 1900; //tentative value
+    public final int MEDIUM = 1140;
+    public final int SHORT = 365;
     public final int FLIPPED_JOINT = 600;
     public final int ABOVE_STACK = 1000;
     public final int GROUND = 80;
