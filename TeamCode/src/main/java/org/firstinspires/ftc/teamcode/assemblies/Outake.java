@@ -20,7 +20,7 @@ public class Outake {
     public DcMotorEx joint;
     public boolean pulleyCalibrated;
     public final int JOINT_BOTTOM = 0; //tentative value
-    public final int JOINT_MAX = 10000; //tentativevalue
+    public final int JOINT_MAX = 10000; //tentative value
     public final int MAX = 2480;
     public final int TOP = 2100; //tentative value
     public final int MEDIUM = 1390;
