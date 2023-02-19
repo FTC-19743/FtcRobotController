@@ -51,7 +51,7 @@ public class AutoLeft extends LinearOpMode {
 
         waitForStart();
 
-        robot.autoV5(true, signalDetector.signalDetect());
+        robot.newAutoV5(true, signalDetector.signalDetect());
 
 
 

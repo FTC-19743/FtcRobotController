@@ -152,10 +152,12 @@ public class TeleOp23 extends LinearOpMode {
             robot.drive.backRight.setPower(-backRightPower*powerFactor);
 
 
-
+            /*
             if(driverGamepad.wasAPressed()){
                 robot.drive.spinLeftToHeading(90,0.6);
             }
+
+             */
 
             if (gamepad2.dpad_up){
                 robot.outake.runPulleyUp();

@@ -45,44 +45,102 @@ public class CalibrateDrive extends LinearOpMode {
         telemetry.addLine("Ready to start");
         telemetry.update();
         waitForStart();
-        robot.drive.setTargetPositionToleranceAllMotors(10);
+        robot.drive.setTargetPositionToleranceAllMotors(20);
         robot.drive.setNewPIDCoefficients();
         PIDFCoefficients frontLeftPID = robot.drive.frontLeft.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
         log("Front Left PID" + frontLeftPID);
+        double powerFactor = 1;
 
         while(opModeIsActive()){
 
             driverGamepad.loop();
             armsGamepad.loop();
 
-            if(driverGamepad.wasYPressed()){
-                robot.drive.moveCM(0.6,15);
+            //declaration of power and denominator variables for math
+            double frontLeftPower;
+            double frontRightPower;
+            double backLeftPower;
+            double backRightPower;
+            double denominator;
 
+            double y = -gamepad1.left_stick_y; // Remember, this is reversed!
+            double x = gamepad1.left_stick_x*1.1 ; // Counteract imperfect strafing
+            double rx = -gamepad1.right_stick_x;
+            if(Math.abs(rx)<0.15){
+                rx=0;
             }
-            if(driverGamepad.wasAPressed()){
-                robot.drive.backCM(0.6,15);
+            //Orientation anglesCurrent = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
+            double botHeading = -Math.toRadians((robot.drive.getHeading()-180)); //
+            //double botHeading = -imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle; //removed negative
+            telemetry.addLine("botheading: " + Math.toDegrees(botHeading));
+            double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
+            double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+            //telemetry.addLine("current cup level "+ String.valueOf(cupLevel));
 
+            // Denominator is the largest motor power (absolute value) or 1
+            // This ensures all the powers maintain the same ratio, but only when
+            // at least one is out of the range [-1, 1]
+
+
+
+            //working code for robot centric drive
+            if(gamepad1.left_bumper) {
+                //working robot centric
+                denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+                frontLeftPower = (y + x + rx) / denominator;
+                backLeftPower = (y - x + rx) / denominator;
+                frontRightPower = (y - x - rx) / denominator;
+                backRightPower = (y + x - rx) / denominator;
             }
-            if(driverGamepad.wasXPressed()){
-                robot.drive.strafeLeft(0.6,140);
+            else{
+                //working field centric
+                denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
 
+                frontLeftPower = (rotY + rotX + rx) / denominator;
+                backLeftPower = (rotY - rotX + rx) / denominator;
+                frontRightPower = (rotY - rotX - rx) / denominator;
+                backRightPower = (rotY + rotX - rx) / denominator;
             }
 
-            if(driverGamepad.wasBPressed()){
 
-                robot.drive.strafeRight(0.6,140);
-            }
 
-            if(driverGamepad.wasLeftPressed()){
-                robot.drive.spinLeftToHeading(225,0.6);
-            }
 
-            if(driverGamepad.wasRightPressed()){
-                robot.drive.spinRightToHeading(135,0.6);
+            if (gamepad1.right_trigger > .8) {
+                powerFactor = 1;
+            }else if(gamepad1.left_trigger>.8){
+                powerFactor=0.25;
             }
+            else{
+                powerFactor = .5;
+            }
+            robot.drive.frontLeft.setPower(-frontLeftPower*powerFactor);
+            robot.drive.backLeft.setPower(-backLeftPower*powerFactor);
+            robot.drive.frontRight.setPower(-frontRightPower*powerFactor);
+            robot.drive.backRight.setPower(-backRightPower*powerFactor);
 
             if (gamepad1.right_stick_button && gamepad1.left_stick_button) {
-                robot.drive.setHeading(180);
+                robot.drive.resetHeading();
+            }
+
+            if(driverGamepad.wasAPressed()){
+                robot.drive.newBackCM(1000,140);
+                robot.drive.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.drive.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.drive.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.drive.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+
+            if(driverGamepad.wasYPressed()){
+                robot.drive.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                robot.drive.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                robot.drive.backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                robot.drive.backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+                robot.drive.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.drive.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.drive.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.drive.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
             }
 
             robot.drive.outputTelemetry();

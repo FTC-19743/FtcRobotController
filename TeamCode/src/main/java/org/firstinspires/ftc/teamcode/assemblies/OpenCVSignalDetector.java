@@ -156,6 +156,7 @@ public class OpenCVSignalDetector {
         int largestYellowArea;
         int lastLargestGreenArea;
         int lastLargestYellowArea;
+        int distanceFromPole;
 
 
         public boolean foundYellow = false; // Did we find a yellow shape in the last frame?
@@ -187,6 +188,8 @@ public class OpenCVSignalDetector {
             return (int) lastLargestGreenArea;
         }
 
+        public int getDistanceFromPole(){return (int) distanceFromPole;}
+
         public void nextView() {
 
             int currentStageNum = stageToRenderToViewport.ordinal();
@@ -196,6 +199,7 @@ public class OpenCVSignalDetector {
             }
             stageToRenderToViewport = stages[nextStageNum];
         }
+
 
         @Override
         public Mat processFrame(Mat input) {
