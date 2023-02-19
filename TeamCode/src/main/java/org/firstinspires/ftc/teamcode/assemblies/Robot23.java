@@ -843,7 +843,7 @@ public class Robot23 {
         }else{
             drive.backCM(.6,60);
         }
-        //bug in auto right with spin to heading at end
+        // bug in auto right with spin to heading at end
         if(drive.getHeading()>90){
             drive.spinRightToHeading(180,0.6);
         }
