@@ -113,7 +113,7 @@ public class OpenCVSignalDetector {
     public static class SignalPipeline extends OpenCvPipeline {
 
         boolean usingLeftCam;
-        int yellowAreaThreshold = 100;
+        int yellowAreaThreshold = 150;
         int greenAreaThreshold = 100;
         Mat HSVMat = new Mat();
 

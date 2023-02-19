@@ -62,7 +62,7 @@ public class TeleOp23 extends LinearOpMode {
         boolean dPadLeftWasPressed = false;
         boolean dPadRightWasPressed = false;
         double powerFactor = 1;
-        robot.outake.cupLevel = 2;
+
 
         //robot.drive.frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         //robot.drive.frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);

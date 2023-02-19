@@ -280,29 +280,35 @@ public class Robot23 {
 
         if(left) {
             drive.strafeRight(.6,140);
-            drive.spinLeftToHeading(222, .6);
+            drive.spinLeftToHeading(225, .6);
         }else{
-            drive.strafeLeft(.6,155);
-            drive.strafeRight(.6, 13);
-            drive.spinRightToHeading(127, .6);
+            drive.strafeLeft(.6,140);
+            drive.spinRightToHeading(130, .6);
+
         }
 
 
-        drive.backCM(.6, 12);
+        drive.backCM(.6, 14);
 
         outake.pulleyLeft.setTargetPosition(outake.pulleyLeft.getCurrentPosition()-100);
         outake.pulleyRight.setTargetPosition(outake.pulleyRight.getCurrentPosition()-100);
         teamUtil.pause(100);
         outake.openGrabber();
         teamUtil.pause(500);
-        drive.moveCM(.6, 17);
+        if(left){
+            drive.moveCM(.6, 21);
+        }
+        else{
+            drive.moveCM(.6, 18);
+        }
+
         outake.runToBottomNoWait(true, false);
         if(left) {
             drive.spinRightToHeading(180, .6);
         }else{
             drive.spinLeftToHeading(180, 0.6);
         }
-        drive.moveCM(.8, 60);
+        drive.moveCM(.8, 58);
         /*
         if(left) {
             drive.strafeLeftToLine(100, 0.1);
@@ -319,19 +325,25 @@ public class Robot23 {
             outake.closeGrabber();
             teamUtil.pause(300);
             outake.runToLevelNoWait(3);
-            drive.backCM(.4, 68);
+            drive.backCM(.4, 60);
             if(left) {
                 drive.spinLeftToHeading(220, .6);
             }else{
-                drive.spinRightToHeading(125, .6);
+                drive.spinRightToHeading(132, .6);
             }
-            drive.backCM(.6, 14);
+            drive.backCM(.6, 22);
             outake.pulleyLeft.setTargetPosition(outake.pulleyLeft.getCurrentPosition()-100);
             outake.pulleyRight.setTargetPosition(outake.pulleyRight.getCurrentPosition()-100);
             teamUtil.pause(100);
             outake.openGrabber();
             teamUtil.pause(200);
-            drive.moveCM(.6, 19.5);
+            if(left){
+                drive.moveCM(.6, 30);
+            }
+            else{
+                drive.moveCM(.6, 22);
+            }
+
             outake.runToBottomNoWait(true, false);
             if(left) {
                 drive.spinRightToHeading(180, .6);
@@ -352,7 +364,7 @@ public class Robot23 {
             }
 
             if(i<2){
-                drive.moveCM(.9, 60);
+                drive.moveCM(.9, 54);
             }
             else{
             }
@@ -429,15 +441,15 @@ public class Robot23 {
 
         if(detection == 1){
             if(left) {
-                drive.moveCM(.6, 60);
+                drive.moveCM(.6, 64);
             }else{
-                drive.backCM(.6, 60);
+                drive.backCM(.6, 64);
             }
         }else if(detection == 2){
-
+            drive.backCM(.6, 12);
         }else{
             if(left) {
-                drive.backCM(.6, 60);
+                drive.backCM(.6, 70);
             }else{
                 drive.moveCM(.6, 60);
             }
