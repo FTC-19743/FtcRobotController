@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.assemblies;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
@@ -22,6 +23,10 @@ public class Robot23 {
         outake = new Outake();
 
 
+    }
+
+    public static void log(String logString) {
+        RobotLog.d("19743LOG:" + Thread.currentThread().getStackTrace()[3].getMethodName() + ": " + logString);
     }
 
     public void initialize(){
@@ -567,18 +572,26 @@ public class Robot23 {
          */
     }
 
+    public void diagonalStrafeTest(){
+        drive.strafeRightDiagonallyToLine(1000,0.6);
+        drive.frontLeft.setTargetPosition(drive.frontLeft.getCurrentPosition());
+        drive.frontRight.setTargetPosition(drive.frontRight.getCurrentPosition());
+        drive.backRight.setTargetPosition(drive.backRight.getCurrentPosition());
+        drive.backLeft.setTargetPosition(drive.backLeft.getCurrentPosition());
+    }
+
     public void newAutoV5(boolean left, int detection){
 
         drive.setHeading(270);
 
         drive.setTargetPositionToleranceAllMotors(20);
         long startingTime = System.currentTimeMillis();
-        //outake.runToLevelNoWait(3);
+        outake.runToLevelNoWait(3);
 
 
         if(left) {
-            drive.newBackCM(1000,128);
-            drive.spinRightToHeading(222, .6);
+            drive.newBackCM(1000,90);
+            drive.spinRightToHeading(242, .6);
         }else{
             drive.strafeLeft(.6,155);
             drive.strafeRight(.6, 13);
@@ -586,7 +599,76 @@ public class Robot23 {
         }
 
 
-        drive.newBackCM(1000, 17);
+        drive.newBackCM(1000, 44);
+
+        outake.pulleyLeft.setTargetPosition(outake.pulleyLeft.getCurrentPosition()-100);
+        outake.pulleyRight.setTargetPosition(outake.pulleyRight.getCurrentPosition()-100);
+        teamUtil.pause(100);
+        outake.openGrabber();
+        teamUtil.pause(500);
+
+        log("Heading: " + drive.getIMUHeading());
+        log("NH: " + drive.getHeading());
+        outake.runToBottomNoWait(true, false);
+        drive.newMoveCM(1000,17);
+        drive.spinRightToHeading(180,.6);
+
+
+        for(int i=0;i<3; i++){
+            if(i==0){
+                drive.newMoveCM(1000,35);
+            }
+            else{
+                drive.newMoveCM(1000,10);
+            }
+
+            drive.strafeRightDiagonallyToLine(1000,0.5);
+            drive.setAllMotorsToSpeed(0.3);
+            teamUtil.pause(500);
+            drive.setAllMotorsToSpeed(0);
+            outake.closeGrabber();
+            teamUtil.pause(300);
+            outake.runToLevelNoWait(3);
+            drive.newBackCM(1000, 68);
+            if(left) {
+                drive.spinLeftToHeading(220, .6);
+            }else{
+                drive.spinRightToHeading(125, .6);
+            }
+            drive.backCM(.6, 14);
+            outake.pulleyLeft.setTargetPosition(outake.pulleyLeft.getCurrentPosition()-100);
+            outake.pulleyRight.setTargetPosition(outake.pulleyRight.getCurrentPosition()-100);
+            teamUtil.pause(100);
+            outake.openGrabber();
+            teamUtil.pause(200);
+            drive.moveCM(.6, 19.5);
+            outake.runToBottomNoWait(true, false);
+            if(left) {
+                drive.spinRightToHeading(180, .6);
+            }else{
+                drive.spinLeftToHeading(180, 0.6);
+            }
+            long currentTime = System.currentTimeMillis();
+
+            //time failsafe code
+            if(currentTime-startingTime>22000&&detection!=2){
+                break;
+            }
+            else if(currentTime-startingTime>22500){
+                break;
+            }
+            else{
+
+            }
+
+            if(i<2){
+                drive.moveCM(.9, 60);
+            }
+            else{
+            }
+        }
+
+
         /*
 
         outake.pulleyLeft.setTargetPosition(outake.pulleyLeft.getCurrentPosition()-100);
