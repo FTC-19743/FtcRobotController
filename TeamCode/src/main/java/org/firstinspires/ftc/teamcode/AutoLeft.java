@@ -51,7 +51,9 @@ public class AutoLeft extends LinearOpMode {
 
         waitForStart();
 
+
         robot.newAutoV5(true, signalDetector.signalDetect());
+        //robot.halfwayJointTest();
 
 
 

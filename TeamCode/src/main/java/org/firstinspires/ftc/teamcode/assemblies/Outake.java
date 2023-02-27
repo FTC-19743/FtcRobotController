@@ -26,6 +26,7 @@ public class Outake {
     public final int MEDIUM = 1390;
     public final int SHORT = 600;
     public final int FLIPPED_JOINT = 600;
+    public final int HALFWAY_JOINT = 300;
     public final int ABOVE_STACK = 1000;
     public final int GROUND = 80;
     public final int BOTTOM = 10;
@@ -249,13 +250,18 @@ public class Outake {
 
 
             rotator.setPosition(ROTATOR_FLAT);
+
+            joint.setTargetPosition(JOINT_BOTTOM);
+            joint.setVelocity(1000);
+            if(pulleyLeft.getCurrentPosition()<SHORT+100){
+                teamUtil.pause(250);
+            }
             pulleyRight.setTargetPosition(CUP_HEIGHTS[cupLevel]);
             pulleyLeft.setTargetPosition(CUP_HEIGHTS[cupLevel]);
             pulleyLeft.setVelocity(SlowPulleyVelocity);
             pulleyRight.setVelocity(SlowPulleyVelocity);
 
-            joint.setTargetPosition(JOINT_BOTTOM);
-            joint.setVelocity(1000);
+
             if(joint.getCurrentPosition()>200){
                 grabber.setPosition(GRAB);
                 teamUtil.pause(500);
@@ -268,13 +274,18 @@ public class Outake {
         }
         else if(beacon){
             rotator.setPosition(ROTATOR_FLAT);
+
+            joint.setTargetPosition(JOINT_BOTTOM);
+            joint.setVelocity(1000);
+            if(pulleyLeft.getCurrentPosition()<SHORT+100){
+                teamUtil.pause(250);
+            }
             pulleyRight.setTargetPosition(BEACON);
             pulleyLeft.setTargetPosition(BEACON);
             pulleyLeft.setVelocity(SlowPulleyVelocity);
             pulleyRight.setVelocity(SlowPulleyVelocity);
 
-            joint.setTargetPosition(JOINT_BOTTOM);
-            joint.setVelocity(1000);
+
             if(joint.getCurrentPosition()>200){
                 grabber.setPosition(GRAB);
                 teamUtil.pause(500);
@@ -285,11 +296,17 @@ public class Outake {
         else{
             grabber.setPosition(GRAB);
             rotator.setPosition(ROTATOR_FLAT);
+
+            joint.setTargetPosition(JOINT_BOTTOM);
+            joint.setVelocity(1000);
+            if(pulleyLeft.getCurrentPosition()<SHORT+100){
+                teamUtil.pause(250);
+            }
             pulleyLeft.setTargetPosition(BOTTOM);
             pulleyRight.setTargetPosition(BOTTOM);
             pulleyLeft.setVelocity(SlowPulleyVelocity);
             pulleyRight.setVelocity(SlowPulleyVelocity);
-            joint.setTargetPosition(JOINT_BOTTOM);
+
             teamUtil.pause(500);
             grabber.setPosition(OPEN);
         }
@@ -336,6 +353,52 @@ public class Outake {
         pulleyLeft.setTargetPosition(TOP);
         pulleyLeft.setVelocity(PulleyVelocity);
         //joint.setPosition(JOINTUP);
+    }
+
+    public void runToLevelHalfwayJoint(int level){
+        if(level==1){
+            pulleyLeft.setTargetPosition(SHORT);
+            pulleyRight.setTargetPosition(SHORT);
+
+        }
+        if(level==2){
+            pulleyLeft.setTargetPosition(MEDIUM);
+            pulleyRight.setTargetPosition(MEDIUM);
+        }
+        if(level==3){
+            pulleyLeft.setTargetPosition(TOP);
+            pulleyRight.setTargetPosition(TOP);
+        }
+
+
+
+
+        pulleyLeft.setVelocity(PulleyVelocity);
+        pulleyRight.setVelocity(PulleyVelocity);
+        grabber.setPosition(GRAB);
+
+        teamUtil.pause(250);
+        rotator.setPosition(ROTATOR_FLIPPED);
+        joint.setTargetPosition(HALFWAY_JOINT);
+        joint.setVelocity(1000);
+
+        Moving = false;
+    }
+
+    public void runToLevelHalfwayJointNoWait(int level){
+        if(Moving){
+            teamUtil.log("Lift Attempted to run other movement while moving");
+            return;
+        }
+        Moving = true;
+        teamUtil.log("Launching Thread to Move to level");
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runToLevelHalfwayJoint(level);
+            }
+        });
+        thread.start();
     }
 
     public void runToLevel(int level){

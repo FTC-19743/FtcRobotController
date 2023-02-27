@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.assemblies;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -572,12 +573,56 @@ public class Robot23 {
          */
     }
 
+    //if distance is moved exceeds certain threshold
+    public void goToWall(int milliseconds, int velocity){
+        //system clock (now)\
+        //absolute value of current encoder - original position
+        long startTime = System.currentTimeMillis();
+        //outake.runToBottomNoWait(true,false);
+        drive.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        drive.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        drive.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        drive.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        drive.frontLeft.setVelocity(Math.abs(velocity));
+        drive.frontRight.setVelocity(Math.abs(velocity));
+        drive.backLeft.setVelocity(Math.abs(velocity));
+        drive.backRight.setVelocity(Math.abs(velocity));
+        //current encoder of certain wheel
+        int ticks = drive.frontLeft.getCurrentPosition();
+        while(true){
+            if(Math.abs(drive.frontLeft.getCurrentPosition()-ticks)>18*drive.COUNTS_PER_CENTIMETER){
+
+                break;
+            }
+        }
+        while(System.currentTimeMillis()-startTime<milliseconds){
+
+        }
+        drive.frontLeft.setVelocity(0);
+        drive.frontRight.setVelocity(0);
+        drive.backLeft.setVelocity(0);
+        drive.backRight.setVelocity(0);
+        return;
+    }
+
     public void diagonalStrafeTest(){
         drive.strafeRightDiagonallyToLine(1000,0.6);
         drive.frontLeft.setTargetPosition(drive.frontLeft.getCurrentPosition());
         drive.frontRight.setTargetPosition(drive.frontRight.getCurrentPosition());
         drive.backRight.setTargetPosition(drive.backRight.getCurrentPosition());
         drive.backLeft.setTargetPosition(drive.backLeft.getCurrentPosition());
+    }
+
+    public void halfwayJointTest(){
+        outake.runToLevelHalfwayJoint(3);
+        teamUtil.pause(60000);
+    }
+    public void runToWallTest(){
+        drive.moveCMNoStop(35,1000);
+        drive.strafeRightDiagonallyToLine(1000,0.5);
+        drive.setAllMotorsToSpeed(0.3);
+        teamUtil.pause(1000);
+        drive.setAllMotorsToSpeed(0);
     }
 
     public void newAutoV5(boolean left, int detection){
@@ -599,22 +644,30 @@ public class Robot23 {
         }
 
 
-        drive.newBackCM(1000, 44);
+        drive.newBackCM(1000, 37);
+
 
         outake.pulleyLeft.setTargetPosition(outake.pulleyLeft.getCurrentPosition()-100);
         outake.pulleyRight.setTargetPosition(outake.pulleyRight.getCurrentPosition()-100);
         teamUtil.pause(100);
         outake.openGrabber();
         teamUtil.pause(500);
-
+        outake.runToLevel(2);
+        outake.runToBottomNoWait(true,false);
         log("Heading: " + drive.getIMUHeading());
         log("NH: " + drive.getHeading());
-        outake.runToBottomNoWait(true, false);
-        drive.newMoveCM(1000,17);
-        drive.spinRightToHeading(180,.6);
+        //outake.runToBottomNoWait(true, false);
+        drive.newMoveCM(1000,4);
+
+        drive.spinRightToHeading(180,.5);
+
+
 
 
         for(int i=0;i<3; i++){
+            teamUtil.pause(250);
+            goToWall(2500,1000);
+            /*
             if(i==0){
                 drive.newMoveCM(1000,35);
             }
@@ -622,27 +675,30 @@ public class Robot23 {
                 drive.newMoveCM(1000,10);
             }
 
-            drive.strafeRightDiagonallyToLine(1000,0.5);
-            drive.setAllMotorsToSpeed(0.3);
-            teamUtil.pause(500);
-            drive.setAllMotorsToSpeed(0);
+             */
+
+
             outake.closeGrabber();
             teamUtil.pause(300);
-            outake.runToLevelNoWait(3);
+            outake.runToLevelHalfwayJointNoWait(3);
             drive.newBackCM(1000, 68);
             if(left) {
                 drive.spinLeftToHeading(220, .6);
             }else{
                 drive.spinRightToHeading(125, .6);
             }
+            teamUtil.pause(60000);
+            outake.runToLevel(3);
             drive.backCM(.6, 14);
             outake.pulleyLeft.setTargetPosition(outake.pulleyLeft.getCurrentPosition()-100);
             outake.pulleyRight.setTargetPosition(outake.pulleyRight.getCurrentPosition()-100);
             teamUtil.pause(100);
             outake.openGrabber();
             teamUtil.pause(200);
-            drive.moveCM(.6, 19.5);
+            outake.runToLevel(2);
             outake.runToBottomNoWait(true, false);
+            drive.moveCM(.6, 19.5);
+
             if(left) {
                 drive.spinRightToHeading(180, .6);
             }else{

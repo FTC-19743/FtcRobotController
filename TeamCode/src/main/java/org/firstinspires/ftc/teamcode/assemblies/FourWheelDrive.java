@@ -803,6 +803,30 @@ public class FourWheelDrive {
 
     }
 
+
+    public void moveCMNoStop(double cm, int velocity){
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        int ticks = frontLeft.getCurrentPosition();
+        double ticksNeeded = cm*COUNTS_PER_CENTIMETER+ticks;
+
+        frontLeft.setVelocity(velocity);
+        backLeft.setVelocity(velocity);
+        backRight.setVelocity(velocity);
+        frontRight.setVelocity(velocity);
+        while(frontLeft.getCurrentPosition()<ticksNeeded){
+
+        }
+        frontLeft.setVelocity(0);
+        backLeft.setVelocity(0);
+        backRight.setVelocity(0);
+        frontRight.setVelocity(0);
+
+
+    }
+
     public void strafeRightToLine(int maxEncoderTicks, double speed){
         log("Strafing Right To Line");
         log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" + colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
@@ -899,9 +923,9 @@ public class FourWheelDrive {
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontLeft.setPower(speed*2/3);
+        frontLeft.setPower(speed*1/3);
         backLeft.setPower(speed);
-        backRight.setPower(speed*2/3);
+        backRight.setPower(speed*1/3);
         frontRight.setPower(speed);
         int ticks = frontLeft.getCurrentPosition();
 
@@ -947,9 +971,9 @@ public class FourWheelDrive {
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeft.setPower(speed);
-        backLeft.setPower(speed*2/3);
+        backLeft.setPower(speed*1/3);
         backRight.setPower(speed);
-        frontRight.setPower(speed*2/3);
+        frontRight.setPower(speed*1/3);
         int ticks = frontLeft.getCurrentPosition();
 
         while(!colorSensor.isOnTape() &&Math.abs(frontLeft.getCurrentPosition()-ticks) < maxEncoderTicks){
@@ -958,10 +982,13 @@ public class FourWheelDrive {
             //log("On Blue " +colorSensor.onBlue()+ " On Red " +colorSensor.onRed());
 
         }
+        if(colorSensor.isOnTape()){
+            log("On Line");
+        }
 
 
 
-        log("On Line");
+
         log("Blue Value " +colorSensor.blueValue()+ "Blue Threshold" + colorSensor.BLUE_THRESHOLD + " Red Value "+  colorSensor.redValue() + " Red Threshold " + colorSensor.RED_THRESHOLD);
         log("On Blue " +colorSensor.onBlue()+ " On Red " + colorSensor.onRed());
         frontLeft.setPower(0);
@@ -1086,7 +1113,7 @@ public class FourWheelDrive {
         backRight.setPower(0);
     }
 
-    public void spinRightToHeading(int wantedIMU, double speed){
+    public void spinRightToHeading(double wantedIMU, double speed){
         log("Spin Right To Heading Called");
         log("Heading At Start" + getHeading());
         log("Desired Heading" + wantedIMU);
@@ -1120,7 +1147,7 @@ public class FourWheelDrive {
 
 
 
-    public void spinLeftToHeading(int wantedIMU, double speed){
+    public void spinLeftToHeading(double wantedIMU, double speed){
         log("Spin Left To Heading Called");
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
