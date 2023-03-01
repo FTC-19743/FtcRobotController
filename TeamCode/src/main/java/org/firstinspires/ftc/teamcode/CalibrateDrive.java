@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.RobotLog;
 
 
+import org.firstinspires.ftc.teamcode.assemblies.FourWheelDrive;
 import org.firstinspires.ftc.teamcode.assemblies.Robot23;
 import org.firstinspires.ftc.teamcode.libs.TeamGamepad;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
@@ -77,6 +78,7 @@ public class CalibrateDrive extends LinearOpMode {
             double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
             //telemetry.addLine("current cup level "+ String.valueOf(cupLevel));
 
+
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio, but only when
             // at least one is out of the range [-1, 1]
@@ -119,7 +121,7 @@ public class CalibrateDrive extends LinearOpMode {
             robot.drive.backRight.setPower(-backRightPower*powerFactor);
 
             if (gamepad1.right_stick_button && gamepad1.left_stick_button) {
-                robot.drive.resetHeading();
+                robot.drive.setHeading(180);
             }
 
             if(driverGamepad.wasAPressed()){
@@ -142,6 +144,66 @@ public class CalibrateDrive extends LinearOpMode {
                 robot.drive.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             }
+            if (driverGamepad.wasXPressed()) { // Go to Wall
+                long opTime = System.currentTimeMillis();
+
+                robot.drive.setAllMotorsRunUsingEncoder();
+                FourWheelDrive.MotorData start = new FourWheelDrive.MotorData();
+                robot.drive.getDriveMotorData(start);
+                teamUtil.log("BACK UP AND TURN");
+                while (robot.drive.getEncoderDistance(start) < 25*robot.drive.COUNTS_PER_CENTIMETER) {
+                    robot.drive.driveMotorsHeadingsFR(225, 180,1500);
+                }
+                teamUtil.log("DRIVE TOWARDS WALL");
+                robot.drive.getDriveMotorData(start);
+                while (robot.drive.getEncoderDistance(start) < 30*robot.drive.COUNTS_PER_CENTIMETER) {
+                    robot.drive.driveMotorsHeadingsFR(180 , 180,1500);
+                }
+                teamUtil.log("DRIFT TOWARDS LINE");
+                robot.drive.getDriveMotorData(start);
+                while (!robot.drive.colorSensor.isOnTape() && robot.drive.getEncoderDistance(start) < 30*robot.drive.COUNTS_PER_CENTIMETER) {
+                    robot.drive.driveMotorsHeadingsFR(135 , 180,1000);
+                }
+                if (robot.drive.colorSensor.isOnTape()) {
+                    teamUtil.log("FOUND TAPE");
+                } else {
+                    teamUtil.log("FAIL SAFE");
+                }
+                long startTime = System.currentTimeMillis();
+                teamUtil.log("SQUARE ON WALL");
+                while (System.currentTimeMillis()-startTime < 500) {
+                    robot.drive.driveMotorsHeadingsFR(200 , 180,750); // drift left a bit to compensate for late tape reading
+                }
+                robot.drive.stopDrive();
+                teamUtil.log("OP TIME: "+ (System.currentTimeMillis()-opTime));
+
+            }
+            if (driverGamepad.wasBPressed()) { // Go To Pole
+                long opTime = System.currentTimeMillis();
+
+                robot.drive.setAllMotorsRunUsingEncoder();
+                FourWheelDrive.MotorData start = new FourWheelDrive.MotorData();
+                robot.drive.getDriveMotorData(start);
+                teamUtil.log("BACK UP");
+                while (robot.drive.getEncoderDistance(start) < 40*robot.drive.COUNTS_PER_CENTIMETER) {
+                    robot.drive.driveMotorsHeadingsFR(350, 180,1500);
+                }
+                robot.drive.getDriveMotorData(start);
+                teamUtil.log("BACK UP AND TURN");
+                while (robot.drive.getEncoderDistance(start) < 30*robot.drive.COUNTS_PER_CENTIMETER) {
+                    robot.drive.driveMotorsHeadingsFR(355, 225,1000);
+                }
+                robot.drive.getDriveMotorData(start);
+                teamUtil.log("BACKUP");
+                while (robot.drive.getEncoderDistance(start) < 10*robot.drive.COUNTS_PER_CENTIMETER) {
+                    robot.drive.driveMotorsHeadingsFR(45, 225,500);
+                }
+                robot.drive.setAllMotorsActiveBreak();
+                teamUtil.log("OP TIME: "+ (System.currentTimeMillis()-opTime));
+                teamUtil.pause(1000);
+                robot.drive.setAllMotorsRunUsingEncoder();
+            }
+
 
             robot.drive.outputTelemetry();
             telemetry.update();

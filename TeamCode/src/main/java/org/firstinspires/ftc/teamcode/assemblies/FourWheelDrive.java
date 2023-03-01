@@ -42,6 +42,7 @@ public class FourWheelDrive {
     public double MIN_END_VELOCITY = 100; //tentative value
     public double MAX_ACCELERATION = 10; //tentative value
     public double MAX_DECELERATION = -5; //tentative value (should be negative)
+    public double ROTATION_ADJUST_FACTOR = .04; // TODO: Tune this for  auto
     public PIDFCoefficients pidNew = new PIDFCoefficients(5,0.121,0,12.136, MotorControlAlgorithm.PIDF);
 
 
@@ -165,6 +166,179 @@ public class FourWheelDrive {
     public void logPIDCoefficients(){
 
     }
+
+    public void outputTelemetry() {
+        telemetry.addData("Output  ", "flm:%d frm:%d blm:%d brm:%d heading:%f nh: %f",
+                frontLeft.getCurrentPosition(), frontRight.getCurrentPosition(), backLeft.getCurrentPosition(), backRight.getCurrentPosition(), getIMUHeading(), getHeading());
+
+        telemetry.addData("Is On Line", "%b", colorSensor.isOnTape());
+        telemetry.addData("Red Value ", colorSensor.redValue());
+        telemetry.addData("Blue Value ", colorSensor.blueValue());
+        telemetry.addLine("Target Position Tolerance" + frontLeft.getTargetPositionTolerance());
+
+    }
+
+    public void setAllMotorsActiveBreak(){
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition());
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setVelocity(3000);
+
+        frontRight.setTargetPosition(frontRight.getCurrentPosition());
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setVelocity(3000);
+
+        backLeft.setTargetPosition(backLeft.getCurrentPosition());
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setVelocity(3000);
+
+        backRight.setTargetPosition(backRight.getCurrentPosition());
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setVelocity(3000);
+
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Some fancy new methods for driving at any angle while holding a heading
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static class MotorData { // a helper class to allow for faster access to hub data
+        int eFL, eFR, eBL, eBR;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Return the encoder positions for all 4 drive motors
+    // TODO: Use the Batch data feature (see examples) to speed this up
+    public void getDriveMotorData(FourWheelDrive.MotorData data) {
+        data.eFL = frontLeft.getCurrentPosition();
+        data.eFR = frontRight.getCurrentPosition();
+        data.eBL = backLeft.getCurrentPosition();
+        data.eBR = backRight.getCurrentPosition();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Calculate the distance the robot has moved from the specified initialPosition
+    public int getEncoderDistance(FourWheelDrive.MotorData initialPositions) {
+        FourWheelDrive.MotorData currentPositions = new FourWheelDrive.MotorData();
+        getDriveMotorData(currentPositions);
+
+        // Calculate the vector along the forward/backward axis
+        int ForwardVector = (currentPositions.eFL-initialPositions.eFL)
+                + (currentPositions.eFR-initialPositions.eFR)
+                + (currentPositions.eBL-initialPositions.eBL)
+                + (currentPositions.eBR-initialPositions.eBR);
+        // Calculate the vector along the left/right axis
+        int SideVector = (currentPositions.eFL-initialPositions.eFL)
+                + (currentPositions.eBR-initialPositions.eBR)
+                - ((currentPositions.eFR-initialPositions.eFR)
+                + (currentPositions.eBL-initialPositions.eBL));
+        // Return the hypotenuse of the two vectors
+        // divide by 4 to account for the math that adds all 4 motor encoders
+        return (int) (Math.sqrt(Math.pow(ForwardVector,2)+Math.pow(SideVector,2)) / 4);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Update the drive motor velocities
+    // TODO: Use the Batch data feature (see examples) to speed this up
+    public void setDriveVelocities(double flV, double frV, double blV, double brV){
+        frontLeft.setVelocity(flV);
+        frontRight.setVelocity(frV);
+        backLeft.setVelocity(blV);
+        backRight.setVelocity(brV);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void stopDrive() {
+        setDriveVelocities(0,0,0,0);
+        teamUtil.log("STOP Motors");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public int cmsToEncoderTics(double cms) { // return the # of encoder tics for the specified inches
+        return (int) (cms * COUNTS_PER_CENTIMETER);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // return the difference between the current heading and a target heading.  Returns -180 to 180
+    // Positive number means we need to turn left
+    public double getHeadingError(double targetAngle) {
+
+        double robotError;
+
+        // calculate heading error in -179 to +180 range  (
+        robotError = targetAngle - getHeading();
+        while (robotError > 180) robotError -= 360;
+        while (robotError <= -180) robotError += 360;
+        return robotError;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Set the velocity of all 4 motors based on a driveHeading RELATIVE TO ROBOT and provided velocity
+    // Will rotate robot as needed to achieve and hold robotHeading RELATIVE TO FIELD
+    public void driveMotorsHeadings(double driveHeading, double robotHeading, double velocity) {
+        double flV, frV, blV, brV;
+        double x, y, scale;
+        boolean details = false;
+
+        // Determine how much adjustment for rotational drift
+        double headingError = getHeadingError(robotHeading); // Difference between desired and actual robot heading
+        //double headingError = Math.max(-45.0, Math.min(getHeadingError(robotHeading), 45.0)); // clip this to 45 degrees in either direction to control rate of spin
+        double rotationAdjust = ROTATION_ADJUST_FACTOR * velocity * headingError; // scale based on velocity AND amount of rotational error
+
+        // Covert heading to cartesian on the unit circle and scale so largest value is 1
+        // This is essentially creating joystick values from the heading
+        // driveHeading is relative to robot at this point since the wheels are relative to robot!
+        x = Math.cos(Math.toRadians(driveHeading + 90)); // + 90 cause forward is 0...
+        y = Math.sin(Math.toRadians(driveHeading + 90));
+        scale = 1 / Math.max(Math.abs(x), Math.abs(y));
+        x = x * scale;
+        y = y * scale;
+
+        // Clip to motor power range and scale to velocity
+        flV = Math.max(-1.0, Math.min(x + y, 1.0))*velocity;
+        brV = flV;
+        frV = Math.max(-1.0, Math.min(y - x, 1.0))*velocity;
+        blV = frV;
+
+        // Adjust for rotational drift
+        flV = flV - rotationAdjust;
+        brV = brV + rotationAdjust;
+        frV = frV + rotationAdjust;
+        blV = blV - rotationAdjust;
+
+        if (details) {
+            teamUtil.log("driveH: " + driveHeading + " robotH: "+ robotHeading + "HError: "+headingError+ " RotAdj: " + rotationAdjust);
+            teamUtil.log("flV: " + flV + " frV: "+ frV + "blV: "+blV+ " brV: " + brV);
+
+        }
+        // Update the motors
+        setDriveVelocities(flV, frV, blV, brV);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Set the velocity of all 4 motors based on a driveHeading RELATIVE TO FIELD and provided velocity
+    // Will rotate robot as needed to achieve and hold robotHeading RELATIVE TO FIELD
+    public void driveMotorsHeadingsFR(double driveHeading, double robotHeading, double velocity) {
+        double RRDriveHeading = getHeadingError(driveHeading);
+        driveMotorsHeadings(RRDriveHeading, robotHeading, velocity);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void setAllMotorsRunToPosition() {
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public void setAllMotorsRunUsingEncoder() {
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     public void strafeLeft(double speed, double centimeters) {
         int newFrontLeftTarget;
         int newFrontRightTarget;
@@ -437,18 +611,10 @@ public class FourWheelDrive {
         backRight.setPower(0);
     }
 
-    public void outputTelemetry() {
-        telemetry.addData("Output  ", "flm:%d frm:%d blm:%d brm:%d heading:%f nh: %f",
-                frontLeft.getCurrentPosition(), frontRight.getCurrentPosition(), backLeft.getCurrentPosition(), backRight.getCurrentPosition(), getIMUHeading(), getHeading());
-
-        telemetry.addData("Is On Line", "%b", colorSensor.isOnTape());
-        telemetry.addData("Red Value ", colorSensor.redValue());
-        telemetry.addData("Blue Value ", colorSensor.blueValue());
-        telemetry.addLine("Target Position Tolerance" + frontLeft.getTargetPositionTolerance());
-
-    }
 
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void moveCM(double speed, double centimeters) {
         int newFrontLeftTarget;
         int newFrontRightTarget;
