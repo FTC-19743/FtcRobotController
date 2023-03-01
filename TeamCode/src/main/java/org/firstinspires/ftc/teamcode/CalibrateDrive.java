@@ -125,23 +125,13 @@ public class CalibrateDrive extends LinearOpMode {
             }
 
             if(driverGamepad.wasAPressed()){
-                robot.drive.newBackCM(1000,140);
-                robot.drive.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.drive.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.drive.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.drive.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.drive.setHeading(242);
+                robot.goToWallV2();
             }
 
             if(driverGamepad.wasYPressed()){
-                robot.drive.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                robot.drive.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                robot.drive.backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                robot.drive.backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-                robot.drive.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.drive.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.drive.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.drive.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.drive.setHeading(180);
+                robot.goToPole();
 
             }
             if (driverGamepad.wasXPressed()) { // Go to Wall

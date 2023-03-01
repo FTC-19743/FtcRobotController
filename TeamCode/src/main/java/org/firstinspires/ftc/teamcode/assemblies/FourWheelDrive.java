@@ -326,6 +326,66 @@ public class FourWheelDrive {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public void runToPole(){
+        long opTime = System.currentTimeMillis();
+
+        setAllMotorsRunUsingEncoder();
+        FourWheelDrive.MotorData start = new FourWheelDrive.MotorData();
+        getDriveMotorData(start);
+        teamUtil.log("BACK UP");
+        while (getEncoderDistance(start) < 40*COUNTS_PER_CENTIMETER) {
+            driveMotorsHeadingsFR(350, 180,1500);
+        }
+        getDriveMotorData(start);
+        teamUtil.log("BACK UP AND TURN");
+        while (getEncoderDistance(start) < 30*COUNTS_PER_CENTIMETER) {
+            driveMotorsHeadingsFR(355, 225,1000);
+        }
+        getDriveMotorData(start);
+        teamUtil.log("BACKUP");
+        while (getEncoderDistance(start) < 10*COUNTS_PER_CENTIMETER) {
+            driveMotorsHeadingsFR(45, 225,500);
+        }
+        setAllMotorsActiveBreak();
+        teamUtil.log("OP TIME: "+ (System.currentTimeMillis()-opTime));
+        teamUtil.pause(1000);
+        setAllMotorsRunUsingEncoder();
+    }
+
+    public void newRunToWall(){
+        long opTime = System.currentTimeMillis();
+
+        setAllMotorsRunUsingEncoder();
+        FourWheelDrive.MotorData start = new FourWheelDrive.MotorData();
+        getDriveMotorData(start);
+        teamUtil.log("BACK UP AND TURN");
+        while (getEncoderDistance(start) < 25*COUNTS_PER_CENTIMETER) {
+            driveMotorsHeadingsFR(225, 180,1500);
+        }
+        teamUtil.log("DRIVE TOWARDS WALL");
+        getDriveMotorData(start);
+        while (getEncoderDistance(start) < 30*COUNTS_PER_CENTIMETER) {
+            driveMotorsHeadingsFR(180 , 180,1500);
+        }
+        teamUtil.log("DRIFT TOWARDS LINE");
+        getDriveMotorData(start);
+        while (!colorSensor.isOnTape() && getEncoderDistance(start) < 30*COUNTS_PER_CENTIMETER) {
+            driveMotorsHeadingsFR(135 , 180,1000);
+        }
+        if (colorSensor.isOnTape()) {
+            teamUtil.log("FOUND TAPE");
+        } else {
+            teamUtil.log("FAIL SAFE");
+        }
+        long startTime = System.currentTimeMillis();
+        teamUtil.log("SQUARE ON WALL");
+        while (System.currentTimeMillis()-startTime < 500) {
+            driveMotorsHeadingsFR(200 , 180,750); // drift left a bit to compensate for late tape reading
+        }
+        stopDrive();
+        teamUtil.log("OP TIME: "+ (System.currentTimeMillis()-opTime));
+    }
+
     public void setAllMotorsRunToPosition() {
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
