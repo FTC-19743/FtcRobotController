@@ -606,6 +606,12 @@ public class Robot23 {
     }
 
     public void driveVectorCms(double driveHeading, double robotHeading, double cms, double velocity) {
+        log("Drive Vector CMS ----------------");
+        log("Drive heading passed in: " + driveHeading);
+        log("Robot Heading Parameter: " + robotHeading);
+        log("CMS passed in: " + cms);
+        log("Velocity: " + velocity);
+        log("Current Heading: " + drive.getHeading());
         FourWheelDrive.MotorData start = new FourWheelDrive.MotorData();
         drive.getDriveMotorData(start);
         while (drive.getEncoderDistance(start) < cms*drive.COUNTS_PER_CENTIMETER) {
@@ -618,7 +624,7 @@ public class Robot23 {
         drive.setAllMotorsRunUsingEncoder();
 
         teamUtil.log("BACK UP ");
-        driveVectorCms(238, 238, 15, 500); //
+        driveVectorCms(238, 238, 12, 500); //
 
         outake.runToBottomNoWait(true,false); // launches another thread for this operation
 
@@ -763,6 +769,49 @@ public class Robot23 {
 */
     }
 
+    public void park(int path){
+        drive.setAllMotorsRunUsingEncoder();
+        if(path==0||path == 2){
+            driveVectorCms(120,180,10,1500);
+            drive.spinRightToHeading(180,0.6);
+        }
+        else if(path==1){
+            driveVectorCms(155,180,15,1500);
+            driveVectorCms(180,180,40,1500);
+
+        }
+        else{
+            driveVectorCms(30,180,10,1500);
+            driveVectorCms(0,180,45,1500);
+
+        }
+
+        drive.setAllMotorsActiveBreak();
+        teamUtil.pause(333);
+    }
+
+    public void firstRunToPoleLeft(){
+        drive.newBackCM(1000,90);
+        teamUtil.pause(300);
+        drive.spinRightToHeading(238, .6);
+        teamUtil.pause(300);
+        drive.newBackCM(1000, 37);
+        drive.setAllMotorsActiveBreak();
+
+    }
+
+    public void firstRunToPoleLeftV2(){
+        drive.setAllMotorsRunUsingEncoder();
+        outake.runToLevelNoWait(3);
+        driveVectorCms(270,270,60,1000);
+        driveVectorCms(270,238,30,1000);
+        driveVectorCms(38,238,37,500);
+
+        drive.newBackCM(1000, 37);
+        drive.setAllMotorsActiveBreak();
+
+    }
+
     public void diagonalStrafeTest(){
         drive.strafeRightDiagonallyToLine(1000,0.6);
         drive.frontLeft.setTargetPosition(drive.frontLeft.getCurrentPosition());
@@ -848,13 +897,22 @@ public class Robot23 {
         }
         drive.newMoveCM(1000,18);
         outake.runToBottom(false,false);  // TODO: Isn't the Robot currently bracing the pole?  Don't you need to back up first or something?
-        teamUtil.pause(1000);
+        if(detection==0){
+            park(0);
+        }
+        else if(detection==1){
+            park(1);
+        }
+        else if(detection==2){
+            park(2);
+        }
+        else{
+            park(3);
+        }
         if(true){
             return;
         }
-        drive.newMoveCM(1000,4);
 
-        drive.spinRightToHeading(180,.5);
 
 
 
