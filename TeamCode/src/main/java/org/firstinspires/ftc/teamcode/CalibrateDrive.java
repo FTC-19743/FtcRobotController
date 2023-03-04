@@ -129,6 +129,10 @@ public class CalibrateDrive extends LinearOpMode {
                 robot.goToWallV2();
             }
 
+            if(driverGamepad.wasDownPressed()){
+                robot.outake.runToBottom(false,false);
+            }
+
             if(driverGamepad.wasYPressed()){
                 robot.drive.setHeading(180);
                 robot.goToPoleV2();

@@ -426,7 +426,7 @@ public class Outake {
         teamUtil.pause(250);
         rotator.setPosition(ROTATOR_FLIPPED);
         joint.setTargetPosition(FLIPPED_JOINT);
-        joint.setVelocity(1000);
+        joint.setVelocity(1000); // TODO: This might be a fine velocity for moving the arm up and over, but when you get to the end and want to hold your position, you should use max power (3000)
 
         Moving = false;
 

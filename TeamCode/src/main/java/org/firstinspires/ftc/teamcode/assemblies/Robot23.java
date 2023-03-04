@@ -605,42 +605,56 @@ public class Robot23 {
         return;
     }
 
+    public void driveVectorCms(double driveHeading, double robotHeading, double cms, double velocity) {
+        FourWheelDrive.MotorData start = new FourWheelDrive.MotorData();
+        drive.getDriveMotorData(start);
+        while (drive.getEncoderDistance(start) < cms*drive.COUNTS_PER_CENTIMETER) {
+            drive.driveMotorsHeadingsFR(driveHeading, robotHeading,velocity);
+        }
+    }
     public void goToWallV2(){
         long opTime = System.currentTimeMillis();
 
         drive.setAllMotorsRunUsingEncoder();
 
+        teamUtil.log("BACK UP ");
+        driveVectorCms(238, 238, 15, 500); //
+
+        outake.runToBottomNoWait(true,false); // launches another thread for this operation
+
+        teamUtil.log("TURN AND STRAFE");
+        driveVectorCms(135, 180, 15, 1000); // strafe a bit right while rotating
+
+        teamUtil.log("MOVE TO LEFT OF LINE");
+        driveVectorCms(185, 180, 38, 1000); // strafe a bit right while rotating
+
+/*
         FourWheelDrive.MotorData start = new FourWheelDrive.MotorData();
 
 
         drive.getDriveMotorData(start);
-        teamUtil.log("BACK UP AND TURN");
+        teamUtil.log("BACK UP ");
         while (drive.getEncoderDistance(start) < 15*drive.COUNTS_PER_CENTIMETER) {
             drive.driveMotorsHeadingsFR(225, 238,500);
         }
 
-
-
-
-
-
-
-        teamUtil.log("DRIVE TOWARDS WALL");
-        outake.runToBottomNoWait(true,false);
+        teamUtil.log("TURN AND STRAFE");
+        outake.runToBottomNoWait(true,false); // launches another thread for this operation
 
         drive.getDriveMotorData(start);
         while (drive.getEncoderDistance(start) < 15*drive.COUNTS_PER_CENTIMETER) {
-            drive.driveMotorsHeadingsFR(135 , 180,1000);
+            drive.driveMotorsHeadingsFR(135 , 180,1000); // strafe a bit right while rotating
         }
-        teamUtil.log("DRIFT TOWARDS LINE");
 
-
+        teamUtil.log("MOVE TO LEFT OF LINE");
         drive.getDriveMotorData(start);
         while (drive.getEncoderDistance(start) < 38*drive.COUNTS_PER_CENTIMETER) {
             drive.driveMotorsHeadingsFR(185 , 180,1000);
         }
-        teamUtil.log("DRIFT TOWARDS LINE");
+ */
+        FourWheelDrive.MotorData start = new FourWheelDrive.MotorData();
 
+        teamUtil.log("STRAFE LOOKING FOR LINE");
         drive.getDriveMotorData(start);
         while (!drive.colorSensor.isOnTape()&& drive.getEncoderDistance(start) < 30*drive.COUNTS_PER_CENTIMETER) {
             drive.driveMotorsHeadingsFR(135 , 180,500);
@@ -651,7 +665,7 @@ public class Robot23 {
             teamUtil.log("FAIL SAFE");
             drive.setAllMotorsActiveBreak();
             teamUtil.pause(333);
-            drive.strafeLeftToLine(1400,.3);
+            drive.strafeLeftToLine(1400,.3); // TODO: Where did 1400 come from? what if THIS fails?
             drive.setAllMotorsRunUsingEncoder();
         }
 
@@ -662,11 +676,6 @@ public class Robot23 {
         }
         drive.stopDrive();
         teamUtil.log("OP TIME: "+ (System.currentTimeMillis()-opTime));
-
-
-
-
-
 
     }
 
@@ -700,14 +709,39 @@ public class Robot23 {
 
     public void goToPoleV2(){
         long opTime = System.currentTimeMillis();
+        outake.runToLevel(3);
 
         drive.setAllMotorsRunUsingEncoder();
-        FourWheelDrive.MotorData start = new FourWheelDrive.MotorData();
+
+        teamUtil.log("BACK UP DRIFTING LEFT");
+        // old version driveVectorCms(340, 180, 50, 1000);
+        driveVectorCms(350, 180, 50, 1000);
+
+        teamUtil.log("BACK UP AND TURN");
+        driveVectorCms(315, 238, 20, 500); // TODO: This might not be enough to finish the turn...TEST!
+
+        //drive.setAllMotorsActiveBreak();
+
+
+
+        teamUtil.log("BACKUP TO POLE");
+        drive.setAllMotorsRunUsingEncoder();
+        driveVectorCms(62, 238, 16, 500);
+
+
+        drive.setAllMotorsActiveBreak();
+        teamUtil.log("OP TIME: "+ (System.currentTimeMillis()-opTime));
+
+
+
+/*        FourWheelDrive.MotorData start = new FourWheelDrive.MotorData();
+
         drive.getDriveMotorData(start);
-        teamUtil.log("BACK UP");
+        teamUtil.log("BACK UP DRIFTING LEFT");
         while (drive.getEncoderDistance(start) < 50*drive.COUNTS_PER_CENTIMETER) {
             drive.driveMotorsHeadingsFR(340, 180,1000);
         }
+
         drive.getDriveMotorData(start);
         teamUtil.log("BACK UP AND TURN");
         while (drive.getEncoderDistance(start) < 14*drive.COUNTS_PER_CENTIMETER) {
@@ -718,7 +752,7 @@ public class Robot23 {
         outake.runToLevel(3);
 
         drive.getDriveMotorData(start);
-        teamUtil.log("BACKUP");
+        teamUtil.log("BACKUP TO POLE");
         while (drive.getEncoderDistance(start) < 10*drive.COUNTS_PER_CENTIMETER) {
             drive.driveMotorsHeadingsFR(62, 238,500);
         }
@@ -726,6 +760,7 @@ public class Robot23 {
         teamUtil.log("OP TIME: "+ (System.currentTimeMillis()-opTime));
         teamUtil.pause(1000);
         drive.setAllMotorsRunUsingEncoder();
+*/
     }
 
     public void diagonalStrafeTest(){
@@ -798,12 +833,6 @@ public class Robot23 {
         outake.openGrabber();
         teamUtil.pause(250);
 
-
-
-
-
-
-
         log("Heading: " + drive.getHeading());
         log("Starting Loop");
 
@@ -812,16 +841,13 @@ public class Robot23 {
             goToWallV2();
             outake.closeGrabber();
             teamUtil.pause(300);
-            outake.runToLevelHalfwayJointNoWait(3);
+
             goToPoleV2();
             outake.openGrabber();
             teamUtil.pause(250);
-
-
-
-
         }
-        outake.runToBottom(false,false);
+        drive.newMoveCM(1000,18);
+        outake.runToBottom(false,false);  // TODO: Isn't the Robot currently bracing the pole?  Don't you need to back up first or something?
         teamUtil.pause(1000);
         if(true){
             return;
@@ -833,65 +859,8 @@ public class Robot23 {
 
 
 
-        for(int i=0;i<3; i++){
-            teamUtil.pause(250);
-            goToWall(2500,1000);
-            /*
-            if(i==0){
-                drive.newMoveCM(1000,35);
-            }
-            else{
-                drive.newMoveCM(1000,10);
-            }
-
-             */
 
 
-            outake.closeGrabber();
-            teamUtil.pause(300);
-            outake.runToLevelHalfwayJointNoWait(3);
-            drive.newBackCM(1000, 68);
-            if(left) {
-                drive.spinLeftToHeading(220, .6);
-            }else{
-                drive.spinRightToHeading(125, .6);
-            }
-            teamUtil.pause(60000);
-            outake.runToLevel(3);
-            drive.backCM(.6, 14);
-            outake.pulleyLeft.setTargetPosition(outake.pulleyLeft.getCurrentPosition()-100);
-            outake.pulleyRight.setTargetPosition(outake.pulleyRight.getCurrentPosition()-100);
-            teamUtil.pause(100);
-            outake.openGrabber();
-            teamUtil.pause(200);
-            outake.runToLevel(2);
-            outake.runToBottomNoWait(true, false);
-            drive.moveCM(.6, 19.5);
-
-            if(left) {
-                drive.spinRightToHeading(180, .6);
-            }else{
-                drive.spinLeftToHeading(180, 0.6);
-            }
-            long currentTime = System.currentTimeMillis();
-
-            //time failsafe code
-            if(currentTime-startingTime>22000&&detection!=2){
-                break;
-            }
-            else if(currentTime-startingTime>22500){
-                break;
-            }
-            else{
-
-            }
-
-            if(i<2){
-                drive.moveCM(.9, 60);
-            }
-            else{
-            }
-        }
 
 
         /*
