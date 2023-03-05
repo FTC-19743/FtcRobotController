@@ -66,7 +66,7 @@ public class AutoRight extends LinearOpMode {
         int path = tagDetector.signalDetect();
         tagDetector.deactivate();
 
-        robot.autoV5(false, path);
+        robot.newAutoV5(teamUtil.LEFT, path);
 
 
 

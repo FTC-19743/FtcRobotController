@@ -624,15 +624,15 @@ public class Robot23 {
         drive.setAllMotorsRunUsingEncoder();
 
         teamUtil.log("BACK UP ");
-        driveVectorCms(238, 238, 12, 500); //
+        driveVectorCms(convertAngle(238), convertAngle(238), 16, 500); //
 
         outake.runToBottomNoWait(true,false); // launches another thread for this operation
 
         teamUtil.log("TURN AND STRAFE");
-        driveVectorCms(135, 180, 15, 1000); // strafe a bit right while rotating
+        driveVectorCms(convertAngle(135), convertAngle(180), 18, 1000); // strafe a bit right while rotating
 
         teamUtil.log("MOVE TO LEFT OF LINE");
-        driveVectorCms(185, 180, 38, 1000); // strafe a bit right while rotating
+        driveVectorCms(convertAngle(185), convertAngle(180), 38, 1000); // strafe a bit right while rotating
 
 /*
         FourWheelDrive.MotorData start = new FourWheelDrive.MotorData();
@@ -663,7 +663,7 @@ public class Robot23 {
         teamUtil.log("STRAFE LOOKING FOR LINE");
         drive.getDriveMotorData(start);
         while (!drive.colorSensor.isOnTape()&& drive.getEncoderDistance(start) < 30*drive.COUNTS_PER_CENTIMETER) {
-            drive.driveMotorsHeadingsFR(135 , 180,500);
+            drive.driveMotorsHeadingsFR(convertAngle(135) , convertAngle(180),500);
         }
         if (drive.colorSensor.isOnTape()) {
             teamUtil.log("FOUND TAPE");
@@ -671,7 +671,13 @@ public class Robot23 {
             teamUtil.log("FAIL SAFE");
             drive.setAllMotorsActiveBreak();
             teamUtil.pause(333);
-            drive.strafeLeftToLine(1400,.3); // TODO: Where did 1400 come from? what if THIS fails?
+            if(teamUtil.LEFT){
+                drive.strafeLeftToLine(1400,.3);
+            }
+            else{
+                drive.strafeRightToLine(1400,.3);
+
+            }
             drive.setAllMotorsRunUsingEncoder();
         }
 
@@ -713,6 +719,23 @@ public class Robot23 {
         drive.setAllMotorsRunUsingEncoder();
     }
 
+    public double convertAngle(double angle){
+        if (angle > 180) {
+            if (teamUtil.LEFT) {
+                return angle;
+            } else {
+                return 180 - Math.abs(angle - 180);
+            }
+        }else{
+            if (teamUtil.LEFT) {
+                return angle;
+            } else {
+                return 180 + Math.abs(angle - 180);
+            }
+        }
+    }
+
+
     public void goToPoleV2(){
         long opTime = System.currentTimeMillis();
         outake.runToLevel(3);
@@ -721,10 +744,18 @@ public class Robot23 {
 
         teamUtil.log("BACK UP DRIFTING LEFT");
         // old version driveVectorCms(340, 180, 50, 1000);
-        driveVectorCms(350, 180, 50, 1000);
+
+        driveVectorCms(convertAngle(350), convertAngle(180), 50, 1000);
+
+
 
         teamUtil.log("BACK UP AND TURN");
-        driveVectorCms(315, 238, 20, 500); // TODO: This might not be enough to finish the turn...TEST!
+
+        driveVectorCms(convertAngle(315), convertAngle(238), 20, 500); // TODO: This might not be enough to finish the turn...TEST!
+
+
+
+
 
         //drive.setAllMotorsActiveBreak();
 
@@ -732,7 +763,7 @@ public class Robot23 {
 
         teamUtil.log("BACKUP TO POLE");
         drive.setAllMotorsRunUsingEncoder();
-        driveVectorCms(62, 238, 16, 500);
+        driveVectorCms(convertAngle(62), convertAngle(238), teamUtil.LEFT? 12: 16, 500);
 
 
         drive.setAllMotorsActiveBreak();
@@ -772,17 +803,23 @@ public class Robot23 {
     public void park(int path){
         drive.setAllMotorsRunUsingEncoder();
         if(path==0||path == 2){
-            driveVectorCms(120,180,10,1500);
-            drive.spinRightToHeading(180,0.6);
+            driveVectorCms(convertAngle(120),convertAngle(180),10,1500);
+            if(drive.getHeading() > 180){
+                drive.spinRightToHeading(180,0.6);
+            }
+            else{
+                drive.spinLeftToHeading(180,0.6);
+
+            }
         }
         else if(path==1){
-            driveVectorCms(155,180,15,1500);
-            driveVectorCms(180,180,40,1500);
+            driveVectorCms(convertAngle(155),convertAngle(180),15,1500);
+            driveVectorCms(convertAngle(180),convertAngle(180),40,1500);
 
         }
         else{
-            driveVectorCms(30,180,10,1500);
-            driveVectorCms(0,180,45,1500);
+            driveVectorCms(convertAngle(30),convertAngle(180),10,1500);
+            driveVectorCms(convertAngle(0),convertAngle(180),45,1500);
 
         }
 
@@ -803,11 +840,11 @@ public class Robot23 {
     public void firstRunToPoleLeftV2(){
         drive.setAllMotorsRunUsingEncoder();
         outake.runToLevelNoWait(3);
-        driveVectorCms(270,270,60,1000);
-        driveVectorCms(270,238,30,1000);
-        driveVectorCms(38,238,37,500);
+        driveVectorCms(convertAngle(90),convertAngle(270),75,1250);
+        driveVectorCms(convertAngle(90),convertAngle(238),30,1000);
+        driveVectorCms(convertAngle(68),convertAngle(238),25,500);
 
-        drive.newBackCM(1000, 37);
+
         drive.setAllMotorsActiveBreak();
 
     }
@@ -856,27 +893,17 @@ public class Robot23 {
 
     public void newAutoV5(boolean left, int detection){
 
-        drive.setHeading(270);
+        drive.setHeading((int)convertAngle(270));
 
         drive.setTargetPositionToleranceAllMotors(20);
         long startingTime = System.currentTimeMillis();
-        outake.runToLevelNoWait(3);
 
 
-        if(left) {
-            drive.newBackCM(1000,90);
-            teamUtil.pause(300);
-            drive.spinRightToHeading(238, .6);
-            teamUtil.pause(300);
-        }else{
-            drive.strafeLeft(.6,155);
-            drive.strafeRight(.6, 13);
-            drive.spinRightToHeading(127, .6);
-        }
+
+        firstRunToPoleLeftV2();
 
 
-        drive.newBackCM(1000, 37);
-        drive.setAllMotorsActiveBreak();
+
 
 
         outake.openGrabber();
@@ -909,9 +936,7 @@ public class Robot23 {
         else{
             park(3);
         }
-        if(true){
-            return;
-        }
+
 
 
 

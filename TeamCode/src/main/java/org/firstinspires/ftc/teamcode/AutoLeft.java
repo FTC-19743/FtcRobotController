@@ -65,7 +65,7 @@ public class AutoLeft extends LinearOpMode {
         int path = tagDetector.signalDetect();
         tagDetector.deactivate();
 
-        robot.newAutoV5(true, path);
+        robot.newAutoV5(teamUtil.LEFT, path);
         //robot.halfwayJointTest();
 
 
