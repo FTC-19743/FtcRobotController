@@ -63,6 +63,7 @@ public class AutoLeft extends LinearOpMode {
 
         waitForStart();
         int path = tagDetector.signalDetect();
+        log("path" + path);
         tagDetector.deactivate();
 
         robot.newAutoV5(teamUtil.LEFT, path);

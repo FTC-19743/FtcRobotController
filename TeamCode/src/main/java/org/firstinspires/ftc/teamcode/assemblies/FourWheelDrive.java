@@ -1366,6 +1366,7 @@ public class FourWheelDrive {
         backLeft.setPower(0);
         frontRight.setPower(0);
         backRight.setPower(0);
+        log("Finishing Spin Right to Heading");
 
 
 

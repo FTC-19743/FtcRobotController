@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <Robot type="FirstInspires-FTC">
-    <!-- <Webcam name="Webcam Right" serialNumber="BB3B2F40" /> -->
-    <Webcam name="Webcam Left" serialNumber="VendorProduct:vendor=0x046d|product=0x0825|connection=" />
+    <Webcam name="Webcam Left" serialNumber="BB3B2F40" />
+    <!--Webcam name="Webcam Left" serialNumber="VendorProduct:vendor=0x046d|product=0x0825|connection=" /> -->
     <LynxUsbDevice name="Control Hub Portal" serialNumber="(embedded)" parentModuleAddress="173">
         <LynxModule name="Expansion Hub 2" port="2">
             <goBILDA5202SeriesMotor name="joint" port="0" />

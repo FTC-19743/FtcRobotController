@@ -632,7 +632,8 @@ public class Robot23 {
         driveVectorCms(convertAngle(135), convertAngle(180), 18, 1000); // strafe a bit right while rotating
 
         teamUtil.log("MOVE TO LEFT OF LINE");
-        driveVectorCms(convertAngle(185), convertAngle(180), 38, 1000); // strafe a bit right while rotating
+        driveVectorCms(convertAngle(192), convertAngle(180), 38, 1000); // drive heading was 185
+
 
 /*
         FourWheelDrive.MotorData start = new FourWheelDrive.MotorData();
@@ -763,7 +764,7 @@ public class Robot23 {
 
         teamUtil.log("BACKUP TO POLE");
         drive.setAllMotorsRunUsingEncoder();
-        driveVectorCms(convertAngle(62), convertAngle(238), teamUtil.LEFT? 12: 16, 500);
+        driveVectorCms(convertAngle(62), convertAngle(238), 16, 500);
 
 
         drive.setAllMotorsActiveBreak();
@@ -800,9 +801,10 @@ public class Robot23 {
 */
     }
 
-    public void park(int path){
+    public void park(int path, long startTime){
+        log("Park Started");
         drive.setAllMotorsRunUsingEncoder();
-        if(path==0||path == 2){
+        if(path==0 || path == 2){
             driveVectorCms(convertAngle(120),convertAngle(180),10,1500);
             if(drive.getHeading() > 180){
                 drive.spinRightToHeading(180,0.6);
@@ -814,7 +816,7 @@ public class Robot23 {
         }
         else if(path==1){
             driveVectorCms(convertAngle(155),convertAngle(180),15,1500);
-            driveVectorCms(convertAngle(180),convertAngle(180),40,1500);
+            driveVectorCms(convertAngle(180),convertAngle(180),43,1500);
 
         }
         else{
@@ -825,6 +827,8 @@ public class Robot23 {
 
         drive.setAllMotorsActiveBreak();
         teamUtil.pause(333);
+        drive.setDriveVelocities(0,0,0,0);
+        log("Park Finished");
     }
 
     public void firstRunToPoleLeft(){
@@ -892,13 +896,15 @@ public class Robot23 {
     }
 
     public void newAutoV5(boolean left, int detection){
+        if(detection==0){
+            log("0 WAS DETECTED");
+            detection=2;
+        }
 
         drive.setHeading((int)convertAngle(270));
 
         drive.setTargetPositionToleranceAllMotors(20);
         long startingTime = System.currentTimeMillis();
-
-
 
         firstRunToPoleLeftV2();
 
@@ -914,6 +920,9 @@ public class Robot23 {
 
 
         for(int i=0;i<3; i++){
+
+            long startingCycleTime = System.currentTimeMillis();
+
             goToWallV2();
             outake.closeGrabber();
             teamUtil.pause(300);
@@ -921,21 +930,50 @@ public class Robot23 {
             goToPoleV2();
             outake.openGrabber();
             teamUtil.pause(250);
+            long endingCycleTime = System.currentTimeMillis();
+
+            long totalCycleTime = endingCycleTime-startingCycleTime;
+            log("Total Cycle Time " + totalCycleTime);
+            long parkingTime2 = 1000;
+            long parkingTime13 = 1500;
+            long cycleTime = 8000;
+            long currentTime = System.currentTimeMillis();
+            long elapsedTime = currentTime-startingTime;
+            long timeLeft=30000-elapsedTime;
+
+            //time failsafe code
+            if(timeLeft<cycleTime+parkingTime13 && detection!=2){
+                log("Time Failsafe Used For Detection 1 and 3");
+                log("Time Left: " + timeLeft);
+                break;
+            }
+            else if(timeLeft<cycleTime+parkingTime2){
+                log("Time Failsafe Used Detection 2");
+                log("Time Left: " + timeLeft);
+                break;
+
+            }
+            else{
+                log("Loop Continued");
+                log("Time Left: " + timeLeft);
+            }
+
         }
         drive.newMoveCM(1000,18);
         outake.runToBottom(false,false);  // TODO: Isn't the Robot currently bracing the pole?  Don't you need to back up first or something?
         if(detection==0){
-            park(0);
+            park(0,startingTime);
         }
         else if(detection==1){
-            park(1);
+            park(1, startingTime);
         }
         else if(detection==2){
-            park(2);
+            park(2, startingTime);
         }
         else{
-            park(3);
+            park(3,startingTime);
         }
+        log("Auto Finished");
 
 
 
@@ -1077,7 +1115,11 @@ public class Robot23 {
 
 
         if(left){
-            drive.spinRightToHeading(180,0.6);
+            if (drive.getHeading() > 180) {
+                drive.spinRightToHeading(180, 0.6);
+            }else{
+                drive.spinLeftToHeading(180, 0.6);
+            }
         }
         else{
             drive.spinLeftToHeading(180,0.6);
