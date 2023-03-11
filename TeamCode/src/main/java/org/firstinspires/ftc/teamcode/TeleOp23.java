@@ -169,12 +169,12 @@ public class TeleOp23 extends LinearOpMode {
                 robot.outake.runPulleyDown();
             }
 
-            if (gamepad2.dpad_left){
-                robot.outake.jointDown();
+            if (gamepad1.dpad_left){
+                robot.outake.runJointDownV2();
             }
 
-            if (gamepad2.dpad_right){
-                robot.outake.jointUp();
+            if (gamepad1.dpad_right){
+                robot.outake.runJointUpV2();
             }
 
             if (gamepad2.a){
@@ -189,6 +189,10 @@ public class TeleOp23 extends LinearOpMode {
 
             if (gamepad2.y){
                 robot.outake.runToLevelNoWait(3);
+            }
+
+            if(gamepad2.right_stick_button){
+                robot.outake.pulleyNoFlipShortNoWait();
             }
 
             if(armsGamepad.wasLeftTriggerPressed()) {

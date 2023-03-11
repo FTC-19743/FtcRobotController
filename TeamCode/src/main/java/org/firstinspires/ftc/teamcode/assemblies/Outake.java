@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.assemblies;
 
+import android.graphics.Paint;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -27,6 +29,7 @@ public class Outake {
     public final int SHORT = 550;
     public final int FLIPPED_JOINT = 600;
     public final int HALFWAY_JOINT = 300;
+
     public final int ABOVE_STACK = 1000;
     public final int GROUND = 80;
     public final int BOTTOM = 10;
@@ -34,6 +37,10 @@ public class Outake {
     public final int CUPSTACK = 440;
     public final double RIGHT_MOTOR_RATIO = 1.383766234;
     public int[] CUP_HEIGHTS = {440, 345, 245, 130, 10};
+
+
+    public final int SHORT_FRONT_PULLEY = 340;
+    public final int SHORT_FRONT_JOINT = 222;
 
     public final double OPEN = 0.55;
     public final double GRAB = 0.34;
@@ -95,8 +102,8 @@ public class Outake {
         //grabber.setPosition(OPEN);
         pulleyLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pulleyRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleyLeft.setPower(-0.1);
-        pulleyRight.setPower(-0.1);
+        pulleyLeft.setPower(-0.4);
+        pulleyRight.setPower(-0.4);
         teamUtil.pause(500);
         do {
             long lastLeftPos = pulleyLeft.getCurrentPosition();
@@ -167,8 +174,8 @@ public class Outake {
             pulleyLeft.setTargetPosition(currentPositionLeft+ManualArmIncrement);
             pulleyRight.setTargetPosition(currentPositionRight+ManualArmIncrement);
         }
-        pulleyLeft.setVelocity(500);
-        pulleyRight.setVelocity(500);
+        pulleyLeft.setVelocity(1000);
+        pulleyRight.setVelocity(1000);
 
 
 
@@ -182,9 +189,44 @@ public class Outake {
             pulleyLeft.setTargetPosition(currentPositionLeft-ManualArmIncrement);
             pulleyRight.setTargetPosition(currentPositionRight-ManualArmIncrement);
         }
-        pulleyLeft.setVelocity(500);
-        pulleyRight.setVelocity(500);
+        pulleyLeft.setVelocity(1000);
+        pulleyRight.setVelocity(1000);
 
+    }
+
+    public void pulleyNoFlipShort(){
+
+        pulleyLeft.setTargetPosition(SHORT_FRONT_PULLEY);
+        pulleyRight.setTargetPosition(SHORT_FRONT_PULLEY);
+
+
+
+        pulleyLeft.setVelocity(PulleyVelocity);
+        pulleyRight.setVelocity(PulleyVelocity);
+        grabber.setPosition(GRAB);
+
+        teamUtil.pause(250);
+        rotator.setPosition(ROTATOR_FLAT);
+        joint.setTargetPosition(SHORT_FRONT_JOINT);
+        joint.setVelocity(1000); // TODO: This might be a fine velocity for moving the arm up and over, but when you get to the end and want to hold your position, you should use max power (3000)
+
+        Moving = false;
+    }
+
+    public void pulleyNoFlipShortNoWait(){
+        if(Moving){
+            teamUtil.log("Lift Attempted to run other movement while moving");
+            return;
+        }
+        Moving = true;
+        teamUtil.log("Launching Thread to Move to short no wait");
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                pulleyNoFlipShort();
+            }
+        });
+        thread.start();
     }
 
 
@@ -205,6 +247,34 @@ public class Outake {
         }
         joint.setVelocity(100);
     }
+
+    public void runJointUpV2(){
+
+        log("running joint up");
+
+        int currentPosition=joint.getCurrentPosition();
+        if(currentPosition+ManualJointIncrement<600){
+            joint.setTargetPosition(currentPosition+ManualJointIncrement);
+        }
+        joint.setVelocity(500);
+
+
+
+    }
+
+    public void runJointDownV2(){
+
+        log("running Joint down");
+
+        int currentPosition=joint.getCurrentPosition();
+        if(currentPosition-ManualJointIncrement> JOINT_BOTTOM){
+            joint.setTargetPosition(currentPosition-ManualJointIncrement);
+        }
+        joint.setVelocity(500);
+
+    }
+
+
 
     public void jointDown() {
         log("running arm down");
@@ -436,6 +506,9 @@ public class Outake {
 
 
     }
+
+
+
     public void runToLevelNoWait(int level) {
         if(Moving){
             teamUtil.log("Lift Attempted to run other movement while moving");
