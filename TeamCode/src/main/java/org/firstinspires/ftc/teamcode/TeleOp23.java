@@ -168,7 +168,7 @@ public class TeleOp23 extends LinearOpMode {
             else if(gamepad2.dpad_down){
                 robot.outake.runPulleyDown();
             }
-
+            /*
             if (gamepad1.dpad_left){
                 robot.outake.runJointDownV2();
             }
@@ -176,6 +176,8 @@ public class TeleOp23 extends LinearOpMode {
             if (gamepad1.dpad_right){
                 robot.outake.runJointUpV2();
             }
+
+             */
 
             if (gamepad2.a){
                 robot.outake.runToLevelNoWait(1);
