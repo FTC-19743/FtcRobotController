@@ -26,8 +26,24 @@ public class testPixyCam extends LinearOpMode {
             if (gamepad.wasUpPressed()) {
                 pixyCam.getVersionInfo();
             }
-            telemetry.addLine("PixyCam: HW:"+ pixyCam.getHWVersion()+ " FW:" + pixyCam.getFWVersion()+" Build:" + pixyCam.getBuildNum()+ " Type:" + pixyCam.getFWType());
+            if (gamepad.wasLeftPressed()) {
+                pixyCam.toggleLEDs(true);
+            }
+            if (gamepad.wasRightPressed()) {
+                pixyCam.toggleLEDs(false);
+            }
+            if (gamepad.wasDownPressed()) {
+                pixyCam.getBlocks((byte)0b11111111, (byte)2);
+                //pixyCam.showBug();
+            }
+            telemetry.addLine(
+                    "PixyCam: HW:"+ pixyCam.getHWVersion() +
+                            " FW:" + pixyCam.getFWVersionMajor()+
+                            "." + pixyCam.getFWVersionMinor()+
+                            " Build:" + pixyCam.getBuildNum()+
+                            " Type:" + pixyCam.getFWType());
             telemetry.update();
         }
     }
 }
+// 2022-04-27 07:13:22.441  1684-2383  I2C                     com.qualcomm.ftcrobotcontroller      I  Automatically initializing I2C device PixyCam2 USB (embedded); module 2; bus 1; addr7=0x18
