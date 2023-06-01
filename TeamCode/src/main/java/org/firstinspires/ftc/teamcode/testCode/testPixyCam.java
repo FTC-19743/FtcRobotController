@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.libs.PixyBlock;
 import org.firstinspires.ftc.teamcode.libs.PixyCam2;
 import org.firstinspires.ftc.teamcode.libs.TeamGamepad;
 import org.firstinspires.ftc.teamcode.libs.teamUtil;
@@ -23,17 +24,33 @@ public class testPixyCam extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             gamepad.loop();
+            if (gamepad.wasAPressed()){
+                pixyCam.setLEDs((byte) 255, (byte) 0, (byte) 0);
+            }
+            if (gamepad.wasBPressed()){
+                pixyCam.setLEDs((byte) 0, (byte) 255, (byte) 0);
+            }
+            if (gamepad.wasXPressed()){
+                pixyCam.setLEDs((byte) 0, (byte) 0, (byte) 255);
+            }
             if (gamepad.wasUpPressed()) {
                 pixyCam.getVersionInfo();
             }
             if (gamepad.wasLeftPressed()) {
-                pixyCam.toggleLEDs(true);
+                pixyCam.toggleLEDs(true, true);
             }
             if (gamepad.wasRightPressed()) {
-                pixyCam.toggleLEDs(false);
+                pixyCam.toggleLEDs(false, false);
             }
             if (gamepad.wasDownPressed()) {
-                pixyCam.getBlocks((byte)0b11111111, (byte)2);
+                while(gamepad1.dpad_down) {
+                    PixyBlock[] blocks = pixyCam.getBlocks((byte) 0b10000000, (byte) 1);
+                    teamUtil.log("X Center: " + blocks[1].xCenter);
+                    teamUtil.log("Y Center: " + blocks[1].yCenter);
+                    teamUtil.log("Width: " + blocks[1].width);
+                    teamUtil.log("Height: " + blocks[1].height);
+                    }
+                }
                 //pixyCam.showBug();
             }
             telemetry.addLine(
@@ -45,5 +62,5 @@ public class testPixyCam extends LinearOpMode {
             telemetry.update();
         }
     }
-}
+
 // 2022-04-27 07:13:22.441  1684-2383  I2C                     com.qualcomm.ftcrobotcontroller      I  Automatically initializing I2C device PixyCam2 USB (embedded); module 2; bus 1; addr7=0x18

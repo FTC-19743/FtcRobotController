@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.configuration.annotations.DevicePropertie
 import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
 import com.qualcomm.robotcore.util.TypeConversion;
 
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -41,23 +42,40 @@ public class PixyCam2 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     public short getBuildNum() { return FWBuildNum; }
     public String getFWType () { return FWType; };
 
-    public void toggleLEDs(boolean on) {
+    public void setLEDs(byte r, byte g, byte b) {
+        byte[] request = {
+                (byte)0xae,  // first two bytes specify no check-sum data
+                (byte)0xc1,
+                (byte) 20,  // the code for the request type
+                (byte) 3,
+                r,
+                g,
+                b
+            };
+        if (logDetails) teamUtil.log("PixyCam: Set LEDs:"+ Arrays.toString(request));
+
+        deviceClient.write(request);
+    }
+
+    public void toggleLEDs(boolean upper, boolean lower) {
         byte[] request = {
                 (byte)0xae,  // first two bytes specify no check-sum data
                 (byte)0xc1,
                 (byte) 22,  // the code for the request type
                 (byte) 2,
-                on ? (byte)1 : (byte)0, // upper leds
-                on ? (byte)1 : (byte)0, // lower led
-            };
+                upper ? (byte)1 : (byte)0, // upper leds
+                lower ? (byte)1 : (byte)0, // lower led
+        };
         if (logDetails) teamUtil.log("PixyCam: Toggle LEDs:"+ Arrays.toString(request));
 
         deviceClient.write(request);
     }
-    public void getBlocks(byte signatures, byte numBlocks) {
+
+    public PixyBlock[] getBlocks(byte signatures, byte numBlocks) {
         if (numBlocks > 6) {
             teamUtil.log("ERROR : PixyCam Get Blocks request for more than 6 blocks.  Exceeds I2C request size");
-            return;
+            PixyBlock[] blocks = {};
+            return blocks;
         }
         byte[] request = {  (byte)0xae,  // first two bytes specify no check-sum data
                 (byte)0xc1,
@@ -67,7 +85,27 @@ public class PixyCam2 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
                 numBlocks};
         if (logDetails) teamUtil.log("PixyCam: Send Blocks Request:"+ Arrays.toString(request));
         deviceClient.write(request);
-        debugResponse(HEADER_LENGTH+numBlocks*BLOCKS_PAYLOAD_SIZE);
+        //debugResponse(HEADER_LENGTH+numBlocks*BLOCKS_PAYLOAD_SIZE);
+        byte[] response = readResponse2(BLOCKS_RESPONSE,HEADER_LENGTH+numBlocks*BLOCKS_PAYLOAD_SIZE);
+        if (response == null) {
+            PixyBlock[] blocks = {};
+            return blocks;
+        } else {
+            teamUtil.log("Response: "+Arrays.toString(response));
+            PixyBlock[] blocks = new PixyBlock[response.length / 14];
+            for (int i = 0; i < response.length / 14; i++) {
+                blocks[i] = new PixyBlock();
+                blocks[i].signature = TypeConversion.byteArrayToShort(response, i * 14, ByteOrder.LITTLE_ENDIAN);
+                blocks[i].xCenter = TypeConversion.byteArrayToShort(response, i * 14 + 2, ByteOrder.LITTLE_ENDIAN);
+                blocks[i].yCenter = TypeConversion.byteArrayToShort(response, i * 14 + 4, ByteOrder.LITTLE_ENDIAN);
+                blocks[i].width = TypeConversion.byteArrayToShort(response, i * 14 + 6, ByteOrder.LITTLE_ENDIAN);
+                blocks[i].height = TypeConversion.byteArrayToShort(response, i * 14 + 8, ByteOrder.LITTLE_ENDIAN);
+                blocks[i].angle = TypeConversion.byteArrayToShort(response, i * 14 + 10, ByteOrder.LITTLE_ENDIAN);
+                blocks[i].index = response[i * 14 + 12];
+                blocks[i].age = response[i * 14 + 13];
+            }
+            return blocks;
+        }
     }
     public void showBug() {
         sendSimpleRequest(VERSION_INFO_REQUEST);
@@ -80,14 +118,14 @@ public class PixyCam2 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     // Internal Helper Methods
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private boolean logDetails = true;
+    private boolean logDetails = false;
     private  static final int HEADER_LENGTH = 6;
     private static final byte VERSION_INFO_REQUEST = 0x0e; // Request ID for Version Information from PixyCam
     private static final byte VERSION_INFO_RESPONSE = 0x0f; // Response ID for Version Information from PixyCam
     private static final int VERSION_INFO_PAYLOAD_SIZE = 16; // Payload data size for version info
 
-    private static final byte BLOCKS_REQUEST = 32;
-    private static final byte BLOCKS_RESPONSE = 33;
+    private static final byte BLOCKS_REQUEST = (byte) 32;
+    private static final byte BLOCKS_RESPONSE = (byte) 33;
     private static final int BLOCKS_PAYLOAD_SIZE = 14;
 
     private boolean versionInfoRetrieved = false;
@@ -135,8 +173,9 @@ public class PixyCam2 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
         if (logDetails) teamUtil.log("PixyCam: Send Request:"+ Arrays.toString(request));
 
         deviceClient.write(request);
-
     }
+
+
 
     private void debugResponse(int bytes) {
         byte[] result = deviceClient.read(bytes);
@@ -164,11 +203,12 @@ public class PixyCam2 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
             if (logDetails) teamUtil.log("PixyCam: Response Code Mismatch:" + expectedResponseType +":" + response[2]);
             return null;
         }
-        if (validateCheckSum(response)) {
+
+        //if (validateCheckSum(response)) {
             return Arrays.copyOfRange(response, HEADER_LENGTH, HEADER_LENGTH+response[3]); // copy out data payload without header and extraneous bytes
-        } else {
-            return null;
-        }
+        //} else {
+         //   return null;
+        //}
     }
 
     // Read a response from PixyCam, validate the response type and return the payload data
@@ -254,3 +294,4 @@ public class PixyCam2 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
         return "PixyCam 2.1";
     }
 }
+
