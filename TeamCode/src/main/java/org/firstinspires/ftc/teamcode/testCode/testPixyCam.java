@@ -24,13 +24,13 @@ public class testPixyCam extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             gamepad.loop();
-            if (gamepad.wasAPressed()){
+            if (gamepad.wasAPressed()) {
                 pixyCam.setLEDs((byte) 255, (byte) 0, (byte) 0);
             }
-            if (gamepad.wasBPressed()){
+            if (gamepad.wasBPressed()) {
                 pixyCam.setLEDs((byte) 0, (byte) 255, (byte) 0);
             }
-            if (gamepad.wasXPressed()){
+            if (gamepad.wasXPressed()) {
                 pixyCam.setLEDs((byte) 0, (byte) 0, (byte) 255);
             }
             if (gamepad.wasUpPressed()) {
@@ -42,25 +42,26 @@ public class testPixyCam extends LinearOpMode {
             if (gamepad.wasRightPressed()) {
                 pixyCam.toggleLEDs(false, false);
             }
-            if (gamepad.wasDownPressed()) {
-                while(gamepad1.dpad_down) {
-                    PixyBlock[] blocks = pixyCam.getBlocks((byte) 0b10000000, (byte) 1);
-                    teamUtil.log("X Center: " + blocks[1].xCenter);
-                    teamUtil.log("Y Center: " + blocks[1].yCenter);
-                    teamUtil.log("Width: " + blocks[1].width);
-                    teamUtil.log("Height: " + blocks[1].height);
-                    }
-                }
-                //pixyCam.showBug();
+            while (gamepad1.dpad_down) {
+                PixyBlock[] blocks = pixyCam.getBlocks((byte) 0b11100000, (byte) 3);
+                //TODO change request for one block and check for returned blocks
+                teamUtil.log("X Center: " + blocks[1].xCenter);
+                teamUtil.log("Y Center: " + blocks[1].yCenter);
+                teamUtil.log("Width: " + blocks[1].width);
+                teamUtil.log("Height: " + blocks[1].height);
             }
+
+            //pixyCam.showBug();
             telemetry.addLine(
-                    "PixyCam: HW:"+ pixyCam.getHWVersion() +
-                            " FW:" + pixyCam.getFWVersionMajor()+
-                            "." + pixyCam.getFWVersionMinor()+
-                            " Build:" + pixyCam.getBuildNum()+
+                    "PixyCam: HW:" + pixyCam.getHWVersion() +
+                            " FW:" + pixyCam.getFWVersionMajor() +
+                            "." + pixyCam.getFWVersionMinor() +
+                            " Build:" + pixyCam.getBuildNum() +
                             " Type:" + pixyCam.getFWType());
             telemetry.update();
         }
-    }
+
 
 // 2022-04-27 07:13:22.441  1684-2383  I2C                     com.qualcomm.ftcrobotcontroller      I  Automatically initializing I2C device PixyCam2 USB (embedded); module 2; bus 1; addr7=0x18
+    }
+}

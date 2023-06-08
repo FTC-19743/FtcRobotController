@@ -118,7 +118,7 @@ public class PixyCam2 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     // Internal Helper Methods
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private boolean logDetails = false;
+    private boolean logDetails = true;
     private  static final int HEADER_LENGTH = 6;
     private static final byte VERSION_INFO_REQUEST = 0x0e; // Request ID for Version Information from PixyCam
     private static final byte VERSION_INFO_RESPONSE = 0x0f; // Response ID for Version Information from PixyCam
